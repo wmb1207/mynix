@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     wget curl bash cmake gnumake git libvterm emacs gcc
+    bspwm sxhkd
   ];
 
   programs.mtr.enable = true;

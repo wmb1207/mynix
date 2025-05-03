@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Set wallpaper
+#feh --bg-scale /path/to/your/wallpaper.jpg
+xsetroot -solid "#b8e1b2"
+
+# Start compositor
+picom &
+
+# Launch sxhkd for keybindings
+sxhkd &
+
+# Launch dmenu with custom styling (black background)
+dmenu_run -nb '#000000' -nf '#ffffff' -sb '#444444' -sf '#ffffff' &
+
+emacs --daemon &
+
+# Start bspwm
+exec bspwm
