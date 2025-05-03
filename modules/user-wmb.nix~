@@ -1,0 +1,37 @@
+{ config, pkgs, lib, ... }:
+
+let
+  cli = import ./cli.nix { inherit pkgs; };
+  programming-languages = import ./programming-languages.nix { inherit pkgs; };
+  gui = import ./gui.nix { inherit pkgs; };
+in
+{
+  home-manager.users.wmb = {pkgs, ...}: {
+    nixpkgs.config.allowUnfree = true;
+    home.stateVersion = "24.11";
+    programs.bash.enable = true;
+
+    home.packages = cli ++ programming-languages ++ gui ++[
+      pkgs.emacs
+      pkgs.awscli
+      pkgs.terraform
+      pkgs.opentofu
+      pkgs.ghostty
+    ];
+
+    home.sessionVariables = {
+      EDITOR = "emacs";
+    };
+
+    # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
+  home.file.".emacs.d/init.el".source = ../assets/init.el;
+  home.file.".bashrc".source = lib.mkForce ../assets/bashrc;
+  home.file.".config/ghostty/config".source = ../assets/ghostty;
+  };
+  users.users.wmb = {
+    isNormalUser = true;
+    description = "wmb";
+    extraGroups = [ "networkmanager" "wheel" "docker"];
+  };
+}

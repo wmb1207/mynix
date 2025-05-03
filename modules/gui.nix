@@ -1,0 +1,10 @@
+{ pkgs }:
+
+with pkgs; [
+  firefox
+  discord
+  slack
+  spotify
+
+  steam
+]

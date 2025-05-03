@@ -1,0 +1,17 @@
+{ config, pkgs, ... }:
+
+{
+  services.xserver = {
+    enable = true;
+    dispalyManager.gdm.enable = true;
+    displayManager.defaultSession = "gnome";
+    desktopManager.gnome.enable = true;
+  };
+
+  programs.dconf.nable = true;
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      gtk-theme = "Adwaita-dark"
+    };
+  };
+}

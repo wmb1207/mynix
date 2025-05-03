@@ -1,0 +1,65 @@
+# === Basic Environment ===
+export EDITOR="emacsclient -c -a emacs"
+export VISUAL="$EDITOR"
+export PAGER="less -R"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# === Prompt (clean + informative) ===
+PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\] \$ '
+
+# === Enable nix-related env ===
+if [ -e /etc/profile.d/nix.sh ]; then
+  source /etc/profile.d/nix.sh
+fi
+
+# === History settings ===
+HISTCONTROL=ignoredups:erasedups
+HISTSIZE=10000
+HISTFILESIZE=20000
+shopt -s histappend
+
+# === fzf integration ===
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# fzf + ripgrep for file search
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+
+# === Aliases ===
+alias ll='ls -lh --color=auto'
+alias la='ls -lah --color=auto'
+alias gs='git status'
+alias gc='git commit'
+alias ga='git add'
+alias gl='git log --oneline --graph --decorate'
+alias em='emacsclient -nw'
+alias e='emacsclient -c -a emacs'
+
+# === Nix shortcuts ===
+alias ns='nix-shell'
+alias nb='nix build'
+alias nr='nixos-rebuild switch --flake .#'
+alias nf='nix flake show'
+alias nh='nix develop'
+
+# === Direnv (optional) ===
+if command -v direnv &> /dev/null; then
+  eval "$(direnv hook bash)"
+fi
+
+# === Starship (optional prompt) ===
+if command -v starship &> /dev/null; then
+  eval "$(starship init bash)"
+fi
+
+# === PATH additions (pipx, go, cargo, etc) ===
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# === Welcome message ===
+if [ -n "$PS1" ]; then
+  echo -e "\n\033[1;36mWelcome, $(whoami)! Emacs is your home.\033[0m\n"
+fi
+
