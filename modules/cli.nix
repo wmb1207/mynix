@@ -1,4 +1,4 @@
-{pkgs}:
+{ pkgs }:
 
 with pkgs; [
   git
@@ -11,4 +11,14 @@ with pkgs; [
   yq
   unzip
   gnumake
+
+  dysk
+  bat
+  tmux
+
+  lf
+  htop
+  gtop
+  neofetch
+  networkmanager
 ]

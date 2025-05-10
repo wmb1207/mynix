@@ -14,7 +14,6 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       baseModules =[
-        ./configuration.nix
         inputs.home-manager.nixosModules.default
       ];
     in {
@@ -25,6 +24,7 @@
         };
         nixos = nixpkgs.lib.nixosSystem {
           modules = baseModules ++ [
+            ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
           ];
   	    };

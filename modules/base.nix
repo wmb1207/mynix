@@ -3,7 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     wget curl bash cmake gnumake git libvterm emacs gcc
-    bspwm sxhkd
+    bspwm sxhkd rsync docker-compose mesa vulkan-tools
   ];
 
   programs.mtr.enable = true;
@@ -11,4 +11,8 @@
     enable = true;
     enableSSHSupport = true;
   };
+
+  services.openssh.enable = true;
+
+  services.xserver.enable = true;
 }

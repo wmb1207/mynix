@@ -1,26 +1,61 @@
-    # launch terminal
-    super + Return
-          ghostty
+# launch terminal
+super + Return
+  ghostty
 
-    # reload sxhkd
-    super + Escape
-        pkill -USR1 -x sxhkd
+super + Escape
+  pkill -USR1 -x sxhkd
 
-    super + alt + c
-        emacsclient -r
+super + alt + e
+      emacs
 
-    # bspwm window movement
-    super + h
-        bspc node -f west
-    super + j
-        bspc node -f south
-    super + k
-        bspc node -f north
-    super + l
-        bspc node -f east
+super + space
+      dmenu_run -fn "tamzen" -nb "#000000" -nf "#A6D3B3" -sb "#5C6D6E" -sf "#FFFFFF"
 
-    # bspwm window resizing
-    super + alt + h
-        bspc node -z left -20 0
-    super + alt + l
-        bspc node -z right 20 0
+super + q
+      bspc node -c
+
+super + b
+   bspc node -f west
+super + n
+   bspc node -f south
+super + p
+   bspc node -f north
+super + f
+   bspc node -f east
+
+# bspwm window resizing
+super + alt + h
+    bspc node -z left -20 0
+super + alt + l
+    bspc node -z right 20 0
+
+# Switch to named desktop (adjust according to your names)
+super + 1
+    bspc desktop -f "Hollow"
+
+super + 2
+    bspc desktop -f "Thorne"
+
+super + 3
+    bspc desktop -f "Grimoire"
+
+super + 4
+    bspc desktop -f "Abyss"
+
+super + 5
+    bspc desktop -f "Nocturne"
+
+super + shift + 1
+    bspc node -d "Hollow"
+
+super + shift + 2
+    bspc node -d "Thorne"
+
+super + shift + 3
+    bspc node -d "Grimoire"
+
+super + shift + 4
+    bspc node -d "Abyss"
+
+super + shift + 5
+    bspc node -d "Nocturne"

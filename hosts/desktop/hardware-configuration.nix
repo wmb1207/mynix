@@ -8,8 +8,8 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "sd_mod" ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
@@ -29,6 +29,18 @@
       fsType = "ext4";
     };
 
+  fileSystems."/home/wmb/d1" =
+    {
+      device = "/dev/disk/by-uuid/69632100-402d-4e75-b8d6-f8cc87c59bd8";
+      fsType = "ext4";
+    };
+
+  fileSystems."/home/wmb/d2" =
+    {
+      device = "/dev/disk/by-uuid/cd1a9cec-acd7-428d-b896-2bf0ed10e4e2";
+      fsType = "ext4";
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/520fabfc-7d27-4ed7-b404-65bf170c522a"; }
     ];
@@ -38,6 +50,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

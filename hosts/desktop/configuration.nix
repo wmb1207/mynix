@@ -2,14 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./modules/desktop-gnome.nix
-      ./modules/devtools.nix
+      ../../modules/base.nix
     ];
 
   # Bootloader.
@@ -55,26 +54,43 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
+
+  # hardware
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+
   security.rtkit.enable = true;
+
   services.pipewire = {
     enable = true;
+    audio.enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
+    jack.enable = false;
   };
+
+
+  boot.extraModprobeConfig = ''
+    options snd_hda_intel index=1 model=auto
+  '';
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = ["nix-command" "flakes"];
+  programs.mtr.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+  
+  # List services that you want to enable:
+  
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+
   virtualisation.docker.enable = true;
   system.stateVersion = "24.11"; # Did you read the comment?
 

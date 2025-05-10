@@ -13,13 +13,20 @@
 (menu-bar-mode 1)
 (scroll-bar-mode -1)
 
+(unless (package-installed-p 'exec-path-from-shell)
+  (package-refresh-contents)
+  (package-install 'exec-path-from-shell))
+
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-(require 'vc-use-package)
+;;(require 'vc-use-package)
 ;; Requires
+
+
+
 (defun requires ()
   
   "Just a little way to define all the requires."
@@ -41,55 +48,7 @@
 ;;   (use-package company
 ;;     :ensure t)
 
-(defvar elpaca-installer-version 0.10)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1 :inherit ignore
-                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (<= emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                  ,@(when-let* ((depth (plist-get order :depth)))
-                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                  ,(plist-get order :repo) ,repo))))
-                  ((zerop (call-process "git" nil buffer t "checkout"
-                                        (or (plist-get order :ref) "--"))))
-                  (emacs (concat invocation-directory invocation-name))
-                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                  ((require 'elpaca))
-                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-
 (defun packages ()
-
-  (use-package modern-tab-bar
-  :ensure (modern-tab-bar :host github :repo "aaronjensen/emacs-modern-tab-bar" :protocol ssh)
-  :init
-  (setq tab-bar-show t
-        tab-bar-new-button nil
-        tab-bar-close-button-show nil)
-
-  (modern-tab-bar-mode))
   ;; (use-package compat
   ;;   :ensure t)
 
@@ -108,18 +67,8 @@
     :ensure t)
   (use-package composer
     :ensure t)
-  ;; (use-package psysh
-  ;;   :ensure t)
-  ;; (use-package php-cs-fixer
-  ;;   :ensure t)
-  ;; END PHP
   (use-package stimmung-themes
     :ensure t)
-
-  ;; (use-package zenburn-theme
-  ;;   :ensure t)
-  ;; (use-package projectile
-  ;;   :ensure t)
 
   (use-package parchment-theme
     :ensure t)
@@ -129,10 +78,10 @@
   
   (use-package eat
     :ensure t)
-  ;; (use-packages rainbow-delimiters
-  ;;   :ensure t)
-  (use-package pg :vc (:fetcher github :repo emarsden/pg-el))
-  (use-package pgmacs :vc (:fetcher github :repo emarsden/pgmacs))
+  (use-package rainbow-delimiters
+    :ensure t)
+  ;; (use-package pg :vc (:fetcher github :repo emarsden/pg-el))
+  ;; (use-package pgmacs :vc (:fetcher github :repo emarsden/pgmacs))
   (use-package prettier
     :ensure t)
   ;; comments
@@ -213,8 +162,6 @@
     (setq completion-cycle-threshold 3))
   (use-package company
     :ensure t)
-  ;; (use-package powerline
-  ;;   :ensure t)
   (use-package eww
     :ensure t)
   (use-package elixir-mode
@@ -402,21 +349,21 @@
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
     
-  (add-to-list 'default-frame-alist '(font . "cherry-12"))
-  (set-frame-font "cherry-12" nil t)
-  (set-face-attribute
-   'default nil
-   :font "cherry"
-   :height 12
-   :weight 'regular)
-
-  ;; (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-12"))
-  ;; (set-frame-font "IBM Plex Mono-12" nil t)
+  ;; (add-to-list 'default-frame-alist '(font . "Tamzen-11"))
+  ;; (set-frame-font "Tamzen-11" nil t)
   ;; (set-face-attribute
   ;;  'default nil
-  ;;  :font "IBM Plex Mono"
-  ;;  :height 12
+  ;;  :font "Tamzen"
+  ;;  :height 11
   ;;  :weight 'regular)
+
+  (add-to-list 'default-frame-alist '(font . "Iosevka Term-11"))
+  (set-frame-font "Iosevka Term-11" nil t)
+  (set-face-attribute
+   'default nil
+   :font "Iosevka Term"
+   :height 11
+   :weight 'regular)
   
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
   (setq-default left-margin-width 0 right-margin-width 0 internal-border-width 0) ; Define new widths.
@@ -604,117 +551,10 @@
 
 
 
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; (when (memq window-system '(mac ns x))
+;;   (exec-path-from-shell-initialize))
 (when (daemonp)
   (exec-path-from-shell-initialize))
-
-(defun databases ()
-       (setq sql-connection-alist
-	     '((messages-qa
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.36.10")
-		(sql-user "OPE_IMMSJ")
-		(sql-password "dgM4YXmtzXZKg")
-		(sql-database "QA_IMMSJ"))
-
-               (messages-dev
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.49.10")
-		(sql-user "OPE_IMMSJ")
-		(sql-password "fbdkSoJbT8qk5")
-		(sql-database "DEV_IMMSJ"))
-	       
-               (messages-local
-		(sql-product 'postgres)
-		(sql-port 5434)
-		(sql-server "localhost")
-		(sql-user "OPE_IMMSJ")
-		(sql-password "fbdkSoJbT8qk5")
-		(sql-database "DEV_IMMSJ"))
-
-               (messages-pp
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.21.10")
-		(sql-user "OPE_IMMSJ")
-		(sql-password "dgM4YXmtzXZKg")
-		(sql-database "PP_IMMSJ"))
-	       
-               (messages-pr
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.5.10")
-		(sql-user "OPE_IMMSJ")
-		(sql-password "FD9r3LefsRu")
-		(sql-database "PR_IMMSJ"))
-
-               (admin-qa
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.36.10")
-		(sql-user "OPE_IMADMIN")
-		(sql-password "8bgSgUouNOQRd")
-		(sql-database "QA_IMADMIN"))
-
-               (admin-dev
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.49.10")
-		(sql-user "OPE_IMADMIN")
-		(sql-password "XGbKsb9Cb8Cj0")
-		(sql-database "DEV_IMADMIN"))
-	       
-               (admin-pp
-		(sql-product 'postgres)
-		(sql-port 5432)
-		(sql-server "100.66.21.10")
-		(sql-user "OPE_IMADMIN")
-		(sql-password "8bgSgUouNOQRd")
-		(sql-database "PP_IMADMIN"))))
-
-       (defun db-messages-qa ()
-	 (interactive)
-	 (db-connect 'postgres 'messages-qa)
-	 (setq sql-password "fbdkSoJbT8qk5"))
-
-       
-       (defun db-messages-dev ()
-	 (interactive)
-	 (db-connect 'postgres 'messages-dev))
-       
-       (defun db-messages-local ()
-	 (interactive)
-	 (db-connect 'postgres 'messages-local))
-
-       (defun db-messages-pp ()
-	 (interactive)
-	 (db-connect 'postgres 'messages-pp))
-
-       (defun db-messages-pr ()
-	 (interactive)
-	 (db-connect 'postgres 'messages-pr))
-
-       (defun db-admin-qa ()
-	 (interactive)
-	 (db-connect 'postgres 'admin-qa))
-
-       (defun db-admin-dev ()
-	 (interactive)
-	 (db-connect 'postgres 'admin-dev))
-
-       (defun db-admin-pp ()
-	 (interactive)
-	 (db-connect 'postgres 'admin-pp))
-       
-       (defun db-connect (product connection)
-	 ;; remember to set the sql-product, otherwise, it will fail for the first time
-	 ;; you call the function
-	 (setq sql-product product)
-	 (sql-connect connection)))
-       
 
 (defun configure ()
   "Execute all the config FNS."
@@ -724,47 +564,46 @@
   (keymaps)
   ;; ;; (company)				;  (bootstrap)
   (theming)
-  (databases)
 
-  (defun start-app ()
-    "List applications in ~/Applications and /Applications, then open the selected one."
-    (interactive)
-    (let* ((app-paths (split-string
-                       (shell-command-to-string
-			"find /Applications ~/Applications \\( -type l -o -type d \\) -name '*.app' -maxdepth 1 2>/dev/null | sort")
-                       "\n" t))
-           (choices (mapcar (lambda (path)
-                              (let ((name (downcase (file-name-base path))))
-				(cons name path)))
-                            app-paths))
-           (selection (completing-read "Launch app: " (mapcar #'car choices))))
-      (when (and selection (not (string-empty-p selection)))
-	(let ((full-path (cdr (assoc selection choices))))
-          (start-process "open-app" nil "open" full-path)))))
+  ;; (defun start-app ()
+  ;;   "List applications in ~/Applications and /Applications, then open the selected one."
+  ;;   (interactive)
+  ;;   (let* ((app-paths (split-string
+  ;;                      (shell-command-to-string
+  ;; 			"find /Applications ~/Applications \\( -type l -o -type d \\) -name '*.app' -maxdepth 1 2>/dev/null | sort")
+  ;;                      "\n" t))
+  ;;          (choices (mapcar (lambda (path)
+  ;;                             (let ((name (downcase (file-name-base path))))
+  ;; 				(cons name path)))
+  ;;                           app-paths))
+  ;;          (selection (completing-read "Launch app: " (mapcar #'car choices))))
+  ;;     (when (and selection (not (string-empty-p selection)))
+  ;; 	(let ((full-path (cdr (assoc selection choices))))
+  ;;         (start-process "open-app" nil "open" full-path)))))
 
-  (defun firefox ()
-    (interactive)
-    (start-process "Firefox" nil "open" "/Users/wmb/Applications/Firefox.app"))
+  ;; (defun firefox ()
+  ;;   (interactive)
+  ;;   (start-process "Firefox" nil "open" "/Users/wmb/Applications/Firefox.app"))
 
-  (defun spotify ()
-    (interactive) 
-    (start-process "Spotify" nil "open" "/Users/wmb/Applications/Spotify.app"))
+  ;; (defun spotify ()
+  ;;   (interactive) 
+  ;;   (start-process "Spotify" nil "open" "/Users/wmb/Applications/Spotify.app"))
 
-  (defun brave ()
-    (interactive)
-    (start-process "Brave" nil "open" "/Applications/Brave Browser.app"))
+  ;; (defun brave ()
+  ;;   (interactive)
+  ;;   (start-process "Brave" nil "open" "/Applications/Brave Browser.app"))
 
-  (defun slack ()
-    (interactive)
-    (start-process "Slack" nil "open" "/Users/wmb/Applications/Slack.app"))
+  ;; (defun slack ()
+  ;;   (interactive)
+  ;;   (start-process "Slack" nil "open" "/Users/wmb/Applications/Slack.app"))
 
-  (defun discord ()
-    (interactive)
-    (start-process "Discord" nil "open" "/Users/wmb/Applications/Discord.app"))
+  ;; (defun discord ()
+  ;;   (interactive)
+  ;;   (start-process "Discord" nil "open" "/Users/wmb/Applications/Discord.app"))
 
-  (defun wpp ()
-    (interactive)
-    (start-process "Discord" nil "open" "/Applications/WhatsApp.app"))
+  ;; (defun wpp ()
+  ;;   (interactive)
+  ;;   (start-process "Discord" nil "open" "/Applications/WhatsApp.app"))
   
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -783,20 +622,12 @@
     (load bootstrap-file nil 'nomessage))
   (straight-use-package '(myron-themes :host github :repo "neeasade/myron-themes" :files ("*.el" "themes/*.el")))
   (straight-use-package '(nano-theme :type git :host github
-                                   :repo "rougier/nano-theme"))
+                                     :repo "rougier/nano-theme"))
   
   (prog-time))
 
 (configure)
 (provide 'init)
-
-(defun dump-rules ()
-  (interactive)
-  (shell-command-to-string
-   "pg_dump -h localhost --port 5434--column-inserts --data-only -U sinacofi --format=tar migration_msg > $(date '+%Y-%m-%d').msg.history.dump.tar"))
-
-
-
 
 (defun git-switch (branch)
   (shell-command (concat "git switch " branch))

@@ -3,7 +3,7 @@
 with pkgs; [
   php84
   nodejs
-  python3
+  python312
   ruby
   go
   elixir
@@ -12,5 +12,4 @@ with pkgs; [
   yarn
   pipx
   hex
-
 ]

@@ -2,56 +2,34 @@
 
 let
   cli = import ./cli.nix { inherit pkgs; };
-  programming-languages = import ./programming-languages.nix { inherit pkgs; };
+  iac = import ./development/infrastructure.nix { inherit pkgs; };
   gui = import ./gui.nix { inherit pkgs; };
+  fonts = import ./fonts.nix { inherit pkgs; };
+  wm-tools = import ./wm-tools.nix { inherit pkgs; };
+  programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
   myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
-    exwm
     use-package
     vterm
   ]);
-
 in
 {
   users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "audio"];
   };
 
-
-  # ✅ System-wide configuration
-  services.xserver.windowManager.bspwm.enable = true;  # ✅ This is correct
-  
+  services.xserver.windowManager.bspwm.enable = true;
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;
-  services.xserver.windowManager.session = [
-    {
-      name = "emacs";
-      start = ''
-        ${myEmacs}/bin/emacs
-      '';
-    }
-  ];
 
-  
-  # ✅ This needs to be outside of `users.users`
   home-manager.users.wmb = { pkgs, ... }: {
     nixpkgs.config.allowUnfree = true;
     home.stateVersion = "24.11";
     programs.bash.enable = true;
 
-    home.packages = cli ++ programming-languages ++ gui ++ [
-      pkgs.awscli
-      pkgs.terraform
-      pkgs.opentofu
-      pkgs.ghostty
-      pkgs.cherry
-      pkgs.xterm
-      pkgs.picom
-      pkgs.feh
-      pkgs.dmenu
-    ];
+    home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools;
 
     programs.emacs.enable = true;
     programs.emacs.package = myEmacs;
@@ -62,18 +40,25 @@ in
 
     programs.home-manager.enable = true;
 
+    xsession.enable = true;
+
     home.file.".emacs.d/init.el".source = ../assets/init.el;
     home.file.".bashrc".source = lib.mkForce ../assets/bashrc;
     home.file.".config/ghostty/config".source = ../assets/ghostty;
-
-    xsession.enable = true;
-
-      # Basic config files
-    home.file.".config/bspwm/bspwmrc".source = ../assets/bspwmrc;
-
-    home.file.".config/sxhkd/sxhkdrc".source = ../assets/skhdrc;
-
-    # Optional: Start Emacsclient or daemon in X session
+    home.file.".config/bspwm/bspwmrc" = {
+      source = ../assets/bspwmrc;
+      executable = true;
+    };
+    home.file.".config/sxhkd/sxhkdrc".source = ../assets/sxhkdrc;
     home.file.".xinitrc".source = ../assets/xinitrc;
+    home.file.".config/polybar/config.ini".source = ../assets/polybar.ini;
+    home.file.".config/polybar/launch.sh" = {
+      source = ../assets/polybar-start.sh;
+      executable = true;
+    };
+    home.file.".lemonbar.sh" = {
+      source = ../assets/lemonbar.sh;
+      executable = true;
+    };
   };
 }

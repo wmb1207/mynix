@@ -7,10 +7,8 @@ xsetroot -solid "#b8e1b2"
 # Start compositor
 picom &
 
-
 emacs --daemon &
 
 # Launch sxhkd for keybindings
 sxhkd &
-
 exec bspwm

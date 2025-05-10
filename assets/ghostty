@@ -34,7 +34,8 @@
 # # part of the value. For example, this will have a value of "#123abc":
 theme = vesper
 background = #000000
-font-family = Cherry
+font-family = Iosevka Term
+window-decoration = none
 #
 # # Empty values are used to reset config keys to default.
 # key =
