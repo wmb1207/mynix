@@ -1,6 +1,6 @@
-{ config, pkgs, lib, ... }:
-
+{ config, pkgs, lib, inputs, ... }:
 let
+  dag = inputs.home-manager.lib.hm.dag;
   cli = import ./cli.nix { inherit pkgs; };
   iac = import ./development/infrastructure.nix { inherit pkgs; };
   gui = import ./gui.nix { inherit pkgs; };
@@ -9,6 +9,7 @@ let
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
   myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
+  lsp-mode
     use-package
     vterm
   ]);
@@ -29,7 +30,11 @@ in
     home.stateVersion = "24.11";
     programs.bash.enable = true;
 
-    home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools;
+    home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools ++ [
+    	pkgs.acpi
+	pkgs.networkmanager
+	pkgs.xorg.xmodmap
+    ];
 
     programs.emacs.enable = true;
     programs.emacs.package = myEmacs;
@@ -42,7 +47,10 @@ in
 
     xsession.enable = true;
 
-    home.file.".emacs.d/init.el".source = ../assets/init.el;
+   # home.file.".emacs.d/init.el".source = ../assets/init.el;
+  home.activation.initEl = dag.entryAfter ["writeBoundary"] ''    	cp ${../assets/init.el} "$HOME/.emacs.d/init.el"
+    '';
+
     home.file.".bashrc".source = lib.mkForce ../assets/bashrc;
     home.file.".config/ghostty/config".source = ../assets/ghostty;
     home.file.".config/bspwm/bspwmrc" = {
