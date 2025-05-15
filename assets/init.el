@@ -121,6 +121,13 @@
     :ensure t)
 
   ;; Enable repeat mode for more ergonomic `dape' use
+  (use-package clojure-mode
+    :ensure t)
+  (use-package inf-clojure
+    :ensure t
+    :hook ((clojure-mode . inf-clojure-minor-mode))
+    :config
+    (setq inf-clojure-program "bb")) ;; for Babashka
   (use-package repeat
     :ensure t
     :config

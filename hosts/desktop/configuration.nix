@@ -49,7 +49,12 @@
     layout = "us";
     variant = "";
   };
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
+  hardware.opengl.driSupport32Bit = true; # For 32 bit applications
   # Enable CUPS to print documents.
   services.printing.enable = true;
 

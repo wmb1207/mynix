@@ -1,6 +1,7 @@
 { pkgs }:
 
 with pkgs; [
+  babashka
   git
   curl
   wget
@@ -21,4 +22,6 @@ with pkgs; [
   gtop
   neofetch
   networkmanager
+
+  postgresql
 ]
