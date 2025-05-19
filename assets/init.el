@@ -2,270 +2,32 @@
 ;;; commentary:
 ;;; Code:
 
-
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
 			 ("org" . "https://orgmode.org/elpa/")))
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
+(require 'packages)
+(install-packages packages)
 
 (setq inhibit-startup-message t)
 (tool-bar-mode 1)
 (menu-bar-mode 1)
 (scroll-bar-mode -1)
-
 (unless (package-installed-p 'exec-path-from-shell)
   (package-refresh-contents)
   (package-install 'exec-path-from-shell))
-
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-;;(require 'vc-use-package)
-;; Requires
-
-
-
-(defun requires ()
-  
-  "Just a little way to define all the requires."
-  (require 'package)
-  (require 'package)
-  (require 'whitespace)
-  (require 'lsp-mode)
-  (require 'treesit))
-
-
-;; (defun prog-pkgs ()
-;;   (use-package dape
-;;     :ensure t)
-;;   (use-package lsp-modej
-;;     :ensure t)
-;;   (use-package emacs
-;;     :init
-;;     (setq completion-cycle-threshold 3))
-;;   (use-package company
-;;     :ensure t)
-
-(defun packages ()
-  ;; (use-package compat
-  ;;   :ensure t)
-
-  ;; (package-refresh-contents)
-  ;; (package-install 'compat)
-  ;; PHP
-  (use-package base16-theme
-    :ensure t)
-  (use-package multi-vterm
-    :ensure t)
-  (use-package exec-path-from-shell
-    :ensure t)
-  (use-package php-mode
-    :ensure t)
-  (use-package php-runtime
-    :ensure t)
-  (use-package composer
-    :ensure t)
-  (use-package stimmung-themes
-    :ensure t)
-
-  (use-package parchment-theme
-    :ensure t)
-
-  (use-package srcery-theme
-    :ensure t)
-  
-  (use-package eat
-    :ensure t)
-  (use-package rainbow-delimiters
-    :ensure t)
-  ;; (use-package pg :vc (:fetcher github :repo emarsden/pg-el))
-  ;; (use-package pgmacs :vc (:fetcher github :repo emarsden/pgmacs))
-  (use-package prettier
-    :ensure t)
-  ;; comments
-  (use-package arjen-grey-theme
-    :ensure t)
-  (use-package dired-sidebar
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar))
-  (use-package pet
-    :ensure t)
-  (use-package solaire-mode
-    :ensure t)
-  (use-package inf-ruby
-    :ensure t)
-  (use-package realgud
-    :ensure t)
-  (use-package editorconfig
-    :ensure t
-    :config (editorconfig-mode +1))
-  (use-package indium
-    :ensure t)
-  (use-package dap-mode
-    :after lsp-mode
-    :commands dap-debug
-    :hook ((python-mode . dap-ui-mode)
-	   (python-mode . dap-mode)))
-  (use-package dape
-    :preface
-    (setq dape-key-prefix "\C-\M-d")
-
-    :config
-    (dape-breakpoint-global-mode)
-    (setq dape-buffer-window-arrangement 'right)
-    (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
-    (setq dape-inlay-hints t)
-    (add-hook 'dape-compile-hook 'kill-buffer)
-    :ensure t)
-
-  ;; Enable repeat mode for more ergonomic `dape' use
-  (use-package clojure-mode
-    :ensure t)
-  (use-package inf-clojure
-    :ensure t
-    :hook ((clojure-mode . inf-clojure-minor-mode))
-    :config
-    (setq inf-clojure-program "bb")) ;; for Babashka
-  (use-package repeat
-    :ensure t
-    :config
-    (repeat-mode))
-  (use-package ef-themes :ensure t)
-  (use-package lsp-mode :ensure t)
-  "Just a little function to install all the packages."
-  (use-package treemacs :ensure t)
-  (use-package go-mode :ensure t)
-  (use-package vterm :ensure t)
-  (use-package ein :ensure t)
-  (use-package ob-restclient :ensure t)
-  (use-package verb :ensure t)
-  (use-package ace-window
-    :ensure t)
-  (use-package typescript-mode
-    :after lsp-mode
-    :mode ("\.ts$")
-    :hook (typescript-mode . lsp-deferred)
-    :ensure t)
-  (use-package dired-subtree
-    :ensure t)
-  (use-package sublime-themes
-    :ensure t)
-
-  (use-package lsp-ui
-    :ensure t)
-  (use-package creamsody-theme :ensure t)
-  (use-package autothemer
-  :ensure t)
-  (use-package load-env-vars
-  :ensure t)
-  (use-package corfu
-    :ensure t
-    :custom
-    (corfu-auto t))
-  (use-package emacs
-    :init
-    (setq completion-cycle-threshold 3))
-  (use-package company
-    :ensure t)
-  (use-package eww
-    :ensure t)
-  (use-package elixir-mode
-    :ensure t)
-  (use-package inf-elixir
-    :ensure t)
-  (use-package python-black
-    :ensure t
-    :after python)
-  (use-package py-isort
-    :ensure t)
-  (use-package lsp-pyright
-    :ensure t
-    :hook (python-mode . (lambda ()
-			   (require 'lsp-pyright)))
-    :init (when (executable-find "python3")
-	    (setq lsp-pyright-python-executable-cmd "python3")))
-  (use-package python-isort
-    :ensure t)
-  (use-package pyvenv
-    :ensure t
-    :config (pyvenv-mode 1))
-  (use-package dockerfile-mode
-    :ensure t)
-  (use-package terraform-mode
-    :ensure t)
-  (use-package org
-    :ensure t)
-  (use-package yaml-mode
-    :ensure t)
-  (use-package magit
-    :ensure t)
-  (use-package exec-path-from-shell
-    :ensure t)
-  (use-package vertico
-    :ensure t)
-
-  (use-package vertico-posframe
-    :ensure t)
-  (use-package consult
-    :ensure t)
-  (use-package flycheck-inline
-    :ensure t)
-  (use-package rjsx-mode
-    :ensure t)
-  (use-package typescript-mode
-    :ensure t)
-  (use-package web-mode
-    :ensure t)
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :ensure t)
-  (use-package neotree
-    :ensure t)
-  (use-package ace-window
-    :ensure t)
-  (use-package flycheck-golangci-lint
-    :ensure t)
-  (use-package ample-theme
-    :ensure t)
-
-
-  ;; Setting up all the packages that I should have for developing with clojure
-  (use-package cider
-    :ensure t)
-  (use-package inf-clojure
-    :ensure t)
-  (use-package clojure-ts-mode
-    :ensure t)
-
-  ;; SCALA TIME
-  (use-package scala-mode
-    :interpreter ("scala" . scala-mode)
-    :ensure t)
-  (use-package sbt-mode
-    :commands sbt-start sbt-command
-    :config
-    ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
-    ;; allows using SPACE when in the minibuffer
-    (substitute-key-definition
-     'minibuffer-complete-word
-     'self-insert-command
-     minibuffer-local-completion-map)
-    ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
-    (setq sbt:program-options '("-Dsbt.supershell=false"))
-    :ensure t)
-  ;; (use-package lsp-metals
-  ;;   :ensure t)
-  (use-package autothemer
-    :ensure t)
-
-  ;; (require 'pgmacs)
-
-  ;; (use-package pgmacs
-  ;;   :ensure t)
-  )
-
+(require 'package)
+(require 'package)
+(require 'whitespace)
+(require 'lsp-mode)
+(require 'treesit)
 
 (defun setqs ()
   "Run all the seq."
@@ -336,11 +98,12 @@
 (defun theming ()
   (set-margins)
   (defun my-open-dired-on-new-frame (frame)
-  "Open Dired in the left sidebar when a new FRAME is created."
-  (select-frame frame)  ;; Ensure we're working on the new frame
-  (dired-sidebar-toggle-sidebar)  ;; Open Dired Sidebar
-  (ibuffer-sidebar-toggle-sidebar))
-
+    (select-frame-set-input-focus frame)
+    (with-selected-frame frame
+      (ignore-errors
+	(dired-sidebar-toggle-sidebar)
+	(ibuffer-sidebar-toggle-sidebar))))
+  
   (add-hook 'after-make-frame-functions 'my-open-dired-on-new-frame)
   (global-set-key (kbd "<escape>") 'keyboard-quit)
   ;;(global-set-key (kbd "<escape>") 'ignore)
@@ -365,7 +128,7 @@
   ;;  :weight 'regular)
 
   (add-to-list 'default-frame-alist '(font . "Iosevka Term-11"))
-  (set-frame-font "Iosevka Term-11" nil t)
+
   (set-face-attribute
    'default nil
    :font "Iosevka Term"
@@ -417,6 +180,15 @@
           (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
           ))
 
+  (when (display-graphic-p)
+    (set-face-background 'fringe "#000000")
+    (set-frame-font "Iosevka Term-11" nil t))
+
+  (set-cursor-color "#a6e3a1")
+  (add-to-list 'default-frame-alist '(cursor-color . "#a6e3a1"))
+  (add-to-list 'default-frame-alist '(mouse-color . "#a6e3a1"))
+  (modify-all-frames-parameters '((mouse-color . "#a6e3a1")))
+
   (custom-set-faces
    ;; All backgrounds black
    '(whitespace-space           ((t (:background "#000000" :foreground "#2e2e2e"))))
@@ -427,9 +199,6 @@
    '(whitespace-indentation     ((t (:background "#000000" :foreground "#3e3e3e"))))
    '(whitespace-empty           ((t (:background "#000000" :foreground "#ff6c6b")))))
 
-
-
-  (set-face-background 'fringe "#000000")
   (set-face-attribute 'line-number nil
                       :background "#000000") ;; optional
   
@@ -445,31 +214,7 @@
 		      :box nil)
 
   (add-to-list 'default-frame-alist '(alpha 100 100))
-  
-  ;; Remove the default mode line at the bottom
-  ;; (setq mode-line-format '("%e" mode-line-front-space mode-line-mule-info
-  ;;                        mode-line-client mode-line-modified mode-line-remote
-  ;;                        mode-line-frame-identification mode-line-buffer-identification
-  ;;                        " " mode-line-position
-  ;;                        (vc-mode vc-mode) " " mode-line-misc-info
-  ;;                        mode-line-end-spaces))
-  
-  ;; ;; Define a custom mode line at the top
-  ;; (defvar my-mode-line-format
-  ;; '(" "
-  ;;   mode-name             ;; Show the mode name
-  ;;   " | "
-  ;;   buffer-file-name      ;; Show the buffer file name
-  ;;   " | "
-  ;;   (:eval (if (buffer-modified-p)
-  ;;              (propertize "Unsaved" 'face '(:foreground "red"))
-  ;;            (propertize "Saved" 'face '(:foreground "green"))))
-  ;;   " | "
-  ;;   (:eval (format-time-string "%Y-%m-%d %H:%M:%S" (current-time)))))  ;; Show current date and time
-
-  ;; (setq-default header-line-format my-mode-line-format)
-
-  ;; (load-theme 'modus-operandi t)
+    ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable t)
   (setq lsp-headerline-breadcrumb-icons-enable 0)
@@ -565,8 +310,6 @@
 
 (defun configure ()
   "Execute all the config FNS."
-  (requires)
-  (packages)
   (setqs)
   (keymaps)
   ;; ;; (company)				;  (bootstrap)
@@ -697,7 +440,6 @@
 
 (setq-default split-height-threshold  4
               split-width-threshold   160) ; the reasonable limit for horizontal splits
-
 
 ;;; init.el ends here
 

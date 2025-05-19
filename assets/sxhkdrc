@@ -9,7 +9,10 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "tamzen" -nb "#000000" -nf "#A6D3B3" -sb "#5C6D6E" -sf "#FFFFFF"
+      dmenu_run -fn "Iosevka Term" -nb "#a6e3a1" -nf "#101010" -sb "#101010" -sf "#FFFFFF"
+
+super + c
+      emacsclient -c 
 
 super + q
       bspc node -c

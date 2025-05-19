@@ -2,7 +2,7 @@
 
 # Set wallpaper
 #feh --bg-scale /path/to/your/wallpaper.jpg
-xsetroot -solid "#b8e1b2"
+xsetroot -solid "#a6e3a1"
 
 # Start compositor
 picom &
