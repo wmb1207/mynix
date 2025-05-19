@@ -1,8 +1,26 @@
 #!/usr/bin/env bb
 
-(ns my-nix
-  (:require [babashka.process :refer [shell check]]
-            [babashka.fs :as fs]))
+;;(ns my-nix
+(require '[babashka.process :refer [shell check]])
+(require '[babashka.fs :as fs])
+
+(def black "#000000")
+(def green "#a6e3a1")
+(def dark-gray "#101010")
+(def white "#ffffff")
+(def font "Iosevka Term")
+(def templates-folder "templates")
+(def assets-folder "assets")
+
+
+(defrecord TemplateField [^String key
+                          ^String value])
+
+(defrecord Template [^String name
+                     ^String output
+                     ^String content
+                     ^clojure.lang.IPersistentCollection fields])
+
 
 (defn ensure-sudo!
   "Prompt for sudo upfront and exit on failure."
@@ -32,21 +50,75 @@
           (println "!! nixos-rebuild failed (exit" exit "):\n" err)
           (System/exit exit))))))
 
+(defn remove-file
+  [file]
+  (if (fs/exists? file)
+    (do
+      (println "Removing the file" (str file))
+      (let [{:keys [exit err]} (shell ["sudo" "rm" "-f" (str file)])]
+        (if (zero? exit)
+          (println "Removed" file)
+          (println "!!Could not remove" file ":" err))))
+    (println "Emacs " file " not found, skipping.")))
+
 (defn remove-init-el
   "Delete the user’s init.el, using sudo if necessary."
   []
-  (let [path (fs/path "/home/wmb/.emacs.d/init.el")]
-    (if (fs/exists? path)
-      (do
-        (println "Removing" path)
-        (let [{:keys [exit err]} (shell ["sudo" "rm" "-f" (str path)])]
-          (if (zero? exit)
-            (println "Removed" path)
-            (println "!!Could not remove" path ":" err))))
-      (println "Emacs init.el not found, skipping."))))
+  (let [paths [(fs/path "/home/wmb/.emacs.d/init.el")
+               (fs/path "/home/wmb/.emacs.d/lisp/packages.el")]]
+    (doseq [file paths]
+      (remove-file file))))
+
+(defn apply-tmpl
+  [tmpl]
+  (spit (:output tmpl)
+        (reduce (fn [acc field]
+                  (str/replace acc (:key field) (:value field)))
+                (:content tmpl)
+                (:fields tmpl))))
+
+(defn apply-tmpls!
+  [tmpls]
+  (try
+    (doseq [tmpl tmpls]
+      (apply-tmpl tmpl))
+    (catch Exception e
+      (println e)
+      (System/exit 3))))
+
+(def polybar
+  (->Template "polybar"
+              (str assets-folder "/polybar.ini")
+              (slurp (str "./" templates-folder "/polybar.ini.tmpl"))
+              [(->TemplateField "{{background}}" green)
+               (->TemplateField "{{foreground}}" dark-gray)
+               (->TemplateField "{{font}}" font)]))
+
+(def bspwmrc
+  (->Template "bspwmrc"
+              (str assets-folder "/bspwmrc")
+              (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
+              [(->TemplateField "{{background}}" (str "\\" green))]))
+
+(def sxhkdrc
+  (->Template "sxhkdrc"
+              (str assets-folder "/sxhkdrc")
+              (slurp (str "./" templates-folder "/sxhkdrc.tmpl"))
+              [(->TemplateField "{{background}}" green)
+               (->TemplateField "{{font}}" font)
+               (->TemplateField "{{selected-foreground}}" white)
+               (->TemplateField "{{foreground}}" dark-gray)]))
+
+(def ghostty
+  (->Template "ghostty"
+              (str assets-folder "/ghostty")
+              (slurp (str "./" templates-folder "/ghostty.tmpl"))
+              [(->TemplateField "{{background}}" black)
+               (->TemplateField "{{font}}" font)]))
 
 (defn main
   [& args]
+  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty])
   (ensure-sudo!)
   (remove-init-el)
   (apply-flake (first args)))

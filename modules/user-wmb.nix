@@ -24,6 +24,9 @@ in
   services.xserver.windowManager.bspwm.enable = true;
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;
+  services.udev.packages = [
+    pkgs.steamPackages.steam
+  ];
 
   home-manager.users.wmb = { pkgs, ... }: {
     nixpkgs.config.allowUnfree = true;
@@ -32,8 +35,8 @@ in
 
     home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools ++ [
     	pkgs.acpi
-	pkgs.networkmanager
-	pkgs.xorg.xmodmap
+	    pkgs.networkmanager
+	    pkgs.xorg.xmodmap
     ];
 
     programs.emacs.enable = true;
@@ -47,8 +50,11 @@ in
 
     xsession.enable = true;
 
-   # home.file.".emacs.d/init.el".source = ../assets/init.el;
-  home.activation.initEl = dag.entryAfter ["writeBoundary"] ''    	cp ${../assets/init.el} "$HOME/.emacs.d/init.el"
+    # home.file.".emacs.d/init.el".source = ../assets/init.el;
+    home.activation.initEl = dag.entryAfter ["writeBoundary"] ''
+      mkdir -p "$HOME/.emacs.d/lisp" &&
+    	cp ${../assets/init.el} "$HOME/.emacs.d/init.el" &&
+      cp ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
     '';
 
     home.file.".bashrc".source = lib.mkForce ../assets/bashrc;
