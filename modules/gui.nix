@@ -1,6 +1,7 @@
 { pkgs }:
 
 with pkgs; [
+  brave
   firefox
   discord
   slack
