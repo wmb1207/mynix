@@ -1,4 +1,4 @@
-#!/bin/sh
+y#!/bin/sh
 
 # Set wallpaper
 #feh --bg-scale /path/to/your/wallpaper.jpg

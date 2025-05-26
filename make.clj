@@ -6,6 +6,7 @@
 
 (def black "#000000")
 (def green "#a6e3a1")
+(def red "#C68689")
 (def dark-gray "#101010")
 (def white "#ffffff")
 (def font "Iosevka Term")
@@ -98,7 +99,8 @@
   (->Template "bspwmrc"
               (str assets-folder "/bspwmrc")
               (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
-              [(->TemplateField "{{background}}" (str "\\" green))]))
+              [(->TemplateField "{{background}}" (str "\\" green))
+               (->TemplateField "{{normal-background}}" (str "\\" red))]))
 
 (def sxhkdrc
   (->Template "sxhkdrc"

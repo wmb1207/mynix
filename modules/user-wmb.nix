@@ -23,6 +23,12 @@ in
 
   services.xserver.windowManager.bspwm.enable = true;
   services.xserver.enable = true;
+  services.xserver.xautolock = {
+    enable = true;
+    time = 10;
+    locker = "${pkgs.xsecurelock}/bin/xsecurelock";
+  };
+  
   services.xserver.displayManager.startx.enable = true;
   services.udev.packages = [
     pkgs.steamPackages.steam
@@ -37,6 +43,8 @@ in
     	pkgs.acpi
 	    pkgs.networkmanager
 	    pkgs.xorg.xmodmap
+      pkgs.xsecurelock
+      pkgs.picom
     ];
 
     programs.emacs.enable = true;
@@ -74,5 +82,7 @@ in
       source = ../assets/lemonbar.sh;
       executable = true;
     };
+    home.file.".config/picom/picom.conf".source = ../assets/picom.conf;
+    home.file.".config/wallpapers/gradient.png".source = ../assets/gradient.png;
   };
 }

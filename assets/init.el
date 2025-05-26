@@ -213,7 +213,10 @@
                       :background "#000000"
 		      :box nil)
 
-  (add-to-list 'default-frame-alist '(alpha 100 100))
+  (when (display-graphic-p)
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90))))
+
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable t)
