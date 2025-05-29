@@ -12,6 +12,7 @@
 (def font "Iosevka Term")
 (def templates-folder "templates")
 (def assets-folder "assets")
+(def transparency "88")
 
 
 (defrecord TemplateField [^String key
@@ -93,6 +94,7 @@
               (slurp (str "./" templates-folder "/polybar.ini.tmpl"))
               [(->TemplateField "{{background}}" green)
                (->TemplateField "{{foreground}}" dark-gray)
+               (->TemplateField "{{focused-background}}" red)
                (->TemplateField "{{font}}" font)]))
 
 (def bspwmrc
@@ -116,11 +118,18 @@
               (str assets-folder "/ghostty")
               (slurp (str "./" templates-folder "/ghostty.tmpl"))
               [(->TemplateField "{{background}}" black)
+               (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
+
+(def emacs
+  (->Template "emacs"
+              (str assets-folder "/init.el")
+              (slurp (str "./" templates-folder "/init.el.tmpl"))
+              [(->TemplateField "{{transparency}}" transparency)]))
 
 (defn main
   [& args]
-  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty])
+  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty emacs])
   (ensure-sudo!)
   (remove-init-el)
   (apply-flake (first args)))

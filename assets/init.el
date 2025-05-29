@@ -195,7 +195,7 @@
    '(whitespace-tab             ((t (:background "#000000" :foreground "#444444"))))
    '(whitespace-trailing        ((t (:background "#000000" :foreground "#ff5555" :weight bold))))
    '(whitespace-line            ((t (:background "#000000" :foreground "#ff79c6"))))
-   '(whitespace-newline         ((t (:background "#000000" :foreground "#5f5f5f"))))
+   '(whitesppace-newline         ((t (:background "#000000" :foreground "#5f5f5f"))))
    '(whitespace-indentation     ((t (:background "#000000" :foreground "#3e3e3e"))))
    '(whitespace-empty           ((t (:background "#000000" :foreground "#ff6c6b")))))
 
@@ -214,8 +214,8 @@
 		      :box nil)
 
   (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-  (add-to-list 'default-frame-alist '(alpha . (90 . 90))))
+  (set-frame-parameter (selected-frame) 'alpha '(88 . 88))
+  (add-to-list 'default-frame-alist '(alpha . (88 . 88))))
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
@@ -315,49 +315,7 @@
   "Execute all the config FNS."
   (setqs)
   (keymaps)
-  ;; ;; (company)				;  (bootstrap)
   (theming)
-
-  ;; (defun start-app ()
-  ;;   "List applications in ~/Applications and /Applications, then open the selected one."
-  ;;   (interactive)
-  ;;   (let* ((app-paths (split-string
-  ;;                      (shell-command-to-string
-  ;; 			"find /Applications ~/Applications \\( -type l -o -type d \\) -name '*.app' -maxdepth 1 2>/dev/null | sort")
-  ;;                      "\n" t))
-  ;;          (choices (mapcar (lambda (path)
-  ;;                             (let ((name (downcase (file-name-base path))))
-  ;; 				(cons name path)))
-  ;;                           app-paths))
-  ;;          (selection (completing-read "Launch app: " (mapcar #'car choices))))
-  ;;     (when (and selection (not (string-empty-p selection)))
-  ;; 	(let ((full-path (cdr (assoc selection choices))))
-  ;;         (start-process "open-app" nil "open" full-path)))))
-
-  ;; (defun firefox ()
-  ;;   (interactive)
-  ;;   (start-process "Firefox" nil "open" "/Users/wmb/Applications/Firefox.app"))
-
-  ;; (defun spotify ()
-  ;;   (interactive) 
-  ;;   (start-process "Spotify" nil "open" "/Users/wmb/Applications/Spotify.app"))
-
-  ;; (defun brave ()
-  ;;   (interactive)
-  ;;   (start-process "Brave" nil "open" "/Applications/Brave Browser.app"))
-
-  ;; (defun slack ()
-  ;;   (interactive)
-  ;;   (start-process "Slack" nil "open" "/Users/wmb/Applications/Slack.app"))
-
-  ;; (defun discord ()
-  ;;   (interactive)
-  ;;   (start-process "Discord" nil "open" "/Users/wmb/Applications/Discord.app"))
-
-  ;; (defun wpp ()
-  ;;   (interactive)
-  ;;   (start-process "Discord" nil "open" "/Applications/WhatsApp.app"))
-  
   (defvar bootstrap-version)
   (let ((bootstrap-file
 	 (expand-file-name
