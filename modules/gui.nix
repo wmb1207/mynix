@@ -11,6 +11,7 @@ with pkgs; [
   pavucontrol
   whatsapp-for-linux
   jetbrains.datagrip
+  jetbrains.goland
 
   flameshot
 
