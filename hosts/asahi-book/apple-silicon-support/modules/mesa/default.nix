@@ -25,7 +25,7 @@
 
   options.hardware.asahi.useExperimentalGPUDriver = lib.mkOption {
     type = lib.types.bool;
-    default = false;
+    default = true;
     description = ''
       Use the experimental Asahi Mesa GPU driver.
 

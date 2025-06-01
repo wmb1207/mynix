@@ -2,6 +2,6 @@
 
 with pkgs; [
   awscli
-  terraform
+  #terraform
   opentofu
 ]

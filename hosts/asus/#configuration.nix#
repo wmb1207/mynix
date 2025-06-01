@@ -8,28 +8,34 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./apple-silicon-support
+      ../../modules/base.nix
     ];
-      nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = false;
-  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
-  services.xserver.videoDrivers = ["asahi"];
-  hardware.opengl.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  #boot.extraModprobeConfig = ''
-  #  options hid_apple iso_layout=0
-  #'';;
+  networking.hostName = "rog"; # Define your hostname.
+  # Pick only one of the below networking options.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.wireless.iwd = {
-    enable = true;
-    settings.General.EnableNetworkConfiguration = true;
-  };
-  networking.hostName = "asahibook";
-    time.timeZone = "America/Argentina/Cordoba";
-      i18n.defaultLocale = "en_US.UTF-8";
+  # Set your time zone.
+  time.timeZone = "America/Argentina/Cordoba";
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Select internationalisation properties.
+  # i18n.defaultLocale = "en_US.UTF-8";
+  # console = {
+  #   font = "Lat2-Terminus16";
+  #   keyMap = "us";
+  #   useXkbConfig = true; # use xkb.options in tty.
+  # };
+
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "es_AR.UTF-8";
@@ -46,53 +52,39 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable libinput driver
-  services.xserver.libinput.enable = true;
-  services.xserver.libinput.tapping = true;
+services.xserver = {
+layout = "us";
+xkbVariant = "dvorak";
+};
+console.useXkbConfig = true;   
 
-  # Add a custom xorg config snippet for palm detection
-  services.xserver.extraConfig = ''
-    Section "InputClass"
-      Identifier "MyTouchpad"
-      MatchIsTouchpad "on"
-      Driver "libinput"
-      Option "PalmDetection" "true"
-      Option "PalmMinWidth" "5"
-      Option "PalmMinZ" "40"
-    EndSection
-  '';
-
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "dvorak";
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia = {
+  	modesetting.enable = true;
+	powerManagement.enable = false;
+	open = false;
+	prime = {
+	      offload.enable = true;
+  	      intelBusId = "PCI:4:0:0";
+	      nvidiaBusId = "PCI:1:0:0";	
+	};
+	nvidiaSettings = true;
+	package = config.boot.kernelPackages.nvidiaPackages.stable; 
   };
-  console.useXkbConfig = true;
-  virtualisation.docker.enable = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  hardware.opengl.enable = true;
 
-  # Set your time zone.
-  # time.timeZone = "Europe/Amsterdam";
+  programs.steam.enable = true;
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  hardware.enableAllFirmware = true;
+  nixpkgs.config.allowUnfree = true;
 
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
+  services.asusd.enable = true;
+  services.supergfxd.enable = true;
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
-
+  
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -101,7 +93,7 @@
   # services.printing.enable = true;
 
   # Enable sound.
-  # services.pulseaudio.enable = true;
+  #  hardware.pulseaudio.enable = true;
   # OR
   # services.pipewire = {
   #   enable = true;
@@ -109,21 +101,29 @@
   # };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  # services.libinput.enable = true;
+  services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  #   packages = with pkgs; [
-  #     tree
-  #   ];
-  # };
+   users.users.wmb = {   
+     isNormalUser = true;
+     extraGroups = [ "wheel" ];
+     packages = with pkgs; [
+       tree
+       git
+       emacs
+       asusctl
+       supergfxctl
+       glxinfo
+       mangohud
+       protonup-qt
+     ];
+   };
 
-  # programs.firefox.enable = true;
+  programs.firefox.enable = true;
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
   # environment.systemPackages = with pkgs; [
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
@@ -140,7 +140,8 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
+  virtualisation.docker.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -170,7 +171,7 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
 

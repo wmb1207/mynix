@@ -45,30 +45,28 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-
-  # Enable libinput driver
+  # In configuration.nix
   services.xserver.libinput.enable = true;
-  services.xserver.libinput.tapping = true;
 
-  # Add a custom xorg config snippet for palm detection
-  services.xserver.extraConfig = ''
-    Section "InputClass"
-      Identifier "MyTouchpad"
-      MatchIsTouchpad "on"
-      Driver "libinput"
-      Option "PalmDetection" "true"
-      Option "PalmMinWidth" "5"
-      Option "PalmMinZ" "40"
+  services.xserver.inputClassSections = [
+  				      ''
+				          Section "InputClass"		
+					        Identifier "touc      MatchIsTouchpad "on"
+      Option "Tapping" "off"
+      Option "NaturalScrolling" "true"
+      Option "AccelProfile" "adaptive"
     EndSection
-  '';
+  ''
+];
 
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "dvorak";
-  };
-  console.useXkbConfig = true;
+services.xserver = {
+layout = "us";
+xkbVariant = "dvorak";
+};
+console.useXkbConfig = true;
   virtualisation.docker.enable = true;
 
+  
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.

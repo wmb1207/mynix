@@ -1,9 +1,9 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, inputs, system, ... }:
 let
   dag = inputs.home-manager.lib.hm.dag;
   cli = import ./cli.nix { inherit pkgs; };
   iac = import ./development/infrastructure.nix { inherit pkgs; };
-  gui = import ./gui.nix { inherit pkgs; };
+  gui = import ./gui.nix { inherit pkgs; inherit system; };
   fonts = import ./fonts.nix { inherit pkgs; };
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
@@ -30,9 +30,14 @@ in
   };
   
   services.xserver.displayManager.startx.enable = true;
-  services.udev.packages = [
-    pkgs.steamPackages.steam
-  ];
+  services.udev.packages = if lib.hasAttr "steamPackages" pkgs then
+    lib.optional (!builtins.elem system [ "aarch64-linux" ]) pkgs.steamPackages.steam
+                           else
+                             [];
+
+#  services.udev.packages = [
+#    pkgs.steamPackages.steam
+#  ];
 
   home-manager.users.wmb = { pkgs, ... }: {
     nixpkgs.config.allowUnfree = true;
