@@ -13,7 +13,7 @@ with pkgs; [
   yq
   unzip
   gnumake
-  xclip
+  xclipar
 
   dysk
   bat

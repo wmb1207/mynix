@@ -46,7 +46,11 @@
 
         asahibook = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
-          pkgs = nixpkgs.legacyPackages.aarch64-linux;
+          pkgs = import nixpkgs {
+            system = "aarch64-linux";
+            config.allowUnfree = true;
+            #nixpkgs.legacyPackages.aarch64-linux;
+          };
           modules = baseModules ++ [
             ./hosts/asahi-book/configuration.nix
             ./modules/user-wmb.nix

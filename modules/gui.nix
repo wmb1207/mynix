@@ -9,6 +9,7 @@ let
     ghostty
     xterm
     pavucontrol
+    postman
   ];
 
   x86_64Packages = with pkgs; [
@@ -16,7 +17,6 @@ let
     spotify
     slack
     steam
-    pavucontrol
     whatsapp-for-linux
     jetbrains.datagrip
     jetbrains.goland  # note spelling fix from golannd

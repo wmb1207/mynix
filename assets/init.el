@@ -165,6 +165,7 @@
   ;;(load-theme 'ample-light t)
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
+  ;;(load-theme 'modus-vivendi t)
 
   (set-face-background 'default "#000000")
   (global-whitespace-mode 1)

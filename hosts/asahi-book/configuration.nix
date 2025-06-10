@@ -10,7 +10,8 @@
       ./hardware-configuration.nix
       ./apple-silicon-support
     ];
-      nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  #nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -57,8 +58,9 @@
       MatchIsTouchpad "on"
       Driver "libinput"
       Option "PalmDetection" "true"
-      Option "PalmMinWidth" "5"
-      Option "PalmMinZ" "40"
+      Option "PalmMinWidth" "10"
+      Option "PalmMinZ" "50"
+      Option "Tapping" "false"
     EndSection
   '';
 
@@ -75,7 +77,14 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
-
+  services.blueman.enable = true;
+  services.pipewire = {
+    enable = true;
+    audio.enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+    wireplumber.enable = true;
+  };
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
