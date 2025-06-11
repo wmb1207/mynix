@@ -70,9 +70,9 @@
   (keymap-global-set  "C-x v t" 'multi-vterm)
   (keymap-global-set "C-c w e" 'enlarge-current-window)
   (keymap-global-set "C-c w d" 'shrink-current-window)
-  (keymap-global-set  "C-x f" 'consult-ripgrep)
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+  (keymap-global-set  "C-x f" 'consult-ripgrep))
+;;  (with-eval-after-load 'org
+;;    (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
 ;; End keybindings
 
 (defun bootstrap ()
@@ -165,6 +165,7 @@
   ;;(load-theme 'ample-light t)
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
+  ;;(load-theme 'modus-vivendi t)
 
   (set-face-background 'default "#000000")
   (global-whitespace-mode 1)

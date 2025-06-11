@@ -127,12 +127,21 @@
       (error "Each element must be a plist containing :package key, but got: %S" elem))))
 
 (defun install-packages (packages)
-  (valid-packages? packages)
+  "Install/load packages using `use-package` with automatic :ensure t.
+PACKAGES is a list of plists with a :package key naming the package symbol,
+plus other use-package keywords.
+
+Example element:
+  (:package magit :bind (\"C-x g\" . magit-status))
+
+This function adds `:ensure t` automatically."
   (dolist (pkg packages)
     (let* ((pkg-name (plist-get pkg :package))
-           (args (plist-remove-key pkg :package))
-           (form (cons 'use-package (cons pkg-name args))))
-      (message "Installing / Loading %s..." pkg-name)
+           (orig-args (plist-remove-key pkg :package))
+           ;; Insert :ensure t forcibly, overriding any existing :ensure
+           (args (plist-put orig-args :ensure t))
+           (form (append (list 'use-package pkg-name) args)))
+      (message "Installing/loading package: %s" pkg-name)
       (eval form))))
 
 (provide 'packages)

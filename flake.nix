@@ -1,3 +1,4 @@
+
 {
   description = "wmb NIX setup";
 
@@ -9,37 +10,53 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: 
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
       baseModules = [
         inputs.home-manager.nixosModules.default
       ];
     in {
       nixosConfigurations = {
         default = nixpkgs.lib.nixosSystem {
-          system = system;
+          system = "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules;
         };
+
         nixos = nixpkgs.lib.nixosSystem {
-          system = system;
+          system = "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
           ];
-          # Pass `inputs` directly to the module
-          specialArgs = { inherit inputs; }; 
+          specialArgs = {          system = "x86_64-linux"; inherit inputs; };
         };
+
         rog = nixpkgs.lib.nixosSystem {
-          system = system;
+          system = "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix
-	    ./modules/laptop-keyboard.nix
+            ./modules/laptop-keyboard.nix
           ];
-          # Pass `inputs` directly to the module
-          specialArgs = { inherit inputs; };
+          specialArgs = {          system = "x86_64-linux"; inherit inputs; };
+        };
+
+        asahibook = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          pkgs = import nixpkgs {
+            system = "aarch64-linux";
+            config.allowUnfree = true;
+            #nixpkgs.legacyPackages.aarch64-linux;
+          };
+          modules = baseModules ++ [
+            ./hosts/asahi-book/configuration.nix
+            ./modules/user-wmb.nix
+            ./modules/laptop-keyboard.nix
+          ];
+          specialArgs = {          system = "aarch64-linux"; inherit inputs; };
         };
       };
     };

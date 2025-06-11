@@ -1,6 +1,7 @@
 { pkgs }:
 
 with pkgs; [
+  docker-compose
   babashka
   git
   curl

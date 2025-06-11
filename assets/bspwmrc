@@ -1,4 +1,9 @@
 #!/bin/sh
+#xrandr --output eDP-1 --scale-from 2016x1260
+
+if [ "$(hostname)" = 'asahibook' ]; then
+    xrandr --output eDP-1 --dpi 144
+fi;
 
 bspc monitor -d Hollow Thorne Grimoire Abyss Nocturne
 
@@ -15,10 +20,9 @@ killall -q polybar
 
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Launch the bar
 polybar top &
 picom --config ~/.config/picom/picom.conf &
-xsetroot -solid \#a6e3a1
 
-feh --bg-scale ~/.config/wallpapers/gradient.png
+feh --bg-scale ~/.config/wallpapers/gradient.png &
 
+emacs
