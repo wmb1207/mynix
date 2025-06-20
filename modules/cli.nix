@@ -2,6 +2,7 @@
 
 with pkgs; [
   docker-compose
+  direnv
   babashka
   git
   curl
