@@ -25,7 +25,11 @@
 
         nixos = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+            #legacyPackages.x86_64-linhux;
+          };
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
