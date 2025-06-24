@@ -1,3 +1,4 @@
+
 {
   description = "wmb NIX setup";
 
@@ -46,23 +47,6 @@
           ];
           specialArgs = {          system = "x86_64-linux"; inherit inputs; };
         };
-
-        latitude = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-
-			pkgs = import nixpkgs {
-            	    system = "x86_64-linux";
-            config.allowUnfree = true;
-            #legacyPackages.x86_64-linhux;
-          };
-          modules = baseModules ++ [
-            ./hosts/latitude/configuration.nix
-            ./modules/user-wmb.nix
-            ./modules/laptop-keyboard.nix
-          ];
-          specialArgs = {          system = "x86_64-linux"; inherit inputs; };
-        };
-
 
         asahibook = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
