@@ -45,10 +45,6 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -84,17 +80,23 @@
   users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
+     packages = with pkgs; [
+       tree
+       git
+       emacs
+       asusctl
+       supergfxctl
+       glxinfo
+       mangohud
+       protonup-qt
+     ];
   };
 
   # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -122,6 +124,8 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
   nix.settings.experimental-features = ["nix-command" "flakes"];
+  services.openssh.enable = true;
+  virtualisation.docker.enable = true;
 
 
 
