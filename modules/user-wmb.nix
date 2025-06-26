@@ -50,6 +50,7 @@ in
 	    pkgs.xorg.xmodmap
       pkgs.xsecurelock
       pkgs.picom
+      pkgs.typescript
     ];
 
     programs.emacs.enable = true;

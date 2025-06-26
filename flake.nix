@@ -38,7 +38,12 @@
 
         rog = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	  pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+            #nixpkgs.legacyPackages.aarch64-linux;
+          };
+	  
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix

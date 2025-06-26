@@ -1,0 +1,25 @@
+----- Error --------------------------------------------------------------------
+Type:     java.lang.NullPointerException
+Location: /home/wmb/dev/nix/mynix/make.clj:28:13
+
+----- Context ------------------------------------------------------------------
+24:                    (println "❌ Exception during process invocation:" (.getMessage e))
+25:                    nil))]
+26:     (if (map? result)
+27:       (let [{:keys [exit out err]} result]
+28:         (if (zero? exit)
+                ^--- 
+29:           (println "✅ Flake applied on" host "\n" out)
+30:           (do
+31:             (println "❌ nixos-rebuild failed (exit" exit "):\n" err)
+32:             (System/exit exit))))
+33:       (do
+
+----- Stack trace --------------------------------------------------------------
+clojure.core/zero? - <built-in>
+my-nix/apply-flake - /home/wmb/dev/nix/mynix/make.clj:28:13
+my-nix/apply-flake - /home/wmb/dev/nix/mynix/make.clj:15:1
+my-nix/main        - /home/wmb/dev/nix/mynix/make.clj:57:3
+my-nix/main        - /home/wmb/dev/nix/mynix/make.clj:51:1
+my-nix             - /home/wmb/dev/nix/mynix/make.clj:60:1
+

@@ -1,0 +1,54 @@
+#!/usr/bin/env bb
+
+(ns my-nix
+  (:require [babashka.process :refer [shell check]]
+            [babashka.fs :as fs]))
+
+(defn ensure-sudo!
+  "Prompt for sudo upfront and exit on failure."
+  []
+  (try
+    (check (shell ["sudo" "-v"]))
+    (println "Sudo authenticated.")
+    (catch Exception _
+      (println "!! Failed to authenticate sudo.")
+      (System/exit 1))))
+
+(defn apply-flake
+  "Run `nixos-rebuild switch --flake .#host` on the given host via sudo,
+   using `shell` so we always get a proper {:exit :out :err} map."
+  [host]
+  (let [cmd ["sudo" "nixos-rebuild" "switch" "--flake" (str ".#" host)]
+        result (try
+                 (println "Executing " cmd)
+                 (shell cmd) ""
+                 (catch Exception e
+                   (println "!! Exception during shell invocation:" (.getMessage e))
+                   {:exit 1 :out "" :err (.getMessage e)}))]
+    (let [{:keys [exit out err]} result]
+      (if (zero? exit)
+        (println "Flake applied on" host "\n" out)
+        (do
+          (println "!! nixos-rebuild failed (exit" exit "):\n" err)
+          (System/exit exit))))))
+
+(defn remove-init-el
+  "Delete the user’s init.el, using sudo if necessary."
+  []
+  (let [path (fs/path "/home/wmb/.emacs.d/init.el")]
+    (if (fs/exists? path)
+      (do
+        (println "Removing" path)
+        (let [{:keys [exit err]} (shell ["sudo" "rm" "-f" (str path)])]
+          (if (zero? exit)
+            (println "Removed" path)
+            (println "!!Could not remove" path ":" err))))
+      (println "Emacs init.el not found, skipping."))))
+
+(defn main
+  [& args]
+  (ensure-sudo!)
+  (remove-init-el)
+  (apply-flake (first args)))
+
+(apply main *command-line-args*)

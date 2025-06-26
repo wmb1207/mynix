@@ -77,7 +77,6 @@ console.useXkbConfig = true;
   programs.steam.enable = true;
 
   hardware.enableAllFirmware = true;
-  nixpkgs.config.allowUnfree = true;
 
   services.asusd.enable = true;
   services.supergfxd.enable = true;
