@@ -125,7 +125,7 @@
   (->Template "dunstrc"
               (str assets-folder "/dunstrc")
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
-              [(->TemplateField "{{background}}" black)
+              [(->TemplateField "{{black}}" black)
                (->TemplateField "{{green}}" green)
                (->TemplateField "{{red}}" red)
                (->TemplateField "{{white}}" white)

@@ -21,6 +21,7 @@ in
     extraGroups = [ "networkmanager" "wheel" "docker" "audio"];
   };
 
+  services.cloudflare-warp.enable = true;
   services.xserver.windowManager.bspwm.enable = true;
   services.xserver.enable = true;
   services.xserver.xautolock = {
@@ -45,6 +46,7 @@ in
     programs.bash.enable = true;
 
     home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools ++ [
+      pkgs.cloudflare-warp
     	pkgs.acpi
 	    pkgs.networkmanager
 	    pkgs.xorg.xmodmap
@@ -90,6 +92,8 @@ in
     };
     home.file.".config/picom/picom.conf".source = ../assets/picom.conf;
     home.file.".config/wallpapers/gradient.png".source = ../assets/gradient.png;
+    home.file.".config/wallpapers/galaxy-plant.jpeg".source = ../assets/galaxy-plant.jpeg;
     home.file.".config/dunst/dunstrc".source = ../assets/dunstrc;
+    home.file.".bin/battery.sh".source = ../assets/battery.sh;
   };
 }

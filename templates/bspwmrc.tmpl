@@ -36,7 +36,9 @@ bspc rule -a Ghostty desktop=^2
 # eww open bar
 
 picom --config ~/.config/picom/picom.conf &
-
-feh --bg-scale ~/.config/wallpapers/gradient.png &
+dunst --config ~/.config/dunst/dunstrc &
+#feh --bg-scale ~/.config/wallpapers/gradient.png &
+feh --bg-scale ~/.config/wallpapers/galaxy-plant.jpeg &
+bash ~/.bin/battery.sh --daemon &
 
 emacs

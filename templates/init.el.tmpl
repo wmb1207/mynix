@@ -11,6 +11,7 @@
 (require 'packages)
 (install-packages packages)
 
+
 (setq inhibit-startup-message t)
 (tool-bar-mode 1)
 (menu-bar-mode 1)
@@ -314,6 +315,12 @@
 
 (defun configure ()
   "Execute all the config FNS."
+  ;; Display time in mode line
+(display-time-mode 1)
+
+;; Optional: customize the time format
+(setq display-time-format "%H:%M %d/%m/%Y")
+(setq display-time-interval 60) ; Update every 60 seconds
   (setqs)
   (keymaps)
   (theming)

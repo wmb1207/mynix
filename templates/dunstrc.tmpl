@@ -1,29 +1,27 @@
 [global]
-    # Font and transparency
-    font = {{font}} 15
-
-[frame]
-    # Frame border
-    width = 2
-    color = {{black}}
+    font = "{{font}} 13"
+    separator_color = "#101010"
+    horizontal_padding = 0
+    padding = 0
+    frame_width = 5
+    gap_size = 0
+    origin = top-center
+    alignment = center
 
 [urgency_low]
-    background = {{black}}  # black with transparency
-    foreground = {{green}}   # green
+    background = "{{black}}"
+    foreground = "{{green}}"
+    frame_color = "{{black}}"
     timeout = 10
-    frame_color = #000000
-    separator_color = #101010
 
 [urgency_normal]
-    background = {{black}}
-    foreground = {{white}}    # white
+    background = "{{black}}"
+    foreground = "{{white}}"
+    frame_color = "{{green}}"
     timeout = 10
-    frame_color = {{green}}   # green border
-    separator_color = #101010
 
 [urgency_critical]
-    background = {{black}}
-    foreground = {{red}}   # red
-    timeout = 0             # sticky until dismissed
-    frame_color = #C68689
-    separator_color = #C68689
+    background = "{{black}}"
+    foreground = "{{red}}"
+    frame_color = "{{red}}"
+    timeout = 0
