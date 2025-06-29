@@ -1,5 +1,8 @@
 [global]
     font = "{{font}} 13"
+    background = "{{black}}"
+    foreground = "{{green}}"
+    frame_color = "{{black}}"
     separator_color = "#101010"
     horizontal_padding = 0
     padding = 0
@@ -25,3 +28,21 @@
     foreground = "{{red}}"
     frame_color = "{{red}}"
     timeout = 0
+
+[spotify]
+    appname = "Spotify"
+    background = "{{black}}"
+    foreground = "{{green}}"
+    frame_color = "{{green}}"
+    timeout = 5
+    format = "<b>%s</b>\n%b"
+    alignment = center
+    word_wrap = yes
+    
+# Alternative rule if Spotify uses different app names
+[spotify_alt]
+    desktop_entry = "spotify"
+    background = "{{black}}"
+    foreground = "{{green}}"
+    frame_color = "{{green}}"
+    timeout = 5

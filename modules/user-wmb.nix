@@ -93,6 +93,11 @@ in
     home.file.".config/picom/picom.conf".source = ../assets/picom.conf;
     home.file.".config/wallpapers/gradient.png".source = ../assets/gradient.png;
     home.file.".config/wallpapers/galaxy-plant.jpeg".source = ../assets/galaxy-plant.jpeg;
+    home.file.".config/wallpapers/wallpaper-1.jpg".source = ../assets/wallpaper-1.jpg;
+    home.file.".config/wallpapers/wallpaper-2.jpg".source = ../assets/wallpaper-2.jpg;
+    home.file.".config/wallpapers/wallpaper-3.jpg".source = ../assets/wallpaper-3.jpg;
+    home.file.".config/wallpapers/wallpaper-4.jpg".source = ../assets/wallpaper-4.jpg;
+    home.file.".config/wallpapers/wallpaper-5.jpg".source = ../assets/wallpaper-5.jpg;
     home.file.".config/dunst/dunstrc".source = ../assets/dunstrc;
     home.file.".bin/battery.sh".source = ../assets/battery.sh;
   };
