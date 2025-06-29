@@ -216,8 +216,8 @@
 		      :box nil)
 
   (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(88 . 88))
-  (add-to-list 'default-frame-alist '(alpha . (88 . 88))))
+  (set-frame-parameter (selected-frame) 'alpha '(80 . 80))
+  (add-to-list 'default-frame-alist '(alpha . (80 . 80))))
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)

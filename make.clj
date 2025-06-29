@@ -12,7 +12,7 @@
 (def font "Iosevka Term")
 (def templates-folder "templates")
 (def assets-folder "assets")
-(def transparency "88")
+(def transparency "80")
 
 
 (defrecord TemplateField [^String key
