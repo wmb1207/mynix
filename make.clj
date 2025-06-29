@@ -127,6 +127,12 @@
               (slurp (str "./" templates-folder "/init.el.tmpl"))
               [(->TemplateField "{{transparency}}" transparency)]))
 
+;; (def eww
+;;   (->Template "eww"
+;;               (str assets-folder "/eww.scss")
+;;               (slurp (str "./" template-folder "/eww.scss"))
+;;               []))
+
 (defn main
   [& args]
   (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty emacs])

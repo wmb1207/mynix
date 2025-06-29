@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../modules/base.nix
     ];
 
   # Bootloader.
@@ -51,6 +52,12 @@
     variant = "dvorak";
   };
 
+  services.xserver.libinput.enable = true;
+
+  services.xserver.libinput.touchpad = {
+    tapping = false;
+  };
+
   # Configure console keymap
   console.keyMap = "dvorak";
 
@@ -59,6 +66,8 @@
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -102,7 +111,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    #  wget
+    ipu6-camera-bins
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -136,5 +146,63 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
+  # Intel GPU support
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver       # New VAAPI driver for Intel (replaces old iHD/i965)
+      vaapiVdpau               # Needed for apps using VDPAU
+      libvdpau-va-gl
+      vulkan-loader
+      vulkan-tools
+      vulkan-validation-layers
+    ];
+  };
+
+  # Firmware updates (for GPU + CPU)
+  hardware.cpu.intel.updateMicrocode = true;
+  hardware.enableRedistributableFirmware = true;
+  hardware.enableAllFirmware = true;
+
+
+  # Power management
+  powerManagement.enable = true;
+
+  # TLP for laptop power tuning
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      START_CHARGE_THRESH_BAT0 = 40;
+      STOP_CHARGE_THRESH_BAT0 = 80;
+    };
+  };
+
+  # Disable power-profiles-daemon (conflicts with TLP)
+  services.power-profiles-daemon.enable = false;
+
+  # Optional: auto power tuning at boot
+  powerManagement.powertop.enable = true;
+
+  # Optional: Better suspend/hibernate behavior
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchDocked = "ignore";
+    extraConfig = ''
+      HandlePowerKey=suspend
+    '';
+  };
+
+  # Optional: Environment variable fix for Wayland compositors with Intel GPUs
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1"; # Fix cursor bugs on some systems
+  };
+
+  # If you use X11 (less recommended with Intel Arc), add:
+  # services.xserver.deviceSection = ''
+  #   Option "TearFree" "true"
+  # '';
 
 }

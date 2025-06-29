@@ -7,4 +7,5 @@ with pkgs; [
   feh
   dmenu
   polybar
+  eww
 ]

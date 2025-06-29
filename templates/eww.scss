@@ -1,0 +1,53 @@
+// Base Colors
+$background: #a6e3a1;
+$foreground: #101010;
+$focused-background: #C68689;
+$urgent: #ff0000;
+$empty: #555555;
+
+// Font
+* {
+  font-family: "Iosevka Term";
+  font-size: 13px;
+  color: $foreground;
+}
+
+// Main bar container
+.bar {
+  background-color: $background;
+  padding: 5px;
+  min-width: 30px;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Each module block
+.module {
+  background-color: $background;
+  color: $foreground;
+  margin: 5px 0;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+// bspwm states
+.bspwm-empty {
+  color: $empty;
+}
+
+.bspwm-occupied {
+  color: $foreground;
+}
+
+.bspwm-focused {
+  background-color: $focused-background;
+  color: $foreground;
+}
+
+.bspwm-urgent {
+  color: $urgent;
+}

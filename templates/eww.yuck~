@@ -1,0 +1,42 @@
+(defwidget bar []
+  (box :orientation "vertical"
+       :spacing 10
+       :halign "center"
+       :valign "center"
+       :class "bar"
+       (bspwm)
+       (date-time)
+       (memory)
+       (cpu)
+       (disk-root)
+       (disk-home)
+       (volume)
+       (battery)
+       (wifi)))
+
+(defwidget bspwm []
+  (label :text "BSPWM" :class "module"))
+
+(defwidget date-time []
+  (label :text "Date: {date} Time: {time}" :class "module"))
+
+(defwidget memory []
+  (label :text "RAM: {mem_used} / {mem_total}" :class "module"))
+
+(defwidget cpu []
+  (label :text "CPU: {cpu}" :class "module"))
+
+(defwidget disk-root []
+  (label :text "ROOT: {root_used} / {root_total}" :class "module"))
+
+(defwidget disk-home []
+  (label :text "HOME: {home_used} / {home_total}" :class "module"))
+
+(defwidget volume []
+  (label :text "Vol: {volume}" :class "module"))
+
+(defwidget battery []
+  (label :text "Battery: {battery}" :class "module"))
+
+(defwidget wifi []
+  (label :text "Wi-Fi: {ssid}" :class "module"))

@@ -1,18 +1,10 @@
 [bar/top]
-width = 30
-height = 100%
-offset-x = 0
+width = 100%
+height = 28
 offset-y = 0
-bottom = false
-
-
-# [bar/top]
-# width = 100%
-# height = 28
-# offset-y = 0
-# background = {{background}}
-# foreground = {{foreground}}
-# border-size = 0
+background = {{background}}
+foreground = {{foreground}}
+border-size = 0
 
 padding-left = 0
 padding-right = 0
