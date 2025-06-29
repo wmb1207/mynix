@@ -121,6 +121,17 @@
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 
+(def dunstrc
+  (->Template "dunstrc"
+              (str assets-folder "/dunstrc")
+              (slurp (str "./" templates-folder "/dunstrc.tmpl"))
+              [(->TemplateField "{{background}}" black)
+               (->TemplateField "{{green}}" green)
+               (->TemplateField "{{red}}" red)
+               (->TemplateField "{{white}}" white)
+               (->TemplateField "{{transparency}}" transparency)
+               (->TemplateField "{{font}}" font)]))
+
 (def emacs
   (->Template "emacs"
               (str assets-folder "/init.el")
@@ -135,7 +146,7 @@
 
 (defn main
   [& args]
-  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty emacs])
+  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty emacs dunstrc])
   (ensure-sudo!)
   (remove-init-el)
   (apply-flake (first args)))

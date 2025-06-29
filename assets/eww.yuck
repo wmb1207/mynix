@@ -14,10 +14,8 @@
        (wifi)))
 
 (defwidget bspwm []
-  ;; You can dynamically map your workspace state here.
   (box :orientation "vertical"
        :spacing 5
-       ;; Ideally, populate dynamically based on state
        (label :text " 1 " :class "bspwm-focused")
        (label :text " 2 " :class "bspwm-occupied")
        (label :text " 3 " :class "bspwm-empty")
@@ -46,3 +44,13 @@
 
 (defwidget wifi []
   (label :text "Wi-Fi: {ssid}" :class "module"))
+
+(defwindow bar
+  :monitor 0
+  :geometry (geometry :x "0px" :y "0px" :width "30px" :height "100%")
+  :anchor "left center"
+  :stacking "bottom"
+  :exclusive true
+  :windowtype "dock"
+  :focusable false
+  (bar))

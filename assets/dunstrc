@@ -1,0 +1,29 @@
+[global]
+    # Font and transparency
+    font = Iosevka Term 15
+
+[frame]
+    # Frame border
+    width = 2
+    color = {{black}}
+
+[urgency_low]
+    background = {{black}}  # black with transparency
+    foreground = #a6e3a1   # green
+    timeout = 10
+    frame_color = #000000
+    separator_color = #101010
+
+[urgency_normal]
+    background = {{black}}
+    foreground = #ffffff    # white
+    timeout = 10
+    frame_color = #a6e3a1   # green border
+    separator_color = #101010
+
+[urgency_critical]
+    background = {{black}}
+    foreground = #C68689   # red
+    timeout = 0             # sticky until dismissed
+    frame_color = #C68689
+    separator_color = #C68689

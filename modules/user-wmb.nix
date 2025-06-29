@@ -90,8 +90,6 @@ in
     };
     home.file.".config/picom/picom.conf".source = ../assets/picom.conf;
     home.file.".config/wallpapers/gradient.png".source = ../assets/gradient.png;
-    home.file.".config/eww/eww.yuck".source = ../assets/eww.yuck;
-    home.file.".config/eww/eww.scss".source = ../assets/eww.scss;
-    home.file.".config/eww/scripts/update.sh".source = ../assets/eww_update.sh;
+    home.file.".config/dunst/dunstrc".source = ../assets/dunstrc;
   };
 }
