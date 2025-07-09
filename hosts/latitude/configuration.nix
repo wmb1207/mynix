@@ -16,6 +16,15 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
+  networking.extraHosts =
+  ''
+    100.69.24.180    admin_mensajeria_test.sinacofi.cl
+    100.69.24.180    mensajeria_test.sinacofi.cl
+    #RB OCI
+    100.66.15.24	C1PROW19PRB01
+    #DEV
+    100.66.51.207	C1DVUA1JB01.adb.sa-santiago-1.oraclecloud.com
+  '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -113,6 +122,8 @@
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
     ipu6-camera-bins
+    cpupower-gui
+    powertop
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -166,45 +177,91 @@
   hardware.enableAllFirmware = true;
 
 
+
   # Power management
   powerManagement.enable = true;
-
+  
   # TLP for laptop power tuning
   services.tlp = {
     enable = true;
     settings = {
+      # CPU Performance settings
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_MIN_FREQ_ON_AC = "2.0GHz"; # or 2.4GHz, depending on your CPU
-      CPU_SCALING_MAX_FREQ_ON_AC = "4.8GHz";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+    
+      # Remove specific frequency limits - let the CPU decide
+      # CPU_SCALING_MIN_FREQ_ON_AC = "2.0GHz";
+      # CPU_SCALING_MAX_FREQ_ON_AC = "4.8GHz";
+    
+      # CPU Energy Performance Preference (Intel)
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      
+      # CPU Boost settings (Intel)
+      CPU_BOOST_ON_AC = 1;
+      CPU_BOOST_ON_BAT = 0;
+      
+      # CPU HWP (Hardware P-States) settings for Intel
+      CPU_HWP_DYN_BOOST_ON_AC = 1;
+      CPU_HWP_DYN_BOOST_ON_BAT = 0;
+      
+      # Platform Profile (if supported)
+      PLATFORM_PROFILE_ON_AC = "performance";
+      PLATFORM_PROFILE_ON_BAT = "low-power";
+      
+      # Battery charge thresholds
       START_CHARGE_THRESH_BAT0 = 40;
       STOP_CHARGE_THRESH_BAT0 = 80;
+      
+      # Runtime PM settings
+      RUNTIME_PM_ON_AC = "auto";
+      RUNTIME_PM_ON_BAT = "auto";
+      
+      # USB settings
+      USB_AUTOSUSPEND = 0;  # Disable USB autosuspend on AC
+      
+      # WiFi power saving
+      WIFI_PWR_ON_AC = "off";
+      WIFI_PWR_ON_BAT = "on";
+      
+      # Sound card power saving
+      SOUND_POWER_SAVE_ON_AC = 0;
+      SOUND_POWER_SAVE_ON_BAT = 1;
     };
   };
 
-  # Disable power-profiles-daemon (conflicts with TLP)
+  # Disable conflicting services
   services.power-profiles-daemon.enable = false;
+  services.auto-cpufreq.enable = false;  # Make sure this is disabled too
 
-  # Optional: auto power tuning at boot
-  powerManagement.powertop.enable = true;
+  # Disable powertop auto-tuning (can conflict with TLP)
+  powerManagement.powertop.enable = false;
+
+  # CPU frequency scaling
+  powerManagement.cpuFreqGovernor = "performance";  # This might conflict with TLP
 
   # Optional: Better suspend/hibernate behavior
   services.logind = {
     lidSwitch = "suspend";
     lidSwitchDocked = "ignore";
     extraConfig = ''
-      HandlePowerKey=suspend
-    '';
+    HandlePowerKey=suspend
+    IdleAction=suspend
+  '';
   };
 
-  # Optional: Environment variable fix for Wayland compositors with Intel GPUs
+  # Environment variables
   environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1"; # Fix cursor bugs on some systems
+    WLR_NO_HARDWARE_CURSORS = "1";
   };
 
-  # If you use X11 (less recommended with Intel Arc), add:
-  # services.xserver.deviceSection = ''
-  #   Option "TearFree" "true"
-  # '';
+# Kernel parameters for better performance
+  boot.kernelParams = [
+    "intel_pstate=active"  # Use Intel P-State driver
+    # "processor.max_cstate=1"  # Uncomment if you want to limit C-states
+  ];
+
+  # Optional: Enable thermald for Intel CPUs
+  services.thermald.enable = true;
 
 }

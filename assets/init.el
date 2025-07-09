@@ -7,7 +7,7 @@
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
 			 ("org" . "https://orgmode.org/elpa/")))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-
+(setq package-archives nil)
 (require 'packages)
 (install-packages packages)
 
@@ -153,20 +153,19 @@
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
   ;;(load-theme 'automata t)
   ;;(load-theme 'nano-dark t)
-  
-
-  ;;(load-theme 'timu-spacegrey t)
+    ;;(load-theme 'timu-spacegrey t)
   ;;(load-theme 'spacegray t)
   ;;(load-theme 'doom-zenburn t)
   ;;(load-theme 'brin t)
   ;;(load-theme 'spolsky t)
-  ;;  (load-theme 'base16-vesper t)
-  ;;  (load-theme 'base16-rose-pine t)
+  ;;(load-theme 'base16-vesper t)
+  ;;(load-theme 'base16-rose-pine t)
   ;;(load-theme 'zenburn t)
   ;;(load-theme 'ample-light t)
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
-  (load-theme 'modus-vivendi t)
+  ;;(load-theme 'modus-vivendi t)
+  (load-theme 'kanagawa-dragon t)
 
   (set-face-background 'default "#000000")
   (global-whitespace-mode 1)
@@ -186,6 +185,9 @@
     (set-face-background 'fringe "#000000")
     (set-frame-font "Iosevka Term-11" nil t))
 
+  (when (not (display-graphic-p))
+    (set-face-background 'default "unspecified-bg"))
+
   (set-cursor-color "#a6e3a1")
   (add-to-list 'default-frame-alist '(cursor-color . "#a6e3a1"))
   (add-to-list 'default-frame-alist '(mouse-color . "#a6e3a1"))
@@ -193,13 +195,13 @@
 
   (custom-set-faces
    ;; All backgrounds black
-   '(whitespace-space           ((t (:background "#000000" :foreground "#2e2e2e"))))
-   '(whitespace-tab             ((t (:background "#000000" :foreground "#444444"))))
-   '(whitespace-trailing        ((t (:background "#000000" :foreground "#ff5555" :weight bold))))
-   '(whitespace-line            ((t (:background "#000000" :foreground "#ff79c6"))))
-   '(whitesppace-newline         ((t (:background "#000000" :foreground "#5f5f5f"))))
-   '(whitespace-indentation     ((t (:background "#000000" :foreground "#3e3e3e"))))
-   '(whitespace-empty           ((t (:background "#000000" :foreground "#ff6c6b")))))
+   '(whitespace-space           ((t (:background "unspecified-bg" :foreground "#2e2e2e"))))
+   '(whitespace-tab             ((t (:background "unspecified-bg" :foreground "#444444"))))
+   '(whitespace-trailing        ((t (:background "unspecified-bg" :foreground "#ff5555" :weight bold))))
+   '(whitespace-line            ((t (:background "unspecified-bg" :foreground "#ff79c6"))))
+   '(whitesppace-newline         ((t (:background "unspecified-bg" :foreground "#5f5f5f"))))
+   '(whitespace-indentation     ((t (:background "unspecified-bg" :foreground "#3e3e3e"))))
+   '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
 
   (set-face-attribute 'line-number nil
                       :background "#000000") ;; optional
@@ -238,7 +240,8 @@
   (global-flycheck-mode)
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
   ;;(setq-default mode-line-format 'nil)
-  (add-hook 'flycheck-mode-hook 'flycheck-inline-mode))
+  (add-hook 'flycheck-mode-hook 'flyover-mode)
+  (setq flyover-levels '(error warning info)))
 ;; End Theme
 
 (defun prog-time ()
