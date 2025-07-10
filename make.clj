@@ -13,6 +13,11 @@
 (def templates-folder "templates")
 (def assets-folder "assets")
 (def transparency "80")
+(def theme "kanagawa-dragon")
+(def light-theme "kanagawa-lotus")
+(def ghostty-theme "Kanagawa Dragon")
+(def ghostty-theme-light "Violet Light")
+(def cream "#f2ecbc")
 
 
 (defrecord TemplateField [^String key
@@ -113,12 +118,22 @@
                (->TemplateField "{{selected-foreground}}" white)
                (->TemplateField "{{foreground}}" dark-gray)]))
 
-(def ghostty
+(def ghostty-dark
   (->Template "ghostty"
               (str assets-folder "/ghostty")
               (slurp (str "./" templates-folder "/ghostty.tmpl"))
               [(->TemplateField "{{background}}" black)
                (->TemplateField "{{transparency}}" transparency)
+               (->TemplateField "{{theme}}" ghostty-theme)
+               (->TemplateField "{{font}}" font)]))
+
+(def ghostty-light
+  (->Template "ghostty"
+              (str assets-folder "/ghostty")
+              (slurp (str "./" templates-folder "/ghostty.tmpl"))
+              [(->TemplateField "{{background}}" cream)
+               (->TemplateField "{{transparency}}" transparency)
+               (->TemplateField "{{theme}}" ghostty-theme-light)
                (->TemplateField "{{font}}" font)]))
 
 (def dunstrc
@@ -132,11 +147,33 @@
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 
-(def emacs
+(def emacs-light
   (->Template "emacs"
               (str assets-folder "/init.el")
               (slurp (str "./" templates-folder "/init.el.tmpl"))
-              [(->TemplateField "{{transparency}}" transparency)]))
+              [(->TemplateField "{{transparency}}" transparency)
+               (->TemplateField "{{theme}}" light-theme)
+               (->TemplateField "{{background}}" cream)]))
+
+(def emacs-dark
+  (->Template "emacs"
+              (str assets-folder "/init.el")
+              (slurp (str "./" templates-folder "/init.el.tmpl"))
+              [(->TemplateField "{{transparency}}" transparency)
+               (->TemplateField "{{theme}}" theme)
+               (->TemplateField "{{background}}" black)]))
+
+(defn emacs
+  [args]
+  (if (some #(= "--light" %) args)
+    emacs-light
+    emacs-dark))
+
+(defn ghostty
+  [args]
+  (if (some #(= "--light" %) args)
+    ghostty-light
+    ghostty-dark))
 
 ;; (def eww
 ;;   (->Template "eww"
@@ -146,7 +183,8 @@
 
 (defn main
   [& args]
-  (apply-tmpls! [polybar bspwmrc sxhkdrc ghostty emacs dunstrc])
+  (println args)
+  (apply-tmpls! [polybar bspwmrc sxhkdrc (ghostty args) (emacs args) dunstrc])
   (ensure-sudo!)
   (remove-init-el)
   (apply-flake (first args)))

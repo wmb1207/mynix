@@ -165,9 +165,9 @@
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
   ;;(load-theme 'modus-vivendi t)
-  (load-theme 'kanagawa-dragon t)
+  (load-theme '{{theme}} t)
 
-  (set-face-background 'default "#000000")
+  (set-face-background 'default "{{background}}")
   (global-whitespace-mode 1)
 
   
@@ -182,7 +182,7 @@
           ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#000000")
+    (set-face-background 'fringe "{{background}}")
     (set-frame-font "Iosevka Term-11" nil t))
 
   (when (not (display-graphic-p))
@@ -204,17 +204,17 @@
    '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
 
   (set-face-attribute 'line-number nil
-                      :background "#000000") ;; optional
+                      :background "{{background}}") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#000000"
+                      :background "{{background}}"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#000000")
+                    :background "{{background}}")
 
   (set-face-attribute 'mode-line nil
-                      :background "#000000"
+                      :background "{{background}}"
 		      :box nil)
 
   (when (display-graphic-p)

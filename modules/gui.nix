@@ -19,7 +19,8 @@ let
     steam
     whatsapp-for-linux
     jetbrains.datagrip
-    jetbrains.goland  # note spelling fix from golannd
+    jetbrains.goland
+    jetbrains.phpstorm
   ];
 
   aarch64Packages = with pkgs; [
