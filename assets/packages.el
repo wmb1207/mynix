@@ -5,6 +5,12 @@
 (setq packages
       '((:package base16-theme)
 	;; Add to your init.el
+	(:package topsy
+		  :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")
+		  :hook
+		  :ensure t
+		  (prog-mode . topsy-mode)
+		  (magit-section-mode . topsy-mode))
 	(:package kanagawa-theme)
 	(:package org-present
 	  :ensure t
