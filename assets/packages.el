@@ -11,7 +11,8 @@
 		  :ensure t
 		  (prog-mode . topsy-mode)
 		  (magit-section-mode . topsy-mode))
-	(:package kanagawa-theme)
+	(:package kanagawa-theme
+		  :ensure t)
 	(:package org-present
 	  :ensure t
 	  :config
