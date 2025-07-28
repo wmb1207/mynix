@@ -4,6 +4,8 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package plan9-theme
+		  :ensure t)
 	;; Add to your init.el
 	(:package topsy
 		  :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")

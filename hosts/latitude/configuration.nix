@@ -24,6 +24,7 @@
     100.66.15.24	C1PROW19PRB01
     #DEV
     100.66.51.207	C1DVUA1JB01.adb.sa-santiago-1.oraclecloud.com
+    127.0.0.1 local.be.warcgroup.com
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -89,6 +90,10 @@
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
+  };
+  hardware.ipu6 = {
+    enable = true;
+    platform = "ipu6ep";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -246,7 +251,6 @@
     lidSwitchDocked = "ignore";
     extraConfig = ''
     HandlePowerKey=suspend
-    IdleAction=suspend
   '';
   };
 

@@ -7,7 +7,7 @@
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
 			 ("org" . "https://orgmode.org/elpa/")))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-(setq package-archives nil)
+;;(setq package-archives nil)
 (require 'packages)
 (install-packages packages)
 

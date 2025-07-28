@@ -5,7 +5,7 @@ if [ "$(hostname)" = 'asahibook' ]; then
 fi;
 
 # Set up monitors with specific workspaces
-if xrandr | grep -q "DP-1 connected"; then
+if xrandr --query | grep "DP-1" | grep -q " connected "; then
     bspc monitor DP-1 -d Hollow Thorne
     bspc monitor eDP-1 -d Grimoire Abyss Nocturne
 else
@@ -38,4 +38,5 @@ dunst --config ~/.config/dunst/dunstrc &
 #feh --bg-scale ~/.config/wallpapers/gradient.png &
 feh --bg-scale ~/.config/wallpapers/wallpaper-4.jpg &
 bash ~/.bin/battery.sh --daemon &
+sxhkd &
 emacs

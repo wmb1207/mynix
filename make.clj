@@ -14,10 +14,10 @@
 (def assets-folder "assets")
 (def transparency "80")
 (def theme "kanagawa-dragon")
-(def light-theme "kanagawa-lotus")
+(def light-theme "plan9")
 (def ghostty-theme "Kanagawa Dragon")
 (def ghostty-theme-light "Violet Light")
-(def cream "#f2ecbc")
+(def cream "#FFFFE8")
 
 
 (defrecord TemplateField [^String key
@@ -174,6 +174,24 @@
   (if (some #(= "--light" %) args)
     ghostty-light
     ghostty-dark))
+
+;; (defn clear
+;;   (let [cmd ["sudo" "nix-collect-garbage" "-d"]
+;;         result (try
+;;                  (println "Executing " cmd)
+;;                  (shell cmd)
+;;                  (catch Exception e
+;;                    (println "!! Exception during shell invocation:" (.getMessage e))
+;;                    {:exit 1 :out "" :err (.getMessage e)}))]
+;;     (let [{:keys [exit out err]} result]
+;;       (if (zero? exit)
+;;         (println "Flake applied on" host "\n" out)
+;;         (do
+;;           (println "!! nixos-collect-garbage failed (exit" exit "):\n" err)
+;;           (System/exit exit))))))
+;;   )
+
+
 
 ;; (def eww
 ;;   (->Template "eww"
