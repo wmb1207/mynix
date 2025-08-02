@@ -9,7 +9,7 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "Iosevka Term" -nb "#a6e3a1" -nf "#101010" -sb "#101010" -sf "#ffffff"
+      dmenu_run -fn "JetBrains Mono" -nb "#f0f0f0" -nf "#0e1014" -sb "#0e1014" -sf "#f0f0f0"
 
 super + c
       emacsclient -c 

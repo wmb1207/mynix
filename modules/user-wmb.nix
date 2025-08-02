@@ -13,6 +13,28 @@ let
     use-package
     vterm
   ]);
+  
+  grammars = [
+    pkgs.tree-sitter-grammars.tree-sitter-php
+    pkgs.tree-sitter-grammars.tree-sitter-typescript
+    pkgs.tree-sitter-grammars.tree-sitter-tsx
+    pkgs.tree-sitter-grammars.tree-sitter-python
+    pkgs.tree-sitter-grammars.tree-sitter-rust
+    pkgs.tree-sitter-grammars.tree-sitter-clojure
+    pkgs.tree-sitter-grammars.tree-sitter-go
+    pkgs.tree-sitter-grammars.tree-sitter-elixir
+  ];
+
+  treeSitterLibDir = pkgs.linkFarm "tree-sitter-libs" (builtins.concatLists (map (grammar:
+    let
+      path = grammar + "/parser";
+      hasParser = builtins.pathExists path;
+    in
+      if hasParser then
+        [{ name = "lib${grammar.pname}.so"; path = path; }]
+      else
+        []
+  ) grammars));
 in
 {
   users.users.wmb = {
@@ -60,8 +82,9 @@ in
 
     home.sessionVariables = {
       EDITOR = "emacs";
+      TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
     };
-
+  
     programs.home-manager.enable = true;
 
     xsession.enable = true;
@@ -98,6 +121,8 @@ in
     home.file.".config/wallpapers/wallpaper-3.jpg".source = ../assets/wallpaper-3.jpg;
     home.file.".config/wallpapers/wallpaper-4.jpg".source = ../assets/wallpaper-4.jpg;
     home.file.".config/wallpapers/wallpaper-5.jpg".source = ../assets/wallpaper-5.jpg;
+    home.file.".config/wallpapers/wallpaper-6.jpg".source = ../assets/wallpaper-6.jpg;
+    home.file.".config/wallpapers/wallpaper-7.jpg".source = ../assets/wallpaper-7.jpg;
     home.file.".config/dunst/dunstrc".source = ../assets/dunstrc;
     home.file.".bin/battery.sh".source = ../assets/battery.sh;
   };

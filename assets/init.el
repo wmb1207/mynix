@@ -23,6 +23,10 @@
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+  
+(setq treesit-language-source-alist
+      '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
 
 (require 'package)
 (require 'package)
@@ -128,12 +132,12 @@
   ;;  :height 11
   ;;  :weight 'regular)
 
-  (add-to-list 'default-frame-alist '(font . "Iosevka Term-11"))
+  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
 
   (set-face-attribute
    'default nil
-   :font "Iosevka Term"
-   :height 11
+   :font "JetBrains Mono"
+   :height 10
    :weight 'regular)
   
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
@@ -167,7 +171,7 @@
   ;;(load-theme 'modus-vivendi t)
   (load-theme 'kanagawa-dragon t)
 
-  (set-face-background 'default "#000000")
+  (set-face-background 'default "#181616")
   (global-whitespace-mode 1)
 
   
@@ -182,8 +186,8 @@
           ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#000000")
-    (set-frame-font "Iosevka Term-11" nil t))
+    (set-face-background 'fringe "#181616")
+    (set-frame-font "JetBrains Mono-10" nil t))
 
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
@@ -204,22 +208,22 @@
    '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
 
   (set-face-attribute 'line-number nil
-                      :background "#000000") ;; optional
+                      :background "#181616") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#000000"
+                      :background "#181616"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#000000")
+                    :background "#181616")
 
   (set-face-attribute 'mode-line nil
-                      :background "#000000"
+                      :background "#181616"
 		      :box nil)
 
   (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(80 . 80))
-  (add-to-list 'default-frame-alist '(alpha . (80 . 80))))
+  (set-frame-parameter (selected-frame) 'alpha '(99 . 99))
+  (add-to-list 'default-frame-alist '(alpha . (99 . 99))))
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
@@ -264,6 +268,7 @@
   (add-hook 'typescript-mode #'lsp-deferred)
   (setq typsecript-indent-level 2)
 
+  (add-hook 'php-mode-hook #'php-ts-mode)
   (add-hook 'php-mode-hook #'lsp-deferred)
   (defun my-php-mode-setup ()
     "Custom PHP mode setup to use 4 spaces for indentation."

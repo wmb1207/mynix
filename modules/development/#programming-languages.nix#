@@ -12,6 +12,6 @@ with pkgs; [
   yarn
   pipx
   hex
-
+o
   tree-sitter-grammars.tree-sitter-php
 ]

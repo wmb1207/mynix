@@ -4,21 +4,25 @@
 (require '[babashka.process :refer [shell check]])
 (require '[babashka.fs :as fs])
 
-(def black "#000000")
-(def green "#a6e3a1")
-(def red "#C68689")
-(def dark-gray "#101010")
-(def white "#ffffff")
-(def font "Iosevka Term")
+;;(def black "#000000")
+(def black "#181616")
+(def green "#44bc44")          ; modus-vivendi green
+(def blue "#2fafff")           ; modus-vivendi blue  
+(def red "#ff8059")            ; modus-vivendi red
+(def dark-gray "#0e1014")      ; modus-vivendi background
+;;(def white "#ffffff")
+(def cream "#f0f0f0")          ; modus-vivendi off-white
+(def white "#f0f0f0")          ; modus-vivendi off-white
+
+;;(def font "DejaVu Sans Mono")
+(def font "JetBrains Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
-(def transparency "80")
+(def transparency "99")
 (def theme "kanagawa-dragon")
-(def light-theme "plan9")
+(def light-theme "modus-operandi")
 (def ghostty-theme "Kanagawa Dragon")
 (def ghostty-theme-light "Violet Light")
-(def cream "#FFFFE8")
-
 
 (defrecord TemplateField [^String key
                           ^String value])
@@ -106,14 +110,14 @@
   (->Template "bspwmrc"
               (str assets-folder "/bspwmrc")
               (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
-              [(->TemplateField "{{background}}" (str "\\" green))
-               (->TemplateField "{{normal-background}}" (str "\\" red))]))
+              [(->TemplateField "{{background}}" (str "\\" white))
+               (->TemplateField "{{normal-background}}" (str "\\" dark-gray))]))
 
 (def sxhkdrc
   (->Template "sxhkdrc"
               (str assets-folder "/sxhkdrc")
               (slurp (str "./" templates-folder "/sxhkdrc.tmpl"))
-              [(->TemplateField "{{background}}" green)
+              [(->TemplateField "{{background}}" white)
                (->TemplateField "{{font}}" font)
                (->TemplateField "{{selected-foreground}}" white)
                (->TemplateField "{{foreground}}" dark-gray)]))
@@ -141,8 +145,8 @@
               (str assets-folder "/dunstrc")
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
               [(->TemplateField "{{black}}" black)
-               (->TemplateField "{{green}}" green)
-               (->TemplateField "{{red}}" red)
+               (->TemplateField "{{green}}" white)
+               (->TemplateField "{{red}}" dark-gray)
                (->TemplateField "{{white}}" white)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
@@ -153,6 +157,7 @@
               (slurp (str "./" templates-folder "/init.el.tmpl"))
               [(->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{theme}}" light-theme)
+               (->TemplateField "{{font}}" font)
                (->TemplateField "{{background}}" cream)]))
 
 (def emacs-dark
@@ -161,6 +166,7 @@
               (slurp (str "./" templates-folder "/init.el.tmpl"))
               [(->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{theme}}" theme)
+               (->TemplateField "{{font}}" font)
                (->TemplateField "{{background}}" black)]))
 
 (defn emacs

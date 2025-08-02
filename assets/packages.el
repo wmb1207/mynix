@@ -4,6 +4,8 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package cognitive-complexity
+		  :straight (:host github :repo "emacs-vs/cognitive-complexity"))
 	(:package plan9-theme
 		  :ensure t)
 	;; Add to your init.el

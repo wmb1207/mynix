@@ -23,6 +23,10 @@
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+  
+(setq treesit-language-source-alist
+      '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
 
 (require 'package)
 (require 'package)
@@ -128,12 +132,12 @@
   ;;  :height 11
   ;;  :weight 'regular)
 
-  (add-to-list 'default-frame-alist '(font . "Iosevka Term-11"))
+  (add-to-list 'default-frame-alist '(font . "{{font}}-10"))
 
   (set-face-attribute
    'default nil
-   :font "Iosevka Term"
-   :height 11
+   :font "{{font}}"
+   :height 10
    :weight 'regular)
   
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
@@ -183,7 +187,7 @@
 
   (when (display-graphic-p)
     (set-face-background 'fringe "{{background}}")
-    (set-frame-font "Iosevka Term-11" nil t))
+    (set-frame-font "{{font}}-10" nil t))
 
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
@@ -264,6 +268,7 @@
   (add-hook 'typescript-mode #'lsp-deferred)
   (setq typsecript-indent-level 2)
 
+  (add-hook 'php-mode-hook #'php-ts-mode)
   (add-hook 'php-mode-hook #'lsp-deferred)
   (defun my-php-mode-setup ()
     "Custom PHP mode setup to use 4 spaces for indentation."
