@@ -12,7 +12,7 @@ else
     bspc monitor -d Hollow Thorne Grimoire Abyss Nocturne
 fi
 
-bspc config border_width 8
+bspc config border_width 5
 bspc config focused_border_color {{background}}
 bspc config normal_border_color {{normal-background}}
 bspc config window_gap 25
@@ -36,7 +36,7 @@ bspc rule -a ghostty desktop=^2
 picom --config ~/.config/picom/picom.conf &
 dunst --config ~/.config/dunst/dunstrc &
 #feh --bg-scale ~/.config/wallpapers/gradient.png &
-feh --bg-scale ~/.config/wallpapers/wallpaper-5.jpg &
+feh --bg-scale ~/.config/wallpapers/wallpaper-7.jpg &
 bash ~/.bin/battery.sh --daemon &
 sxhkd &
 emacs

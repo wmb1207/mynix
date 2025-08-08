@@ -23,7 +23,7 @@
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
-  
+f  
 (setq treesit-language-source-alist
       '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
@@ -132,11 +132,11 @@
   ;;  :height 11
   ;;  :weight 'regular)
 
-  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+  (add-to-list 'default-frame-alist '(font . "{{font}}-10"))
 
   (set-face-attribute
    'default nil
-   :font "JetBrains Mono"
+   :font "{{font}}"
    :height 10
    :weight 'regular)
   
@@ -169,9 +169,9 @@
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
   ;;(load-theme 'modus-vivendi t)
-  (load-theme 'kanagawa-dragon t)
+  (load-theme '{{theme}} t)
 
-  (set-face-background 'default "#181616")
+  (set-face-background 'default "{{background}}")
   (global-whitespace-mode 1)
 
   
@@ -186,8 +186,8 @@
           ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#181616")
-    (set-frame-font "JetBrains Mono-10" nil t))
+    (set-face-background 'fringe "{{background}}")
+    (set-frame-font "{{font}}-10" nil t))
 
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
@@ -208,22 +208,22 @@
    '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
 
   (set-face-attribute 'line-number nil
-                      :background "#181616") ;; optional
+                      :background "{{background}}") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#181616"
+                      :background "{{background}}"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#181616")
+                    :background "{{background}}")
 
   (set-face-attribute 'mode-line nil
-                      :background "#181616"
+                      :background "{{background}}"
 		      :box nil)
 
   (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-  (add-to-list 'default-frame-alist '(alpha . (100 . 100))))
+  (set-frame-parameter (selected-frame) 'alpha '({{transparency}} . {{transparency}}))
+  (add-to-list 'default-frame-alist '(alpha . ({{transparency}} . {{transparency}}))))
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
@@ -250,7 +250,6 @@
 
 (defun prog-time ()
   "All the programming languages stuff."
-  
   (require 'lsp-mode)
   (require 'prettier)
 
@@ -271,7 +270,6 @@
 
   (add-hook 'php-mode-hook #'php-ts-mode)
   (add-hook 'php-mode-hook #'lsp-deferred)
-  (add-hook 'php-ts-mode-hook #'lsp-deferred)
   (defun my-php-mode-setup ()
     "Custom PHP mode setup to use 4 spaces for indentation."
     (setq tab-width 4)
@@ -314,8 +312,7 @@
   ;;(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
   ;; End terraform
   ;; Yaml Time
-  (add-hook 'yaml-mode-hook #'lsp-deferred)
-  (cognitive-complexity-mode 1))
+  (add-hook 'yaml-mode-hook #'lsp-deferred))
 
 
 
@@ -351,9 +348,9 @@
 	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
   (straight-use-package '(myron-themes :host github :repo "neeasade/myron-themes" :files ("*.el" "themes/*.el")))
-  (straight-use-package '(cognitive-complexity :host github :repo "emacs-vs/cognitive-complexity"))
   (straight-use-package '(nano-theme :type git :host github
                                      :repo "rougier/nano-theme"))
+  
   (prog-time))
 
 (configure)

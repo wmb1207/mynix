@@ -29,4 +29,7 @@ with pkgs; [
   postgresql
   teleport
   libfido2
+
+  cmus
+  pamixer
 ]

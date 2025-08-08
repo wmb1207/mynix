@@ -37,7 +37,8 @@ background = #181616
 font-family = JetBrains Mono
 font-size = 10
 window-decoration = none
-background-opacity = 0.99
+#background-opacity = 0.100
+background-opacity = 100
 #
 # # Empty values are used to reset config keys to default.
 # key =

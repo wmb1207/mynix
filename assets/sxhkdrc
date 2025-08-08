@@ -9,7 +9,7 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "JetBrains Mono" -nb "#f0f0f0" -nf "#0e1014" -sb "#0e1014" -sf "#f0f0f0"
+      dmenu_run -fn "JetBrains Mono" -nb "#c8c093" -nf "#0e1014" -sb "#0e1014" -sf "#c8c093"
 
 super + c
       emacsclient -c 
@@ -65,3 +65,17 @@ super + shift + 5
 
 super + alt + b
       bash ~/.bin/battery.sh
+
+super + shift + space
+    bspc node -t ~floating; bspc node -v 0 0; bspc node --flag center
+
+XF86AudioRaiseVolume
+  pamixer --increase 5
+
+# Volume down
+XF86AudioLowerVolume
+  pamixer --decrease 5
+
+# Mute toggle
+XF86AudioMute
+  pamixer --toggle-mute

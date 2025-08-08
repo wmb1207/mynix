@@ -12,15 +12,15 @@
 (def dark-gray "#0e1014")      ; modus-vivendi background
 ;;(def white "#ffffff")
 (def cream "#f0f0f0")          ; modus-vivendi off-white
-(def white "#f0f0f0")          ; modus-vivendi off-white
+(def white "#c8c093")
 
 ;;(def font "DejaVu Sans Mono")
 (def font "JetBrains Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
-(def transparency "99")
+(def transparency "100")
 (def theme "kanagawa-dragon")
-(def light-theme "modus-operandi")
+(def light-theme "kanagawa-lotus")
 (def ghostty-theme "Kanagawa Dragon")
 (def ghostty-theme-light "Violet Light")
 

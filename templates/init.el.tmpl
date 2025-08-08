@@ -250,6 +250,7 @@
 
 (defun prog-time ()
   "All the programming languages stuff."
+  
   (require 'lsp-mode)
   (require 'prettier)
 
@@ -270,6 +271,7 @@
 
   (add-hook 'php-mode-hook #'php-ts-mode)
   (add-hook 'php-mode-hook #'lsp-deferred)
+  (add-hook 'php-ts-mode-hook #'lsp-deferred)
   (defun my-php-mode-setup ()
     "Custom PHP mode setup to use 4 spaces for indentation."
     (setq tab-width 4)
@@ -312,7 +314,8 @@
   ;;(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
   ;; End terraform
   ;; Yaml Time
-  (add-hook 'yaml-mode-hook #'lsp-deferred))
+  (add-hook 'yaml-mode-hook #'lsp-deferred)
+  (cognitive-complexity-mode 1))
 
 
 
@@ -348,9 +351,9 @@
 	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
   (straight-use-package '(myron-themes :host github :repo "neeasade/myron-themes" :files ("*.el" "themes/*.el")))
+  (straight-use-package '(cognitive-complexity :host github :repo "emacs-vs/cognitive-complexity"))
   (straight-use-package '(nano-theme :type git :host github
                                      :repo "rougier/nano-theme"))
-  
   (prog-time))
 
 (configure)
