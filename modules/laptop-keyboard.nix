@@ -1,24 +1,20 @@
 { config, pkgs, ... }:
 
 {
-  # Configure xkb options to remap the keyboard as per the requirements
-  services.xserver = {
-    # Define the XKB options for remapping the keys
-    xkbOptions = "ctrl:nocaps,altwin:meta,ctrl:swap_lalt_lctl";
-  };
-
-  # Apply the custom keymap via X11 configuration
+  # Apply the custom keymap via X11 configuration only for the built-in keyboard
   environment.etc."X11/xorg.conf.d/00-keyboard.conf".text = ''
     Section "InputClass"
-      Identifier "keyboard"
+      Identifier "internal-keyboard"
       MatchIsKeyboard "on"
+      MatchProduct "AT Translated Set 2 keyboard"
+      MatchDevicePath "/dev/input/event0"
       Option "XkbLayout" "us"
+      Option "XkbVariant" "dvorak"
       Option "XkbOptions" "ctrl:nocaps,altwin:meta,ctrl:swap_lalt_lctl"
     EndSection
   '';
 
-  # Alternatively, remap specific keys using a custom script
-  # that runs after the system boots, adding the key remaps
+  # Optional: custom script (currently just xev — probably not needed for remapping)
   systemd.user.services.keyboard-remap = {
     description = "Remap keys for laptop";
     serviceConfig.ExecStart = "${pkgs.xorg.xev}/bin/xev";

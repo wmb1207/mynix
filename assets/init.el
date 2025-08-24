@@ -227,8 +227,8 @@
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
-  (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-headerline-breadcrumb-icons-enable 0)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-headerline-breadcrumb-icons-enable nil)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
@@ -245,7 +245,12 @@
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
   ;;(setq-default mode-line-format 'nil)
   (add-hook 'flycheck-mode-hook 'flyover-mode)
-  (setq flyover-levels '(error warning info)))
+  (setq flyover-levels '(error warning info))
+  (custom-set-faces
+ '(nano-modeline-active   ((t (:inherit mode-line))))
+ '(nano-modeline-inactive ((t (:inherit mode-line-inactive))))
+ )
+  )
 ;; End Theme
 
 (defun prog-time ()
@@ -315,7 +320,21 @@
   ;; End terraform
   ;; Yaml Time
   (add-hook 'yaml-mode-hook #'lsp-deferred)
-  (cognitive-complexity-mode 1))
+  (cognitive-complexity-mode 1)
+  
+(add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
+(add-hook 'text-mode-hook            #'nano-modeline-text-mode)
+(add-hook 'org-mode-hook             #'nano-modeline-org-mode)
+(add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
+(add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
+(add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
+(add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
+(add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
+(add-hook 'term-mode-hook            #'nano-modeline-term-mode)
+(add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
+(add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
+(add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
+(add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode))
 
 
 

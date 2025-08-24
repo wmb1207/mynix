@@ -5,9 +5,9 @@ if [ "$(hostname)" = 'asahibook' ]; then
 fi;
 
 # Set up monitors with specific workspaces
-if xrandr --query | grep "DP-1" | grep -q " connected "; then
-    bspc monitor DP-1 -d Hollow Thorne
-    bspc monitor eDP-1 -d Grimoire Abyss Nocturne
+if xrandr --query | grep "DP-1" | grep -v "eDP-1" | grep -q " connected "; then
+    bspc monitor DP-1 -d Hollow Thorne Grimoire
+    bspc monitor eDP-1 -d Abyss Nocturne
 else
     bspc monitor -d Hollow Thorne Grimoire Abyss Nocturne
 fi
@@ -22,21 +22,11 @@ bspc config gapless_monocle true
 bspc rule -a brave desktop=^3
 bspc rule -a emacs desktop=^1
 bspc rule -a ghostty desktop=^2
-# killall -q polybar
-# while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-# polybar top &
-# Reserve space on the left for Eww bar
-#bspc config left_padding 30
-# Eww bar: sticky, below all windows, and no border
-# bspc rule -a Eww:bar state=floating layer=below sticky=on border=off
-# # Start Eww bar
-# eww daemon &
-# sleep 0.5
-# eww open bar
 picom --config ~/.config/picom/picom.conf &
 dunst --config ~/.config/dunst/dunstrc &
-#feh --bg-scale ~/.config/wallpapers/gradient.png &
-feh --bg-scale ~/.config/wallpapers/wallpaper-7.jpg &
+feh --bg-scale ~/.config/wallpapers/wallpaper-8.jpg &
 bash ~/.bin/battery.sh --daemon &
 sxhkd &
-emacs
+
+
+

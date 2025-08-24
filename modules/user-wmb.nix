@@ -8,7 +8,7 @@ let
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
-  myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
+  myEmacs = pkgs.emacs-pgtk.pkgs.withPackages (epkgs: with epkgs; [
   lsp-mode
     use-package
     vterm
@@ -50,6 +50,10 @@ in
     enable = true;
     time = 10;
     locker = "${pkgs.xsecurelock}/bin/xsecurelock";
+  };
+  services.emacs = {
+    enable = true;
+    package = myEmacs;
   };
   
   services.xserver.displayManager.startx.enable = true;
@@ -96,34 +100,33 @@ in
       cp ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
     '';
 
-    home.file.".bashrc".source = lib.mkForce ../assets/bashrc;
-    home.file.".config/ghostty/config".source = ../assets/ghostty;
-    home.file.".config/bspwm/bspwmrc" = {
-      source = ../assets/bspwmrc;
-      executable = true;
+    home.file = builtins.listToAttrs (map (x: {
+      name = ".config/wallpapers/wallpaper-${toString x}.jpg";
+      value.source = ../assets + "/wallpaper-${toString x}.jpg";
+    }) (lib.range 1 82))
+    // {
+      ".bashrc".source = lib.mkForce ../assets/bashrc;
+      ".config/ghostty/config".source = ../assets/ghostty;
+      ".config/bspwm/bspwmrc" = {
+        source = ../assets/bspwmrc;
+        executable = true;
+      };
+      ".config/sxhkd/sxhkdrc".source = ../assets/sxhkdrc;
+      ".xinitrc".source = ../assets/xinitrc;
+      ".config/polybar/config.ini".source = ../assets/polybar.ini;
+      ".config/polybar/launch.sh" = {
+        source = ../assets/polybar-start.sh;
+        executable = true;
+      };
+      ".lemonbar.sh" = {
+        source = ../assets/lemonbar.sh;
+        executable = true;
+      };
+      ".config/picom/picom.conf".source = ../assets/picom.conf;
+      ".config/wallpapers/gradient.png".source = ../assets/gradient.png;
+      ".config/wallpapers/galaxy-plant.jpeg".source = ../assets/galaxy-plant.jpeg;
+      ".config/dunst/dunstrc".source = ../assets/dunstrc;
+      ".bin/battery.sh".source = ../assets/battery.sh;
     };
-    home.file.".config/sxhkd/sxhkdrc".source = ../assets/sxhkdrc;
-    home.file.".xinitrc".source = ../assets/xinitrc;
-    home.file.".config/polybar/config.ini".source = ../assets/polybar.ini;
-    home.file.".config/polybar/launch.sh" = {
-      source = ../assets/polybar-start.sh;
-      executable = true;
-    };
-    home.file.".lemonbar.sh" = {
-      source = ../assets/lemonbar.sh;
-      executable = true;
-    };
-    home.file.".config/picom/picom.conf".source = ../assets/picom.conf;
-    home.file.".config/wallpapers/gradient.png".source = ../assets/gradient.png;
-    home.file.".config/wallpapers/galaxy-plant.jpeg".source = ../assets/galaxy-plant.jpeg;
-    home.file.".config/wallpapers/wallpaper-1.jpg".source = ../assets/wallpaper-1.jpg;
-    home.file.".config/wallpapers/wallpaper-2.jpg".source = ../assets/wallpaper-2.jpg;
-    home.file.".config/wallpapers/wallpaper-3.jpg".source = ../assets/wallpaper-3.jpg;
-    home.file.".config/wallpapers/wallpaper-4.jpg".source = ../assets/wallpaper-4.jpg;
-    home.file.".config/wallpapers/wallpaper-5.jpg".source = ../assets/wallpaper-5.jpg;
-    home.file.".config/wallpapers/wallpaper-6.jpg".source = ../assets/wallpaper-6.jpg;
-    home.file.".config/wallpapers/wallpaper-7.jpg".source = ../assets/wallpaper-7.jpg;
-    home.file.".config/dunst/dunstrc".source = ../assets/dunstrc;
-    home.file.".bin/battery.sh".source = ../assets/battery.sh;
   };
 }

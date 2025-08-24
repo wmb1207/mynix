@@ -3,7 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     wget curl bash cmake gnumake git libvterm emacs gcc
-    bspwm sxhkd rsync docker-compose mesa vulkan-tools
+    bspwm sxhkd rsync docker-compose mesa vulkan-tools ngrok
   ];
 
   programs.mtr.enable = true;

@@ -10,6 +10,10 @@ let
     xterm
     pavucontrol
     postman
+    vlc
+    mupdf
+    nyxt
+    pcmanfm
   ];
 
   x86_64Packages = with pkgs; [
@@ -21,6 +25,7 @@ let
     jetbrains.datagrip
     jetbrains.goland
     jetbrains.phpstorm
+    jetbrains.webstorm
   ];
 
   aarch64Packages = with pkgs; [

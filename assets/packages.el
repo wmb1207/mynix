@@ -4,6 +4,9 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package nano-modeline)
+	(:package emms
+		  :ensure t)
 	(:package cognitive-complexity
 		  :straight (:host github :repo "emacs-vs/cognitive-complexity"))
 	(:package plan9-theme

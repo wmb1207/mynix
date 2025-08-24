@@ -56,11 +56,11 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "dvorak";
-  };
+  # # Configure keymap in X11
+  # services.xserver.xkb = {
+  #   layout = "us";
+  #   variant = "dvorak";
+  # };
 
   services.xserver.libinput.enable = true;
 

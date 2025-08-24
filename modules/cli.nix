@@ -13,6 +13,7 @@ with pkgs; [
   jq
   yq
   unzip
+  zip
   gnumake
   xclip
 
@@ -32,4 +33,5 @@ with pkgs; [
 
   cmus
   pamixer
+  mpv
 ]

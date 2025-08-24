@@ -11,7 +11,7 @@
 (def red "#ff8059")            ; modus-vivendi red
 (def dark-gray "#0e1014")      ; modus-vivendi background
 ;;(def white "#ffffff")
-(def cream "#f0f0f0")          ; modus-vivendi off-white
+(def cream "#f2ecbc")          ; modus-vivendi off-white
 (def white "#c8c093")
 
 ;;(def font "DejaVu Sans Mono")
@@ -20,9 +20,9 @@
 (def assets-folder "assets")
 (def transparency "100")
 (def theme "kanagawa-dragon")
-(def light-theme "kanagawa-lotus")
+(def light-theme "base16-gruvbox-light")
 (def ghostty-theme "Kanagawa Dragon")
-(def ghostty-theme-light "Violet Light")
+(def ghostty-theme-light "GruvboxLight")
 
 (defrecord TemplateField [^String key
                           ^String value])
