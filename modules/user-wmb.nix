@@ -103,7 +103,7 @@ in
     home.file = builtins.listToAttrs (map (x: {
       name = ".config/wallpapers/wallpaper-${toString x}.jpg";
       value.source = ../assets + "/wallpaper-${toString x}.jpg";
-    }) (lib.range 1 82))
+    }) (lib.range 1 8))
     // {
       ".bashrc".source = lib.mkForce ../assets/bashrc;
       ".config/ghostty/config".source = ../assets/ghostty;
