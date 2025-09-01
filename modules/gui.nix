@@ -14,6 +14,7 @@ let
     mupdf
     nyxt
     pcmanfm
+    vscode
   ];
 
   x86_64Packages = with pkgs; [

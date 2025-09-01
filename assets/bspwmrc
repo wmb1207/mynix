@@ -13,8 +13,8 @@ else
 fi
 
 bspc config border_width 5
-bspc config focused_border_color \#c8c093
-bspc config normal_border_color \#0e1014
+bspc config focused_border_color \#e0d8c7
+bspc config normal_border_color \#112328
 bspc config window_gap 25
 bspc config split_ratio 0.55
 bspc config borderless_monocle true
@@ -26,7 +26,5 @@ picom --config ~/.config/picom/picom.conf &
 dunst --config ~/.config/dunst/dunstrc &
 feh --bg-scale ~/.config/wallpapers/wallpaper-8.jpg &
 bash ~/.bin/battery.sh --daemon &
+polybar -c ~/.config/polybar/config.ini top &
 sxhkd &
-
-
-

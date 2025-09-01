@@ -1,18 +1,10 @@
 [bar/top]
-width = 30
-height = 100%
-offset-x = 0
+width = 100%
+height = 24
 offset-y = 0
-bottom = false
-
-
-# [bar/top]
-# width = 100%
-# height = 28
-# offset-y = 0
-# background = {{background}}
-# foreground = {{foreground}}
-# border-size = 0
+background = {{background}}
+foreground = {{foreground}}
+border-size = 0
 
 padding-left = 0
 padding-right = 0
@@ -24,6 +16,27 @@ modules-center = date
 modules-right = memory cpu disk home volume battery wifi
 font-0 = {{font}} :pixelsize=13
 module-margin = 2
+
+[bar/top-external]
+monitor = DP-1
+width = 100%
+height = 24
+offset-y = 0
+background = {{background}}
+foreground = {{foreground}}
+border-size = 0
+
+padding-left = 0
+padding-right = 0
+padding-top = 5
+padding-bottom = 5
+
+modules-left = bspwm
+modules-center = date
+modules-right = memory cpu disk home volume battery wifi
+font-0 = JetBrains Mono :pixelsize=13
+module-margin = 2
+
 
 [module/date]
 type = internal/date
@@ -45,7 +58,7 @@ spacing = 0
 
 label-focused = " %name% "
 label-focused-background = {{focused-background}}
-label-focused-foreground = {{foreground}}
+label-focused-foreground = {{focused-foreground}}
 
 label-occupied = " %name% "
 label-occupied-foreground = {{foreground}}

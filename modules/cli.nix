@@ -34,4 +34,7 @@ with pkgs; [
   cmus
   pamixer
   mpv
+
+  libtool
+  php84Packages.phpmd
 ]

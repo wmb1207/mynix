@@ -3,8 +3,8 @@
 with pkgs; [
   php84
   nodejs
-  python312
-  ruby
+  python313
+  #ruby
   go
   elixir
   erlang
@@ -14,4 +14,9 @@ with pkgs; [
   hex
 
   tree-sitter-grammars.tree-sitter-php
+  gopls
+  go-outline
+  gopkgs
+  gotools
+  delve 
 ]

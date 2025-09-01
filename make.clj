@@ -4,24 +4,33 @@
 (require '[babashka.process :refer [shell check]])
 (require '[babashka.fs :as fs])
 
-;;(def black "#000000")
-(def black "#181616")
+;;(def black "#0d0e1c")
+
+;;(def black "#181616")
+;;(def black "#303f2d") ;; doric -pine
+(def black "#112328")
+(def white "#e0d8c7")
+;;(def black "#383035") ;; doric valley
 (def green "#44bc44")          ; modus-vivendi green
 (def blue "#2fafff")           ; modus-vivendi blue  
 (def red "#ff8059")            ; modus-vivendi red
 (def dark-gray "#0e1014")      ; modus-vivendi background
 ;;(def white "#ffffff")
 (def cream "#f2ecbc")          ; modus-vivendi off-white
-(def white "#c8c093")
+;;(def white "#c8c093")
+;;(def white "#ffffff")
 
 ;;(def font "DejaVu Sans Mono")
 (def font "JetBrains Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
 (def transparency "100")
-(def theme "kanagawa-dragon")
-(def light-theme "base16-gruvbox-light")
-(def ghostty-theme "Kanagawa Dragon")
+;;(def theme "modus-vivendi-tinted")
+(def theme "reykjavik")
+;;(def theme "doric-valley")
+;;(def light-theme "modus-operandi-tinted")
+(def light-theme "doric-oak")
+(def ghostty-theme "Wez")
 (def ghostty-theme-light "GruvboxLight")
 
 (defrecord TemplateField [^String key
@@ -101,9 +110,10 @@
   (->Template "polybar"
               (str assets-folder "/polybar.ini")
               (slurp (str "./" templates-folder "/polybar.ini.tmpl"))
-              [(->TemplateField "{{background}}" green)
-               (->TemplateField "{{foreground}}" dark-gray)
-               (->TemplateField "{{focused-background}}" red)
+              [(->TemplateField "{{background}}" black)
+               (->TemplateField "{{foreground}}" white)
+               (->TemplateField "{{focused-background}}" white)
+               (->TemplateField "{{focused-foreground}}" black)
                (->TemplateField "{{font}}" font)]))
 
 (def bspwmrc
@@ -111,16 +121,16 @@
               (str assets-folder "/bspwmrc")
               (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
               [(->TemplateField "{{background}}" (str "\\" white))
-               (->TemplateField "{{normal-background}}" (str "\\" dark-gray))]))
+               (->TemplateField "{{normal-background}}" (str "\\" black))]))
 
 (def sxhkdrc
   (->Template "sxhkdrc"
               (str assets-folder "/sxhkdrc")
               (slurp (str "./" templates-folder "/sxhkdrc.tmpl"))
-              [(->TemplateField "{{background}}" white)
+              [(->TemplateField "{{background}}" black)
                (->TemplateField "{{font}}" font)
-               (->TemplateField "{{selected-foreground}}" white)
-               (->TemplateField "{{foreground}}" dark-gray)]))
+               (->TemplateField "{{selected-foreground}}" black)
+               (->TemplateField "{{foreground}}" white)]))
 
 (def ghostty-dark
   (->Template "ghostty"
@@ -135,7 +145,7 @@
   (->Template "ghostty"
               (str assets-folder "/ghostty")
               (slurp (str "./" templates-folder "/ghostty.tmpl"))
-              [(->TemplateField "{{background}}" cream)
+              [(->TemplateField "{{background}}" white)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{theme}}" ghostty-theme-light)
                (->TemplateField "{{font}}" font)]))
@@ -146,8 +156,8 @@
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
               [(->TemplateField "{{black}}" black)
                (->TemplateField "{{green}}" white)
-               (->TemplateField "{{red}}" dark-gray)
-               (->TemplateField "{{white}}" white)
+               (->TemplateField "{{red}}" red)
+               (->TemplateField "{{white}}" black)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 
@@ -158,7 +168,7 @@
               [(->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{theme}}" light-theme)
                (->TemplateField "{{font}}" font)
-               (->TemplateField "{{background}}" cream)]))
+               (->TemplateField "{{background}}" white)]))
 
 (def emacs-dark
   (->Template "emacs"

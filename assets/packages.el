@@ -4,6 +4,8 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package doric-theme
+		  :ensure t)
 	(:package nano-modeline)
 	(:package emms
 		  :ensure t)

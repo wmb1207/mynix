@@ -8,7 +8,7 @@ let
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
-  myEmacs = pkgs.emacs-pgtk.pkgs.withPackages (epkgs: with epkgs; [
+  myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
   lsp-mode
     use-package
     vterm
@@ -51,22 +51,20 @@ in
     time = 10;
     locker = "${pkgs.xsecurelock}/bin/xsecurelock";
   };
-  services.emacs = {
-    enable = true;
-    package = myEmacs;
-  };
-  
+   
   services.xserver.displayManager.startx.enable = true;
   services.udev.packages = if lib.hasAttr "steamPackages" pkgs then
     lib.optional (!builtins.elem system [ "aarch64-linux" ]) pkgs.steamPackages.steam
                            else
                              [];
-
-#  services.udev.packages = [
-#    pkgs.steamPackages.steam
-#  ];
+  services.emacs = {
+    enable = true;
+    package = myEmacs;
+    startWithGraphical = true;
+  };
 
   home-manager.users.wmb = { pkgs, ... }: {
+    xsession.enable = true;
     nixpkgs.config.allowUnfree = true;
     home.stateVersion = "24.11";
     programs.bash.enable = true;
@@ -81,23 +79,23 @@ in
       pkgs.typescript
     ];
 
-    programs.emacs.enable = true;
-    programs.emacs.package = myEmacs;
-
+    programs.emacs = {
+      enable = true;
+      package = myEmacs;
+    };
+    
     home.sessionVariables = {
       EDITOR = "emacs";
       TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
     };
-  
-    programs.home-manager.enable = true;
 
-    xsession.enable = true;
+    programs.home-manager.enable = true;
 
     # home.file.".emacs.d/init.el".source = ../assets/init.el;
     home.activation.initEl = dag.entryAfter ["writeBoundary"] ''
       mkdir -p "$HOME/.emacs.d/lisp" &&
-    	cp ${../assets/init.el} "$HOME/.emacs.d/init.el" &&
-      cp ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
+    	ln -s ${../assets/init.el} "$HOME/.emacs.d/init.el" &&
+      ln -s ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
     '';
 
     home.file = builtins.listToAttrs (map (x: {

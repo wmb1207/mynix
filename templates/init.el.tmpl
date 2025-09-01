@@ -32,6 +32,7 @@
 (require 'package)
 (require 'whitespace)
 (require 'lsp-mode)
+(require 'go-mode)
 (require 'treesit)
 
 (defun setqs ()
@@ -148,10 +149,10 @@
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
 
-  (setq whitespace-style '(face tabs spaces trailing lines space-mark tab-mark newline))
-  (setq whitespace-display-mappings '((space-mark ?\  [?·])
-                                      (tab-mark ?\t [?» ?\t] [?\\ ?\t])))
-  (setq whitespace-line-column 300)
+  ;; (setq whitespace-style '(face tabs spaces trailing lines space-mark tab-mark newline))
+  ;; (setq whitespace-display-mappings '((space-mark ?\  [?·])
+  ;;                                     (tab-mark ?\t [?» ?\t] [?\\ ?\t])))
+  ;; (setq whitespace-line-column 300)
 
 
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -172,18 +173,18 @@
   (load-theme '{{theme}} t)
 
   (set-face-background 'default "{{background}}")
-  (global-whitespace-mode 1)
+  ;;(global-whitespace-mode 1)
 
   
-  (setq whitespace-style
-	'(face trailing tabs spaces lines-tail newline empty
-               indentation::space indentation::tab space-mark tab-mark newline-mark))
+  ;; (setq whitespace-style
+  ;; 	'(face trailing tabs spaces lines-tail newline empty
+  ;;              indentation::space indentation::tab space-mark tab-mark newline-mark))
 
-  (setq whitespace-display-mappings
-	'((space-mark   ?\     [?\u00B7]     [?.])      ; space → ·
-          (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])  ; newline → ↵
-          (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
-          ))
+  ;; (setq whitespace-display-mappings
+  ;; 	'((space-mark   ?\     [?\u00B7]     [?.])      ; space → ·
+  ;;         (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])  ; newline → ↵
+  ;;         (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
+  ;;         ))
 
   (when (display-graphic-p)
     (set-face-background 'fringe "{{background}}")
@@ -193,19 +194,20 @@
     (set-face-background 'default "unspecified-bg"))
 
   (set-cursor-color "#a6e3a1")
-  (add-to-list 'default-frame-alist '(cursor-color . "#a6e3a1"))
-  (add-to-list 'default-frame-alist '(mouse-color . "#a6e3a1"))
-  (modify-all-frames-parameters '((mouse-color . "#a6e3a1")))
+  ;; (add-to-list 'default-frame-alist '(cursor-color . "#a6e3a1"))
+  ;; (add-to-list 'default-frame-alist '(mouse-color . "#a6e3a1"))
+  ;;(modify-all-frames-parameters '((mouse-color . "#a6e3a1")))
 
-  (custom-set-faces
-   ;; All backgrounds black
-   '(whitespace-space           ((t (:background "unspecified-bg" :foreground "#2e2e2e"))))
-   '(whitespace-tab             ((t (:background "unspecified-bg" :foreground "#444444"))))
-   '(whitespace-trailing        ((t (:background "unspecified-bg" :foreground "#ff5555" :weight bold))))
-   '(whitespace-line            ((t (:background "unspecified-bg" :foreground "#ff79c6"))))
-   '(whitesppace-newline         ((t (:background "unspecified-bg" :foreground "#5f5f5f"))))
-   '(whitespace-indentation     ((t (:background "unspecified-bg" :foreground "#3e3e3e"))))
-   '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
+  ;; (custom-set-faces
+  ;;  ;; All backgrounds black
+  ;;  '(whitespace-space           ((t (:background "unspecified-bg" :foreground "#2e2e2e"))))
+  ;;  '(whitespace-tab             ((t (:background "unspecified-bg" :foreground "#444444"))))
+  ;;  '(whitespace-trailing        ((t (:background "unspecified-bg" :foreground "#ff5555" :weight bold))))
+  ;;  '(whitespace-line            ((t (:background "unspecified-bg" :foreground "#ff79c6"))))
+  ;;  '(whitesppace-newline         ((t (:background "unspecified-bg" :foreground "#5f5f5f"))))
+  ;;  '(whitespace-indentation     ((t (:background "unspecified-bg" :foreground "#3e3e3e"))))
+  ;;  '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
+ 
 
   (set-face-attribute 'line-number nil
                       :background "{{background}}") ;; optional
@@ -222,8 +224,11 @@
 		      :box nil)
 
   (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '({{transparency}} . {{transparency}}))
-  (add-to-list 'default-frame-alist '(alpha . ({{transparency}} . {{transparency}}))))
+  ;; (set-frame-parameter (selected-frame) 'alpha '({{transparency}} . {{transparency}}))
+  ;; (add-to-list 'default-frame-alist '(alpha . ({{transparency}} . {{transparency}}))))
+
+  (set-frame-parameter (selected-frame) 'alpha '(100 . 70))
+  (add-to-list 'default-frame-alist '(alpha . (100 . 70)))
 
     ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
@@ -244,13 +249,22 @@
   (global-flycheck-mode)
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
   ;;(setq-default mode-line-format 'nil)
-  (add-hook 'flycheck-mode-hook 'flyover-mode)
-  (setq flyover-levels '(error warning info))
+  ;;  (add-hook 'flycheck-mode-hook 'flyover-mode)
+  (flycheck-define-checker php-phpmd
+  "A PHP code complexity checker using phpmd."
+  :command ("phpmd" source "text"
+            ;; choose rulesets: cleancode, codesize, design, naming, unusedcode
+            "codesize")
+  :error-patterns
+  ((warning line-start (file-name) ":" line ": " (message) line-end))
+  :modes (php-mode php-ts-mode))
+  
+(add-to-list 'flycheck-checkers 'php-phpmd)
+
+	     ;;  (setq flyover-levels '(error warning info))
   (custom-set-faces
- '(nano-modeline-active   ((t (:inherit mode-line))))
- '(nano-modeline-inactive ((t (:inherit mode-line-inactive))))
- )
-  )
+   '(nano-modeline-active   ((t (:inherit mode-line))))
+   '(nano-modeline-inactive ((t (:inherit mode-line-inactive)))))))
 ;; End Theme
 
 (defun prog-time ()
@@ -287,10 +301,21 @@
 
   (add-hook 'go-mode-hook #'lsp-deferred)
   (add-hook 'go-mode-hook #'line-number-mode)
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook lsp-format-buffer t t)
-    (add-hook 'before-save-hook lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  (defun my-go-mode-setup ()
+    "Enable LSP formatting and organize imports on save for Go."
+    ;; Ensure lsp-mode is active first
+    (lsp-deferred)
+    ;; Add buffer-local before-save hooks
+    (add-hook 'before-save-hook #'lsp-format-buffer nil t)
+    (add-hook 'before-save-hook #'lsp-organize-imports nil t))
+  
+  (add-hook 'go-mode-hook #'my-go-mode-setup)
+
+  ;; (defun lsp-go-install-save-hooks ()
+
+  ;;   (add-hook 'before-save-hook lsp-format-buffer t t)
+  ;;   (add-hook 'before-save-hook lsp-organize-imports t t))
+  ;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
   (add-hook 'go-mode-hook (lambda () (display-line-numbers-mode 1)))
 
   (add-hook 'python-mode-hook 'python-ts-mode)
