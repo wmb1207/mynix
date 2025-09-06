@@ -12,10 +12,11 @@ else
     bspc monitor -d Hollow Thorne Grimoire Abyss Nocturne
 fi
 
-bspc config border_width 5
+bspc config border_width 10
 bspc config focused_border_color \#e0d8c7
-bspc config normal_border_color \#112328
-bspc config window_gap 25
+#bspc config normal_border_color \#112328
+bspc config normal_border_color \#e0d8c7
+bspc config window_gap 30
 bspc config split_ratio 0.55
 bspc config borderless_monocle true
 bspc config gapless_monocle true

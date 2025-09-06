@@ -19,7 +19,7 @@
 
 [urgency_normal]
     background = "#112328"
-    foreground = "#112328"
+    foreground = "#e0d8c7"
     frame_color = "#e0d8c7"
     timeout = 10
 

@@ -133,11 +133,11 @@
   ;;  :height 11
   ;;  :weight 'regular)
 
-  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
+  (add-to-list 'default-frame-alist '(font . "{{font}}-10"))
 
   (set-face-attribute
    'default nil
-   :font "JetBrains Mono"
+   :font "{{font}}"
    :height 10
    :weight 'regular)
   
@@ -170,9 +170,9 @@
   ;;(load-theme 'ample-flat t)
   ;;(load-theme 'srcery t)
   ;;(load-theme 'modus-vivendi t)
-  (load-theme 'doric-oak t)
+  (load-theme '{{theme}} t)
 
-  (set-face-background 'default "#e0d8c7")
+  (set-face-background 'default "{{background}}")
   ;;(global-whitespace-mode 1)
 
   
@@ -187,8 +187,8 @@
   ;;         ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#e0d8c7")
-    (set-frame-font "JetBrains Mono-10" nil t))
+    (set-face-background 'fringe "{{background}}")
+    (set-frame-font "{{font}}-10" nil t))
 
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
@@ -210,22 +210,22 @@
  
 
   (set-face-attribute 'line-number nil
-                      :background "#e0d8c7") ;; optional
+                      :background "{{background}}") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#e0d8c7"
+                      :background "{{background}}"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#e0d8c7")
+                    :background "{{background}}")
 
   (set-face-attribute 'mode-line nil
-                      :background "#e0d8c7"
+                      :background "{{background}}"
 		      :box nil)
 
   (when (display-graphic-p)
-  ;; (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-  ;; (add-to-list 'default-frame-alist '(alpha . (100 . 100))))
+  ;; (set-frame-parameter (selected-frame) 'alpha '({{transparency}} . {{transparency}}))
+  ;; (add-to-list 'default-frame-alist '(alpha . ({{transparency}} . {{transparency}}))))
 
   (set-frame-parameter (selected-frame) 'alpha '(100 . 70))
   (add-to-list 'default-frame-alist '(alpha . (100 . 70)))
@@ -402,6 +402,8 @@
 
 (configure)
 (provide 'init)
+(setq initial-frame-alist '((window-system . x)))
+
 
 (defun git-switch (branch)
   (shell-command (concat "git switch " branch))
@@ -464,7 +466,7 @@
 
 (setq-default split-height-threshold  4
               split-width-threshold   160) ; the reasonable limit for horizontal splits
-(server-start) 
+
 ;;; init.el ends here
 
 (custom-set-variables

@@ -8,7 +8,7 @@ let
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
-  myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
+  myEmacs = pkgs.emacs-gtk.pkgs.withPackages (epkgs: with epkgs; [
   lsp-mode
     use-package
     vterm
@@ -78,6 +78,15 @@ in
       pkgs.picom
       pkgs.typescript
     ];
+
+    gtk = {
+      enable = true;
+      
+      theme = {
+        name = "Everforest-Light-BL"; # Or "Everforest-Light"
+        package = pkgs.everforest-gtk-theme;
+      };
+    };
 
     programs.emacs = {
       enable = true;

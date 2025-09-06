@@ -115,6 +115,8 @@
        protonup-qt
      ];
   };
+  services.dbus.enable = true;
+  programs.dconf.enable = true;
 
   # Install firefox.
   programs.firefox.enable = true;

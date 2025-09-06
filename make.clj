@@ -157,7 +157,7 @@
               [(->TemplateField "{{black}}" black)
                (->TemplateField "{{green}}" white)
                (->TemplateField "{{red}}" red)
-               (->TemplateField "{{white}}" black)
+               (->TemplateField "{{white}}" white)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 

@@ -14,6 +14,8 @@
       baseModules = [
         inputs.home-manager.nixosModules.default
       ];
+      system = "x86_64-linux";  
+      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in {
       nixosConfigurations = {
         default = nixpkgs.lib.nixosSystem {
@@ -38,7 +40,7 @@
 
         rog = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-	  pkgs = import nixpkgs {
+	        pkgs = import nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
             #nixpkgs.legacyPackages.aarch64-linux;
@@ -84,5 +86,21 @@
           specialArgs = {          system = "aarch64-linux"; inherit inputs; };
         };
       };
+#      homeConfigurations = {
+#   wmb = home-manager.lib.homeManagerConfiguration {
+#     pkgs = pkgs;
+#     modules = [
+#       ./modules/user-wmb.nix
+#       {
+#         # User-specific settings go inside a module
+#         home.username = "wmb";
+#         home.homeDirectory = "/home/wmb";
+
+#         # You can also set stateVersion here if needed
+#         home.stateVersion = "23.05"; # or whatever version you want
+#       }
+#     ];
+#   };
+# };
     };
 }
