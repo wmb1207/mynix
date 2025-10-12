@@ -1,6 +1,9 @@
 { pkgs }:
 
 with pkgs; [
+  lemonbar
+  xdotool
+  xdo
   docker-compose
   direnv
   babashka
@@ -37,4 +40,5 @@ with pkgs; [
 
   libtool
   php84Packages.phpmd
+  ameba # Crystal linter
 ]

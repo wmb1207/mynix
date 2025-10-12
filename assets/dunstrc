@@ -1,8 +1,8 @@
 [global]
     font = "JetBrains Mono 13"
-    background = "#112328"
+    background = "#222524"
     foreground = "#e0d8c7"
-    frame_color = "#112328"
+    frame_color = "#222524"
     separator_color = "#101010"
     horizontal_padding = 0
     padding = 0
@@ -12,26 +12,26 @@
     alignment = center
 
 [urgency_low]
-    background = "#112328"
+    background = "#222524"
     foreground = "#e0d8c7"
-    frame_color = "#112328"
+    frame_color = "#222524"
     timeout = 10
 
 [urgency_normal]
-    background = "#112328"
+    background = "#222524"
     foreground = "#e0d8c7"
     frame_color = "#e0d8c7"
     timeout = 10
 
 [urgency_critical]
-    background = "#112328"
+    background = "#222524"
     foreground = "#ff8059"
     frame_color = "#ff8059"
     timeout = 0
 
 [spotify]
     appname = "Spotify"
-    background = "#112328"
+    background = "#222524"
     foreground = "#e0d8c7"
     frame_color = "#e0d8c7"
     timeout = 5
@@ -42,7 +42,7 @@
 # Alternative rule if Spotify uses different app names
 [spotify_alt]
     desktop_entry = "spotify"
-    background = "#112328"
+    background = "#222524"
     foreground = "#e0d8c7"
     frame_color = "#e0d8c7"
     timeout = 5

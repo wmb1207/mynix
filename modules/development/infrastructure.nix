@@ -1,7 +1,7 @@
 { pkgs }:
 
 with pkgs; [
-  awscli
+  awscli2
   #terraform
   opentofu
 ]

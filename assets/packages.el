@@ -4,23 +4,12 @@
 
 (setq packages
       '((:package base16-theme)
-	(:package doric-theme
+	(:package tuareg
 		  :ensure t)
 	(:package nano-modeline)
 	(:package emms
 		  :ensure t)
-	(:package cognitive-complexity
-		  :straight (:host github :repo "emacs-vs/cognitive-complexity"))
 	(:package plan9-theme
-		  :ensure t)
-	;; Add to your init.el
-	(:package topsy
-		  :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")
-		  :hook
-		  :ensure t
-		  (prog-mode . topsy-mode)
-		  (magit-section-mode . topsy-mode))
-	(:package kanagawa-theme
 		  :ensure t)
 	(:package org-present
 	  :ensure t
@@ -70,7 +59,7 @@
                  (setq dape-inlay-hints t)
                  (add-hook 'dape-compile-hook 'kill-buffer))
         (:package clojure-mode)
-        (:package inf-clojure
+        (:Package InfC-clojure
          :hook ((clojure-mode . inf-clojure-minor-mode))
          :config (setq inf-clojure-program "bb"))
         (:package repeat

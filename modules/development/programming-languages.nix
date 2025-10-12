@@ -1,6 +1,15 @@
 { pkgs }:
 
 with pkgs; [
+  ocaml
+  dune_3  # dune build system
+  opam    # package manager (optional)
+  #utop    # nice REPL
+  ocamlPackages.ocamlformat  # formatter
+  ocamlPackages.merlin  # formatter
+  ocamlPackages.utop
+  
+  #merlin  # editor support (LSP helper)
   php84
   nodejs
   python313
@@ -12,6 +21,9 @@ with pkgs; [
   yarn
   pipx
   hex
+  crystal
+  crystalline
+  shards
 
   tree-sitter-grammars.tree-sitter-php
   gopls

@@ -9,7 +9,7 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "JetBrains Mono" -nb "#112328" -nf "#e0d8c7" -sb "#e0d8c7" -sf "#112328"
+      dmenu_run -fn "JetBrains Mono" -nb "#222524" -nf "#e0d8c7" -sb "#e0d8c7" -sf "#222524"
 
 super + c
       emacsclient -c 

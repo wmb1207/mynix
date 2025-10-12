@@ -12,14 +12,11 @@ let
     postman
     vlc
     mupdf
-    nyxt
     pcmanfm
-    vscode
+    zed-editor
   ];
 
   x86_64Packages = with pkgs; [
-    discord
-    spotify
     slack
     steam
     whatsapp-for-linux
@@ -27,6 +24,7 @@ let
     jetbrains.goland
     jetbrains.phpstorm
     jetbrains.webstorm
+    jetbrains-toolbox
   ];
 
   aarch64Packages = with pkgs; [

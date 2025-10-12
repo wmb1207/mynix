@@ -11,15 +11,15 @@
 (require 'packages)
 (install-packages packages)
 
-
 (setq inhibit-startup-message t)
 (tool-bar-mode 1)
 (menu-bar-mode 1)
 (scroll-bar-mode -1)
 (unless (package-installed-p 'exec-path-from-shell)
-  (package-refresh-contents)
+hm  (package-refresh-contents)
   (package-install 'exec-path-from-shell))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(add-to-list 'load-path "~/.emacs.d/manual-packages/")
 
 (unless (package-installed-p 'vc-use-package)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
@@ -112,74 +112,36 @@
   
   (add-hook 'after-make-frame-functions 'my-open-dired-on-new-frame)
   (global-set-key (kbd "<escape>") 'keyboard-quit)
-  ;;(global-set-key (kbd "<escape>") 'ignore)
   (display-fill-column-indicator-mode t)
   (require 'neotree)
-  ;; (solaire-global-mode +1)
-  ;; (require 'powerline)
-  ;; (powerline-default-theme)
-  ;; (projectile-mode 1)
 
   (setq scroll-step            1
       scroll-conservatively  10000)
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
-    
-  ;; (add-to-list 'default-frame-alist '(font . "Tamzen-11"))
-  ;; (set-frame-font "Tamzen-11" nil t)
-  ;; (set-face-attribute
-  ;;  'default nil
-  ;;  :font "Tamzen"
-  ;;  :height 11
-  ;;  :weight 'regular)
-
-  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-10"))
-
+  (add-to-list 'default-frame-alist '(internal-border-width . 24))
+  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-9"))
   (set-face-attribute
    'default nil
    :font "JetBrains Mono"
    :height 10
    :weight 'regular)
-  
+ 
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
   (setq-default left-margin-width 0 right-margin-width 0 internal-border-width 0) ; Define new widths.
   (set-window-buffer nil (current-buffer)) ; Use them now.
   (custom-set-variables '(neo-window-position (quote right)))
-
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
-
-  ;; (setq whitespace-style '(face tabs spaces trailing lines space-mark tab-mark newline))
-  ;; (setq whitespace-display-mappings '((space-mark ?\  [?·])
-  ;;                                     (tab-mark ?\t [?» ?\t] [?\\ ?\t])))
-  ;; (setq whitespace-line-column 300)
-
-
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  ;;(load-theme 'automata t)
-  ;;(load-theme 'nano-dark t)
-    ;;(load-theme 'timu-spacegrey t)
-  ;;(load-theme 'spacegray t)
-  ;;(load-theme 'doom-zenburn t)
-  ;;(load-theme 'brin t)
-  ;;(load-theme 'spolsky t)
-  ;;(load-theme 'base16-vesper t)
-  ;;(load-theme 'base16-rose-pine t)
-  ;;(load-theme 'zenburn t)
-  ;;(load-theme 'ample-light t)
-  ;;(load-theme 'ample-flat t)
-  ;;(load-theme 'srcery t)
-  ;;(load-theme 'modus-vivendi t)
-  (load-theme 'doric-oak t)
+  (load-theme 'ef-elea-dark t)
 
-  (set-face-background 'default "#e0d8c7")
+  (set-face-background 'default "#222524")
   ;;(global-whitespace-mode 1)
 
-  
   ;; (setq whitespace-style
   ;; 	'(face trailing tabs spaces lines-tail newline empty
   ;;              indentation::space indentation::tab space-mark tab-mark newline-mark))
-
   ;; (setq whitespace-display-mappings
   ;; 	'((space-mark   ?\     [?\u00B7]     [?.])      ; space → ·
   ;;         (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])  ; newline → ↵
@@ -187,50 +149,29 @@
   ;;         ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#e0d8c7")
+    (set-face-background 'fringe "#222524")
     (set-frame-font "JetBrains Mono-10" nil t))
-
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
-
   (set-cursor-color "#a6e3a1")
-  ;; (add-to-list 'default-frame-alist '(cursor-color . "#a6e3a1"))
-  ;; (add-to-list 'default-frame-alist '(mouse-color . "#a6e3a1"))
-  ;;(modify-all-frames-parameters '((mouse-color . "#a6e3a1")))
-
-  ;; (custom-set-faces
-  ;;  ;; All backgrounds black
-  ;;  '(whitespace-space           ((t (:background "unspecified-bg" :foreground "#2e2e2e"))))
-  ;;  '(whitespace-tab             ((t (:background "unspecified-bg" :foreground "#444444"))))
-  ;;  '(whitespace-trailing        ((t (:background "unspecified-bg" :foreground "#ff5555" :weight bold))))
-  ;;  '(whitespace-line            ((t (:background "unspecified-bg" :foreground "#ff79c6"))))
-  ;;  '(whitesppace-newline         ((t (:background "unspecified-bg" :foreground "#5f5f5f"))))
-  ;;  '(whitespace-indentation     ((t (:background "unspecified-bg" :foreground "#3e3e3e"))))
-  ;;  '(whitespace-empty           ((t (:background "unspecified-bg" :foreground "#ff6c6b")))))
- 
-
   (set-face-attribute 'line-number nil
-                      :background "#e0d8c7") ;; optional
+                      :background "#222524") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#e0d8c7"
+                      :background "#222524"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#e0d8c7")
+                    :background "#222524")
 
   (set-face-attribute 'mode-line nil
-                      :background "#e0d8c7"
+                      :background "#222524"
 		      :box nil)
 
   (when (display-graphic-p)
-  ;; (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
-  ;; (add-to-list 'default-frame-alist '(alpha . (100 . 100))))
 
   (set-frame-parameter (selected-frame) 'alpha '(100 . 70))
   (add-to-list 'default-frame-alist '(alpha . (100 . 70)))
-
-    ;; (load-theme 'modus-operandi t)
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-headerline-breadcrumb-icons-enable nil)
@@ -244,12 +185,8 @@
   (vertico-buffer-mode 1)
   (tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing roo
-  ;;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  ;;(vertico-posframe-mode 1)
   (global-flycheck-mode)
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
-  ;;(setq-default mode-line-format 'nil)
-  ;;  (add-hook 'flycheck-mode-hook 'flyover-mode)
   (flycheck-define-checker php-phpmd
   "A PHP code complexity checker using phpmd."
   :command ("phpmd" source "text"
@@ -259,12 +196,13 @@
   ((warning line-start (file-name) ":" line ": " (message) line-end))
   :modes (php-mode php-ts-mode))
   
-(add-to-list 'flycheck-checkers 'php-phpmd)
-
-	     ;;  (setq flyover-levels '(error warning info))
+  (add-to-list 'flycheck-checkers 'php-phpmd)
+  (require 'buffer-box)
+  (buffer-box)
   (custom-set-faces
    '(nano-modeline-active   ((t (:inherit mode-line))))
    '(nano-modeline-inactive ((t (:inherit mode-line-inactive)))))))
+   
 ;; End Theme
 
 (defun prog-time ()
@@ -272,6 +210,7 @@
   
   (require 'lsp-mode)
   (require 'prettier)
+  (setq lsp-auto-guess-root nil)
 
   (with-eval-after-load 'lsp-mode
     (add-to-list 'lsp-file-watch-ignored "package.json"))
@@ -336,30 +275,22 @@
 
   (add-hook 'after-init-hook #'global-prettier-mode)
   (add-hook 'typescript-mode #'prettier-mode)
-
-  ;;(add-hook 'clojure-mode-hook 'raindow-delimiters-mode)
-  ;;(add-hook 'emacs-lisp-mode-hook 'raindow-delimiters-mode)
-
-  ;; Terraform time
-  ;;(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
-  ;; End terraform
-  ;; Yaml Time
   (add-hook 'yaml-mode-hook #'lsp-deferred)
   (cognitive-complexity-mode 1)
   
-(add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
-(add-hook 'text-mode-hook            #'nano-modeline-text-mode)
-(add-hook 'org-mode-hook             #'nano-modeline-org-mode)
-(add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
-(add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
-(add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
-(add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
-(add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
-(add-hook 'term-mode-hook            #'nano-modeline-term-mode)
-(add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
-(add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
-(add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
-(add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode))
+  (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
+  (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
+  (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
+  (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
+  (add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
+  (add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
+  (add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
+  (add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
+  (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
+  (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
+  (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
+  (add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
+  (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode))
 
 
 
