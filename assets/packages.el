@@ -6,6 +6,19 @@
       '((:package base16-theme)
 	(:package tuareg
 		  :ensure t)
+	(:package merlin
+		  :ensure t
+		  :config
+		  (add-hook 'tuareg-mode-hook #'merlin-mode)
+		  (add-hook 'merxblin-mode-hook #'company-mode)
+		  ;; we're using flycheck instead
+		  (setq merlin-error-after-save nil))
+	
+	(:package merlin-eldoc
+	  :ensure t
+	  :hook ((tuareg-mode) . merlin-eldoc-setup))
+	
+
 	(:package nano-modeline)
 	(:package emms
 		  :ensure t)

@@ -277,7 +277,12 @@ hm  (package-refresh-contents)
   (add-hook 'typescript-mode #'prettier-mode)
   (add-hook 'yaml-mode-hook #'lsp-deferred)
   (cognitive-complexity-mode 1)
-  
+
+  (add-hook 'tuareg-mode-hook
+	    (lambda()
+	      (setq-local comment-style 'multi-line)
+	      (setq-local comment-continue "   ")))
+    
   (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
   (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
   (add-hook 'org-mode-hook             #'nano-modeline-org-mode)

@@ -39,18 +39,31 @@
   time.timeZone = "America/Argentina/Buenos_Aires";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    
+    extraLocaleSettings = {
+      LC_ADDRESS = "es_AR.UTF-8";
+      LC_IDENTIFICATION = "es_AR.UTF-8";
+      LC_MEASUREMENT = "es_AR.UTF-8";
+      LC_MONETARY = "es_AR.UTF-8";
+      LC_NAME = "es_AR.UTF-8";
+      LC_NUMERIC = "es_AR.UTF-8";
+      LC_PAPER = "es_AR.UTF-8";
+      LC_TELEPHONE = "es_AR.UTF-8";
+      LC_TIME = "es_AR.UTF-8";
+    };
+    
+    inputMethod = {
+      #enabled = null;  # disables input methods completely
+        enabled = "fcitx5";
+        fcitx5 = {
+          #addons = with pkgs; [ ... ];
+          # Explicitly set the package to use kdePackages
+          waylandFrontend = true; # if using Wayland
+        };
+    };
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "es_AR.UTF-8";
-    LC_IDENTIFICATION = "es_AR.UTF-8";
-    LC_MEASUREMENT = "es_AR.UTF-8";
-    LC_MONETARY = "es_AR.UTF-8";
-    LC_NAME = "es_AR.UTF-8";
-    LC_NUMERIC = "es_AR.UTF-8";
-    LC_PAPER = "es_AR.UTF-8";
-    LC_TELEPHONE = "es_AR.UTF-8";
-    LC_TIME = "es_AR.UTF-8";
   };
 
   # Enable the X11 windowing system.
@@ -117,11 +130,13 @@
   };
   services.dbus.enable = true;
   programs.dconf.enable = true;
+  programs.nix-ld.enable = true;
 
   # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
+#  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -251,10 +266,13 @@
   services.logind = {
     lidSwitch = "suspend";
     lidSwitchDocked = "ignore";
-    extraConfig = ''
-    HandlePowerKey=suspend
-  '';
+    settings = {
+      Login = {
+        HandlePowerKey = "suspend";
+      };
+    };
   };
+
 
   # Environment variables
   environment.sessionVariables = {

@@ -8,6 +8,8 @@ with pkgs; [
   ocamlPackages.ocamlformat  # formatter
   ocamlPackages.merlin  # formatter
   ocamlPackages.utop
+  ocamlPackages.lsp
+  ocamlPackages.ocaml-lsp
   
   #merlin  # editor support (LSP helper)
   php84

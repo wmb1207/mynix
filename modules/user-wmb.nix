@@ -8,7 +8,7 @@ let
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
 
-  myEmacs = pkgs.emacs-gtk.pkgs.withPackages (epkgs: with epkgs; [
+  myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
   lsp-mode
     use-package
     vterm
@@ -23,6 +23,7 @@ let
     pkgs.tree-sitter-grammars.tree-sitter-clojure
     pkgs.tree-sitter-grammars.tree-sitter-go
     pkgs.tree-sitter-grammars.tree-sitter-elixir
+    pkgs.tree-sitter-grammars.tree-sitter-ocaml
   ];
 
   treeSitterLibDir = pkgs.linkFarm "tree-sitter-libs" (builtins.concatLists (map (grammar:
@@ -66,7 +67,7 @@ in
   home-manager.users.wmb = { pkgs, ... }: {
     xsession.enable = true;
     nixpkgs.config.allowUnfree = true;
-    home.stateVersion = "24.11";
+    home.stateVersion = "25.05";
     programs.bash.enable = true;
 
     home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools ++ [
@@ -83,8 +84,8 @@ in
       enable = true;
       
       theme = {
-        name = "Everforest-Light-BL"; # Or "Everforest-Light"
-        package = pkgs.everforest-gtk-theme;
+        name = "Gruvbox-Dark-B"; # Or "Everforest-Light"
+        package = pkgs.gruvbox-dark-gtk;
       };
     };
 
@@ -96,6 +97,7 @@ in
     home.sessionVariables = {
       EDITOR = "emacs";
       TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
+      GPUI_X11_SCALE_FACTOR = "1";
     };
 
     programs.home-manager.enable = true;
