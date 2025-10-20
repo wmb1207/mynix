@@ -1,3 +1,4 @@
+
 {
   description = "wmb NIX setup";
 
@@ -13,6 +14,7 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
+
       baseModules = [
         inputs.home-manager.nixosModules.default
       ];
@@ -25,20 +27,25 @@
         })
       ];
 
+      # ✅ Global helper to always include overlays + allowUnfree
+      pkgsFor = system: import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = myOverlays;
+      };
+
     in {
       nixosConfigurations = {
 
         default = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          inherit system;
+          pkgs = pkgsFor system;
           modules = baseModules;
         };
 
         nixos = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.x86_64-linux // {
-            overlays = myOverlays;
-          };
+          inherit system;
+          pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
@@ -47,10 +54,8 @@
         };
 
         rog = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.x86_64-linux // {
-            overlays = myOverlays;
-          };
+          inherit system;
+          pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix
@@ -60,37 +65,31 @@
         };
 
         latitude = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = import nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;  # <-- pass it here, not in configuration.nix
-          };
+          inherit system;
+          pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/latitude/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
           ];
-          specialArgs = { system = "x86_64-linux"; inherit inputs; };
+          specialArgs = { inherit inputs system; };
         };
-
 
         asahibook = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
-          pkgs = nixpkgs.legacyPackages.aarch64-linux // {
-            overlays = myOverlays;
-          };
+          pkgs = pkgsFor "aarch64-linux";
           modules = baseModules ++ [
             ./hosts/asahi-book/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
           ];
-          specialArgs = { system = "aarch64-linux"; inherit inputs; };
+          specialArgs = { inherit inputs; system = "aarch64-linux"; };
         };
       };
 
       homeConfigurations = {
         wmb = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux // { overlays = myOverlays; };
+          pkgs = pkgsFor system;
           modules = [
             ./modules/user-wmb.nix
             {
@@ -103,4 +102,3 @@
       };
     };
 }
-
