@@ -43,6 +43,10 @@ show_current() {
     notify_battery "$CURRENT_CAPACITY"
 }
 
+if [ ! -f "/sys/class/power_supply/BAT0/capacity" ]; then
+    exit 1;
+fi
+
 # Parse command line arguments
 case "${1:-}" in
     --daemon|-d)
