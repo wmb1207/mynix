@@ -1,5 +1,5 @@
 [global]
-    font = "JetBrains Mono 13"
+    font = "DejaVu Sans Mono 13"
     background = "#000000"
     foreground = "#e0d8c7"
     frame_color = "#000000"

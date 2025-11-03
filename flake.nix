@@ -75,6 +75,16 @@
           specialArgs = { inherit inputs system; };
         };
 
+        vm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = baseModules ++ [
+            ./hosts/vm/configuration.nix
+            ./modules/user-wmb.nix
+          ];
+          specialArgs = { inherit inputs system; };
+        };
+
         asahibook = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
           pkgs = pkgsFor "aarch64-linux";

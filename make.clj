@@ -22,8 +22,8 @@
 ;;(def white "#c8c093")
 ;;(def white "#ffffff")
 
-;;(def font "DejaVu Sans Mono")
-(def font "JetBrains Mono")
+(def font "DejaVu Sans Mono")
+;;(def font "JetBrains Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
 (def transparency "100")

@@ -121,10 +121,10 @@ hm  (package-refresh-contents)
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
   (add-to-list 'default-frame-alist '(internal-border-width . 24))
-  (add-to-list 'default-frame-alist '(font . "JetBrains Mono-9"))
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-9"))
   (set-face-attribute
    'default nil
-   :font "JetBrains Mono"
+   :font "DejaVu Sans Mono"
    :height 10
    :weight 'regular)
  
@@ -151,7 +151,7 @@ hm  (package-refresh-contents)
 
   (when (display-graphic-p)
     (set-face-background 'fringe "#000000")
-    (set-frame-font "JetBrains Mono-10" nil t))
+    (set-frame-font "DejaVu Sans Mono-10" nil t))
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
   (set-cursor-color "#a6e3a1")

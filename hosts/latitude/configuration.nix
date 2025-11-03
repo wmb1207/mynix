@@ -198,8 +198,6 @@
   hardware.enableRedistributableFirmware = true;
   hardware.enableAllFirmware = true;
 
-
-
   # Power management
   powerManagement.enable = true;
   
