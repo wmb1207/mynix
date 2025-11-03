@@ -99,7 +99,8 @@ hm  (package-refresh-contents)
 
 (defun set-margins ()
   (interactive)
-  (set-window-margins (selected-window) 24 24))
+  ;; Setup the margins / padding
+  (set-window-margins (selected-window) 0 0))
 
 (defun theming ()
   (set-margins)
@@ -170,8 +171,8 @@ hm  (package-refresh-contents)
 
   (when (display-graphic-p)
 
-  (set-frame-parameter (selected-frame) 'alpha '(100 . 70))
-  (add-to-list 'default-frame-alist '(alpha . (100 . 70)))
+  (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
+  (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-headerline-breadcrumb-icons-enable nil)
@@ -184,7 +185,7 @@ hm  (package-refresh-contents)
   (vertico-mode 1)
   (vertico-buffer-mode 1)
   (tooltip-mode -1)           ; Disable tooltips
-  (set-fringe-mode 10)        ; Give some breathing roo
+  (set-fringe-mode 0)        ; Give some breathing roo
   (global-flycheck-mode)
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
   (flycheck-define-checker php-phpmd

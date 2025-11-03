@@ -41,4 +41,5 @@ with pkgs; [
   libtool
   php84Packages.phpmd
   ameba # Crystal linter
+  aider-chat
 ]

@@ -99,7 +99,8 @@ hm  (package-refresh-contents)
 
 (defun set-margins ()
   (interactive)
-  (set-window-margins (selected-window) 24 24))
+  ;; Setup the margins / padding
+  (set-window-margins (selected-window) 0 0))
 
 (defun theming ()
   (set-margins)
@@ -134,9 +135,9 @@ hm  (package-refresh-contents)
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'ef-elea-dark t)
+  (load-theme 'modus-vivendi-tinted t)
 
-  (set-face-background 'default "#222524")
+  (set-face-background 'default "#000000")
   ;;(global-whitespace-mode 1)
 
   ;; (setq whitespace-style
@@ -149,29 +150,29 @@ hm  (package-refresh-contents)
   ;;         ))
 
   (when (display-graphic-p)
-    (set-face-background 'fringe "#222524")
+    (set-face-background 'fringe "#000000")
     (set-frame-font "JetBrains Mono-10" nil t))
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
   (set-cursor-color "#a6e3a1")
   (set-face-attribute 'line-number nil
-                      :background "#222524") ;; optional
+                      :background "#000000") ;; optional
   
   (set-face-attribute 'header-line nil
-                      :background "#222524"
+                      :background "#000000"
                       :box nil)
 
   (set-face-attribute 'mode-line-inactive nil
-                    :background "#222524")
+                    :background "#000000")
 
   (set-face-attribute 'mode-line nil
-                      :background "#222524"
+                      :background "#000000"
 		      :box nil)
 
   (when (display-graphic-p)
 
-  (set-frame-parameter (selected-frame) 'alpha '(100 . 70))
-  (add-to-list 'default-frame-alist '(alpha . (100 . 70)))
+  (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
+  (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-headerline-breadcrumb-icons-enable nil)
@@ -184,7 +185,7 @@ hm  (package-refresh-contents)
   (vertico-mode 1)
   (vertico-buffer-mode 1)
   (tooltip-mode -1)           ; Disable tooltips
-  (set-fringe-mode 10)        ; Give some breathing roo
+  (set-fringe-mode 0)        ; Give some breathing roo
   (global-flycheck-mode)
   (setq neo-theme (if (display-graphic-p) 'arrow 'arrow))
   (flycheck-define-checker php-phpmd
