@@ -31,7 +31,6 @@ with pkgs; [
   networkmanager
 
   postgresql
-  teleport
   libfido2
 
   cmus

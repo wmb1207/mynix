@@ -11,7 +11,8 @@
 ;;(def black "#112328")
 ;;(def black "#222524")
 (def black "#000000")
-(def white "#e0d8c7")
+;;(def white "#e0d8c7")
+(def white "#ffffff")
 ;;(def black "#383035") ;; doric valley
 (def green "#44bc44")          ; modus-vivendi green
 (def blue "#2fafff")           ; modus-vivendi blue  
@@ -33,7 +34,7 @@
 (def theme "modus-vivendi-tinted") ;; DOOM emacs little nice theme
 ;;(def theme "doric-valley")
 ;;(def light-theme "modus-operandi-tinted")
-(def light-theme "doric-oak")
+(def light-theme "ef-day")
 (def ghostty-theme "Wez")
 (def ghostty-theme-light "GruvboxLight")
 

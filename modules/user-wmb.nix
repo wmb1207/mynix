@@ -46,6 +46,7 @@ in
 
   services.cloudflare-warp.enable = true;
   services.xserver.windowManager.bspwm.enable = true;
+  
   services.xserver.enable = true;
   services.xserver.xautolock = {
     enable = true;

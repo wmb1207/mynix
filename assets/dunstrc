@@ -1,7 +1,7 @@
 [global]
     font = "DejaVu Sans Mono 13"
     background = "#000000"
-    foreground = "#e0d8c7"
+    foreground = "#ffffff"
     frame_color = "#000000"
     separator_color = "#101010"
     horizontal_padding = 0
@@ -13,14 +13,14 @@
 
 [urgency_low]
     background = "#000000"
-    foreground = "#e0d8c7"
+    foreground = "#ffffff"
     frame_color = "#000000"
     timeout = 10
 
 [urgency_normal]
     background = "#000000"
-    foreground = "#e0d8c7"
-    frame_color = "#e0d8c7"
+    foreground = "#ffffff"
+    frame_color = "#ffffff"
     timeout = 10
 
 [urgency_critical]
@@ -32,8 +32,8 @@
 [spotify]
     appname = "Spotify"
     background = "#000000"
-    foreground = "#e0d8c7"
-    frame_color = "#e0d8c7"
+    foreground = "#ffffff"
+    frame_color = "#ffffff"
     timeout = 5
     format = "<b>%s</b>\n%b"
     alignment = center
@@ -43,6 +43,6 @@
 [spotify_alt]
     desktop_entry = "spotify"
     background = "#000000"
-    foreground = "#e0d8c7"
-    frame_color = "#e0d8c7"
+    foreground = "#ffffff"
+    frame_color = "#ffffff"
     timeout = 5

@@ -138,7 +138,7 @@ hm  (package-refresh-contents)
   (load-theme 'modus-vivendi-tinted t)
 
   (set-face-background 'default "#000000")
-  ;;(global-whitespace-mode 1)
+  ;; (global-whitespace-mode 1)
 
   ;; (setq whitespace-style
   ;; 	'(face trailing tabs spaces lines-tail newline empty
