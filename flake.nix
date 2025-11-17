@@ -1,22 +1,23 @@
-
 {
   description = "wmb NIX setup";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-     
+
+    teleport-installer.url = "path:./flakes/teleport";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, ... }:
     let
       system = "x86_64-linux";
 
       baseModules = [
-        inputs.home-manager.nixosModules.default
+        home-manager.nixosModules.default
       ];
 
       myOverlays = [
@@ -27,7 +28,6 @@
         })
       ];
 
-      # ✅ Global helper to always include overlays + allowUnfree
       pkgsFor = system: import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -49,8 +49,11 @@
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
+            teleport-installer.nixosModules.default
           ];
-          specialArgs = { inherit inputs system; };
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         rog = nixpkgs.lib.nixosSystem {
@@ -61,7 +64,9 @@
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
           ];
-          specialArgs = { inherit inputs system; };
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         latitude = nixpkgs.lib.nixosSystem {
@@ -71,8 +76,16 @@
             ./hosts/latitude/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
+            teleport-installer.nixosModules.default
+            {
+              environment.systemPackages = [
+                teleport-installer.packages.${system}.teleport
+              ];
+            }
           ];
-          specialArgs = { inherit inputs system; };
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         vm = nixpkgs.lib.nixosSystem {
@@ -82,7 +95,9 @@
             ./hosts/vm/configuration.nix
             ./modules/user-wmb.nix
           ];
-          specialArgs = { inherit inputs system; };
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         asahibook = nixpkgs.lib.nixosSystem {
@@ -93,7 +108,10 @@
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
           ];
-          specialArgs = { inherit inputs; system = "aarch64-linux"; };
+          specialArgs = {
+            inherit inputs teleport-installer;
+            system = "aarch64-linux";
+          };
         };
       };
 
@@ -106,6 +124,11 @@
               home.username = "wmb";
               home.homeDirectory = "/home/wmb";
               home.stateVersion = "23.05";
+            }
+            {
+              home.packages = [
+                teleport-installer.packages.${system}.default
+              ];
             }
           ];
         };
