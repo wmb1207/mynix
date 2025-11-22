@@ -23,15 +23,16 @@
 ;;(def white "#c8c093")
 ;;(def white "#ffffff")
 
-(def font "DejaVu Sans Mono")
+;;(def font "DejaVu Sans Mono")
+(def font "CozetteVector")
 ;;(def font "JetBrains Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
 (def transparency "100")
 ;;(def theme "modus-vivendi-tinted")
 ;;(def theme "reykjavik")
-;;(def theme "ef-elea-dark")
-(def theme "modus-vivendi-tinted") ;; DOOM emacs little nice theme
+(def theme "ef-elea-dark")
+;;(def theme "ef-tr") ;; DOOM emacs little nice theme
 ;;(def theme "doric-valley")
 ;;(def light-theme "modus-operandi-tinted")
 (def light-theme "ef-day")

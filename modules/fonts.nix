@@ -5,4 +5,7 @@ with pkgs; [
   iosevka-bin
   dina-font
   jetbrains-mono
+  terminus_font
+  cozette
+  tamzen
 ]

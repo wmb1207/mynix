@@ -9,7 +9,7 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "CozetteVector" -nb "#000000" -nf "#ffffff" -sb "#ffffff" -sf "#000000"
+      dmenu_run -fn "{{font}}" -nb "{{background}}" -nf "{{foreground}}" -sb "{{foreground}}" -sf "{{selected-foreground}}"
 
 super + c
       emacsclient -c 
@@ -82,3 +82,7 @@ XF86AudioLowerVolume
 # Mute toggle
 XF86AudioMute
   pamixer --toggle-mute
+
+super + shift + l
+    $HOME/.local/bin/lock
+

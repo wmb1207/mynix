@@ -1,0 +1,9 @@
+let
+  mkSource = path: { source = path; };
+  mkExecutable = path: { source = path; executable = true };
+
+  wallpapers = builtins.listToAttrs (map (x: {
+    name = ".config/wallpapers/wallpaper-${toString x}.jpg";
+    value.source = ../assets + "/wallpaper-${toString x}.jpg";
+  }) (lib.range 1 8));
+    

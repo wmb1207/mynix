@@ -1,7 +1,6 @@
 { pkgs }:
 
 with pkgs; [
-  lemonbar
   xdotool
   xdo
   docker-compose
@@ -40,5 +39,5 @@ with pkgs; [
   libtool
   php84Packages.phpmd
   ameba # Crystal linter
-  aider-chat
+  i3lock
 ]

@@ -120,12 +120,12 @@ hm  (package-refresh-contents)
       scroll-conservatively  10000)
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
-  (add-to-list 'default-frame-alist '(internal-border-width . 24))
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-9"))
+  (add-to-list 'default-frame-alist '(internal-border-width . 0)) ;;pading
+  (add-to-list 'default-frame-alist '(font . "CozetteVector-14"))
   (set-face-attribute
    'default nil
-   :font "DejaVu Sans Mono"
-   :height 10
+   :font "CozetteVector"
+   :height 14
    :weight 'regular)
  
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
@@ -135,7 +135,7 @@ hm  (package-refresh-contents)
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'modus-vivendi-tinted t)
+  (load-theme 'ef-elea-dark t)
 
   (set-face-background 'default "#000000")
   ;; (global-whitespace-mode 1)
@@ -151,7 +151,7 @@ hm  (package-refresh-contents)
 
   (when (display-graphic-p)
     (set-face-background 'fringe "#000000")
-    (set-frame-font "DejaVu Sans Mono-10" nil t))
+    (set-frame-font "CozetteVector-14" nil t))
   (when (not (display-graphic-p))
     (set-face-background 'default "unspecified-bg"))
   (set-cursor-color "#a6e3a1")

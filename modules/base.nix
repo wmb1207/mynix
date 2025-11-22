@@ -2,8 +2,23 @@
 
 {
   environment.systemPackages = with pkgs; [
-    wget curl bash cmake gnumake git libvterm emacs gcc
-    bspwm sxhkd rsync docker-compose mesa vulkan-tools
+    wget
+    curl
+    bash
+    cmake
+    gnumake
+    git
+    libvterm
+    emacs
+    gcc
+    bspwm
+    sxhkd
+    rsync
+    docker-compose
+    mesa
+    vulkan-tools
+    xsecurelock
+    xautolock
   ];
 
   programs.mtr.enable = true;

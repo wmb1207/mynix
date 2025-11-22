@@ -4,9 +4,11 @@ let
   cli = import ./cli.nix { inherit pkgs; };
   iac = import ./development/infrastructure.nix { inherit pkgs; };
   gui = import ./gui.nix { inherit pkgs; inherit system; };
-  fonts = import ./fonts.nix { inherit pkgs; };
+  my-fonts = import ./fonts.nix { inherit pkgs; };
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
   programming-languages = import ./development/programming-languages.nix { inherit pkgs; };
+  assets = import ./assets.nix { inherit lib; };
+
 
   myEmacs = pkgs.emacs.pkgs.withPackages (epkgs: with epkgs; [
   lsp-mode
@@ -36,6 +38,8 @@ let
       else
         []
   ) grammars));
+
+
 in
 {
   users.users.wmb = {
@@ -64,6 +68,9 @@ in
     package = myEmacs;
     startWithGraphical = true;
   };
+  
+  fonts.packages = my-fonts;
+
 
   home-manager.users.wmb = { pkgs, ... }: {
     xsession.enable = true;
@@ -71,7 +78,7 @@ in
     home.stateVersion = "25.05";
     programs.bash.enable = true;
 
-    home.packages = cli ++ programming-languages ++ gui ++ fonts ++ iac ++ wm-tools ++ [
+    home.packages = cli ++ programming-languages ++ gui ++ iac ++ wm-tools ++ [
       pkgs.cloudflare-warp
     	pkgs.acpi
 	    pkgs.networkmanager
@@ -100,7 +107,6 @@ in
       TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
       GPUI_X11_SCALE_FACTOR = "1";
     };
-
     programs.home-manager.enable = true;
 
     # home.file.".emacs.d/init.el".source = ../assets/init.el;
@@ -110,33 +116,6 @@ in
       ln -s ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
     '';
 
-    home.file = builtins.listToAttrs (map (x: {
-      name = ".config/wallpapers/wallpaper-${toString x}.jpg";
-      value.source = ../assets + "/wallpaper-${toString x}.jpg";
-    }) (lib.range 1 8))
-    // {
-      ".bashrc".source = lib.mkForce ../assets/bashrc;
-      ".config/ghostty/config".source = ../assets/ghostty;
-      ".config/bspwm/bspwmrc" = {
-        source = ../assets/bspwmrc;
-        executable = true;
-      };
-      ".config/sxhkd/sxhkdrc".source = ../assets/sxhkdrc;
-      ".xinitrc".source = ../assets/xinitrc;
-      ".config/polybar/config.ini".source = ../assets/polybar.ini;
-      ".config/polybar/launch.sh" = {
-        source = ../assets/polybar-start.sh;
-        executable = true;
-      };
-      ".lemonbar.sh" = {
-        source = ../assets/lemonbar.sh;
-        executable = true;
-      };
-      ".config/picom/picom.conf".source = ../assets/picom.conf;
-      ".config/wallpapers/gradient.png".source = ../assets/gradient.png;
-      ".config/wallpapers/galaxy-plant.jpeg".source = ../assets/galaxy-plant.jpeg;
-      ".config/dunst/dunstrc".source = ../assets/dunstrc;
-      ".bin/battery.sh".source = ../assets/battery.sh;
-    };
+    home.file = assets.wallpapers 8 // assets.configs;
   };
 }
