@@ -1,0 +1,3 @@
+#!/usr/bin/env bb
+
+(require '[babashka.process :refer [shell check]])

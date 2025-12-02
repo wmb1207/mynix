@@ -10,31 +10,36 @@
 ;;(def black "#303f2d") ;; doric -pine
 ;;(def black "#112328")
 ;;(def black "#222524")
-(def black "#000000")
+;;(def white "#c8c093")
+;;(def white "#ffffff")
 ;;(def white "#e0d8c7")
-(def white "#ffffff")
 ;;(def black "#383035") ;; doric valley
+
+(def black "#000000")
+(def white "#ffffff")
 (def green "#44bc44")          ; modus-vivendi green
 (def blue "#2fafff")           ; modus-vivendi blue  
 (def red "#ff8059")            ; modus-vivendi red
 (def dark-gray "#0e1014")      ; modus-vivendi background
-;;(def white "#ffffff")
 (def cream "#f2ecbc")          ; modus-vivendi off-white
-;;(def white "#c8c093")
-;;(def white "#ffffff")
 
 ;;(def font "DejaVu Sans Mono")
-(def font "CozetteVector")
 ;;(def font "JetBrains Mono")
-(def templates-folder "templates")
-(def assets-folder "assets")
-(def transparency "100")
+(def font "CozetteVector")
+
+
 ;;(def theme "modus-vivendi-tinted")
 ;;(def theme "reykjavik")
-(def theme "ef-elea-dark")
+;;(def theme "modus-vivendi")
 ;;(def theme "ef-tr") ;; DOOM emacs little nice theme
 ;;(def theme "doric-valley")
 ;;(def light-theme "modus-operandi-tinted")
+
+
+(def templates-folder "templates")
+(def assets-folder "assets")
+(def transparency "100")
+(def theme "ef-dark")
 (def light-theme "ef-day")
 (def ghostty-theme "Wez")
 (def ghostty-theme-light "GruvboxLight")

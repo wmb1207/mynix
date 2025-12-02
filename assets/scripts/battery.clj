@@ -1,5 +1,8 @@
 #!/usr/bin/env bb
 
+;; LISP
+;; LISt Processor
+
 (require '[babashka.cli :as cli]
          '[babashka.process :refer [shell check]]
          '[babashka.fs :as fs])
@@ -48,7 +51,7 @@
       (cond
         (:daemon opts) (daemon)
         (:notify opts) (let [percentage (Integer/parseInt (clojure.string/trim (slurp battery-path)))]
-                         (notify-battery percentage))
+                         (notify (notify-message percentage)))
         :else (println "Usage: battery.clj [--daemon|-d] [--notify|-n]")))))
     
 (apply -main *command-line-args*)

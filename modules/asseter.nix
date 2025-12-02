@@ -27,12 +27,12 @@ in {
     ".config/wallpapers/gradient.png" = mkSource ../assets/gradient.png;
     ".config/wallpapers/galaxy-plant.jpeg" = mkSource ../assets/galaxy-plant.jpeg;
     ".config/dunst/dunstrc" = mkSource ../assets/dunstrc;
-    ".config/ghostty/config".source = ../assets/ghostty;
 
     #scripts
-    ".local/bin/battery.sh" = mkSource ../assets/scripts/battery.sh;
-    ".local/bin/lock.sh" = mkSource ../assets/scripts/lock.sh;
-    ".local/bin/dock.sh" = mkSource ../assets/scripts/dock.sh;
+    ".local/bin/battery.clj" = mkExecutable ../assets/scripts/battery.clj;
+    ".local/bin/lock.sh" = mkExecutable ../assets/scripts/lock.sh;
+    ".local/bin/dock.clj" = mkExecutable ../assets/scripts/dock.clj;
+    ".local/bin/polybar.sh" = mkExecutable ../assets/scripts/polybar.sh;
   };
 }
     

@@ -46,9 +46,9 @@ hm  (package-refresh-contents)
   (setq default-frame-alist '((undecorated . t)))
   (setq lsp-ui-doc-max-height 150)
   (setq ts-indent-level 2)
-  (setq js-indent-level 2)
-  (setq corfu-auto-prefix 1)
-  (setq corfu-auto-delay 1))
+  (setq js-indent-level 2))
+  ;; (setq corfu-auto-prefix 1)
+  ;; (setq corfu-auto-delay 1))
 
 (defun enlarge-current-window ()
   (interactive)
@@ -127,7 +127,8 @@ hm  (package-refresh-contents)
    :font "{{font}}"
    :height 14
    :weight 'regular)
- 
+
+
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
   (setq-default left-margin-width 0 right-margin-width 0 internal-border-width 0) ; Define new widths.
   (set-window-buffer nil (current-buffer)) ; Use them now.
@@ -149,12 +150,12 @@ hm  (package-refresh-contents)
   ;;         (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
   ;;         ))
 
-  (when (display-graphic-p)
-    (set-face-background 'fringe "{{background}}")
-    (set-frame-font "{{font}}-14" nil t))
-  (when (not (display-graphic-p))
-    (set-face-background 'default "unspecified-bg"))
-  (set-cursor-color "#a6e3a1")
+  ;; (when (display-graphic-p)
+  ;;   (set-face-background 'fringe "{{background}}")
+  ;;   (set-frame-font "{{font}}-14" nil t))
+  ;; (when (not (display-graphic-p))
+  ;;   (set-face-background 'default "unspecified-bg"))
+  ;;  (set-cursor-color "#a6e3a1")y
   (set-face-attribute 'line-number nil
                       :background "{{background}}") ;; optional
   
@@ -169,7 +170,7 @@ hm  (package-refresh-contents)
                       :background "{{background}}"
 		      :box nil)
 
-  (when (display-graphic-p)
+  ;;(when (display-graphic-p)
 
   (set-frame-parameter (selected-frame) 'alpha '(100 . 100))
   (add-to-list 'default-frame-alist '(alpha . (100 . 100)))
@@ -198,11 +199,12 @@ hm  (package-refresh-contents)
   :modes (php-mode php-ts-mode))
   
   (add-to-list 'flycheck-checkers 'php-phpmd)
-  (require 'buffer-box)
-  (buffer-box)
+  ;; (require 'buffer-box)
+  ;; (buffer-box)
+  (set-mouse-color "white")  ;; White cursor
   (custom-set-faces
    '(nano-modeline-active   ((t (:inherit mode-line))))
-   '(nano-modeline-inactive ((t (:inherit mode-line-inactive)))))))
+   '(nano-modeline-inactive ((t (:inherit mode-line-inactive))))))
    
 ;; End Theme
 
@@ -211,7 +213,15 @@ hm  (package-refresh-contents)
   
   (require 'lsp-mode)
   (require 'prettier)
-  (setq lsp-auto-guess-root nil)
+  ;; (setq lsp-completion-provider :none)
+  ;; (setq lsp-completion-enable nil)
+  ;; (setq lsp-auto-guess-root nil)
+  ;; (defun corfu-lsp-setup ()
+  ;;   (setq-local completion-styles '(orderless)
+  ;; 		completion-category-defaults nil))
+  (setq lsp-completion-enable t)
+
+  ;; (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
 
   (with-eval-after-load 'lsp-mode
     (add-to-list 'lsp-file-watch-ignored "package.json"))
@@ -264,8 +274,8 @@ hm  (package-refresh-contents)
   (add-hook 'python-mode-hook (lambda ()
 				(setq display-line-numbers 'absolute)))
   (add-hook 'kotlin-mode-hook #'lsp-deferred)
-  (add-hook 'python-mode-hook #'company-mode)
-  (add-hook 'python-mode-hook (lambda() (company-mode 0)))
+  ;; (add-hook 'python-mode-hook #'corfu-mode)
+  ;; (add-hook 'python-mode-hook (lambda() (corfu-mode 0)))
   (add-hook 'python-mode-hook (lambda () (display-line-numbers-mode 1)))
 
   (add-hook 'elixir-mode-hook #'lsp-deferred)
@@ -303,7 +313,16 @@ hm  (package-refresh-contents)
 ;; (when (memq window-system '(mac ns x))
 ;;   (exec-path-from-shell-initialize))
 (when (daemonp)
-  (exec-path-from-shell-initialize))
+  (defun my/setup-gui-frame (frame)
+    (with-selected-frame frame
+      (when (display-graphic-p)
+        (message "GUI initialized"))))
+  (add-hook 'after-make-frame-functions #'my/setup-gui-frame))
+;; (when (daemonp)
+;;   (setenv "DISPLAY" ":0")
+;;   ;; Create an invisible frame to initialize GUI
+;;   (make-frame-invisible (make-frame)))
+;;   ;; (exec-path-from-shell-initialize))
 
 (defun configure ()
   "Execute all the config FNS."
@@ -401,7 +420,6 @@ hm  (package-refresh-contents)
 
 (setq-default split-height-threshold  4
               split-width-threshold   160) ; the reasonable limit for horizontal splits
-(server-start) 
 ;;; init.el ends here
 
 (custom-set-variables

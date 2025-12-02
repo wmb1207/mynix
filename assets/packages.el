@@ -14,7 +14,7 @@
 		  :ensure t
 		  :config
 		  (add-hook 'tuareg-mode-hook #'merlin-mode)
-		  (add-hook 'merxblin-mode-hook #'company-mode)
+		  ;;(add-hook 'merxblin-mode-hook #'corfu-mode)
 		  ;; we're using flycheck instead
 		  (setq merlin-error-after-save nil))
 	
@@ -100,11 +100,22 @@
         (:package creamsody-theme)
         (:package autothemer)
         (:package load-env-vars)
-        (:package corfu
-         :custom (corfu-auto t))
+        ;; (:package corfu
+        ;;  :custom (corfu-auto t))
         (:package emacs
-         :init (setq completion-cycle-threshold 3))
-        (:package company)
+		  :init (setq completion-cycle-threshold 3))
+	;; (:package corfu
+	;; 	  :init
+	;; 	  (global-corfu-mode)
+	;; 	  :custom
+	;; 	  ;; auto popup
+	;; 	  (corfu-auto t)
+	;; 	  (corfu-auto-delay 0.0)
+	;; 	  (corfu-auto-prefix 1)
+	;; 	  (corfu-quit-no-match 'separator)
+	;; 	  (corfu-preview-current nil) ;; optional
+	;; 	  :config
+	;; 	  (corfu-popupinfo-mode))
         (:package eww)
         (:package elixir-mode)
         (:package inf-elixir)

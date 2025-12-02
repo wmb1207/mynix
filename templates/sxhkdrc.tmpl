@@ -37,37 +37,37 @@ super + alt + l
 
 # Switch to named desktop (adjust according to your names)
 super + 1
-    bspc desktop -f "Hollow"
+    bspc desktop -f "(first)"
 
 super + 2
-    bspc desktop -f "Thorne"
+    bspc desktop -f "(second)"
 
 super + 3
-    bspc desktop -f "Grimoire"
+    bspc desktop -f "(third)"
 
 super + 4
-    bspc desktop -f "Abyss"
+    bspc desktop -f "(fourth)"
 
 super + 5
-    bspc desktop -f "Nocturne"
+    bspc desktop -f "(fifth)"
 
 super + shift + 1
-    bspc node -d "Hollow"
+    bspc node -d "(first)"
 
 super + shift + 2
-    bspc node -d "Thorne"
+    bspc node -d "(second)"
 
 super + shift + 3
-    bspc node -d "Grimoire"
+    bspc node -d "(third)"
 
 super + shift + 4
-    bspc node -d "Abyss"
+    bspc node -d "(fourth)"
 
 super + shift + 5
-    bspc node -d "Nocturne"
+    bspc node -d "(fifth)"
 
 super + alt + b
-      bash ~/.bin/battery.sh
+      bb ~/.local/bin/battery.clj -n
 
 super + shift + space
     bspc node -t ~floating; bspc node -v 0 0; bspc node --flag center
@@ -84,4 +84,4 @@ XF86AudioMute
   pamixer --toggle-mute
 
 super + shift + l
-    $HOME/.local/bin/lock
+    $HOME/.local/bin/lock.sh
