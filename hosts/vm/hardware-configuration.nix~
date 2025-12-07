@@ -24,6 +24,11 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
+  fileSystems."/home" =
+  { device = "/dev/nvme0n1p3";
+    fsType = "ext4";
+  };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/259e8f66-9bd8-4f37-aced-bd36e7ca4c51"; }
     ];

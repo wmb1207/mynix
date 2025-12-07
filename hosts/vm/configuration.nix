@@ -16,7 +16,23 @@ in
 
   hardware.enableRedistributableFirmware = true;
   hardware.firmware = [pkgs.linux-firmware];
-  # Bootloader.
+  hardware.opengl = {
+  enable = true;
+  driSupport32Bit = true;
+
+  extraPackages = with pkgs; [
+    mesa
+    mesa.drivers
+  ];
+
+  extraPackages32 = with pkgs.pkgsi686Linux; [
+    mesa
+    mesa.drivers
+  ];
+};
+
+
+  # Bootlhoader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;

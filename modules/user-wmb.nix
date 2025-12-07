@@ -43,7 +43,6 @@ in
     extraGroups = [ "networkmanager" "wheel" "docker" "audio"];
   };
   
-  services.cloudflare-warp.enable = true;
   services.emacs = {
     enable = true;
     package = myEmacs;
@@ -70,7 +69,6 @@ in
     programs.bash.enable = true;
     
     home.packages = cli ++ programming-languages ++ gui ++ iac ++ wm-tools ++ [
-      pkgs.cloudflare-warp
       pkgs.acpi
       pkgs.networkmanager
       pkgs.xorg.xmodmap
