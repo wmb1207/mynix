@@ -47,12 +47,24 @@ in
     enable = true;
     package = myEmacs;
   };
+  
+  services.displayManager.lemurs.enable = true;
   services.xserver.enable = true;
   services.xserver.xautolock = {
     enable = true;
     time = 2;
     locker = "${pkgs.xsecurelock}/bin/xsecurelock";
   };
+
+  services.xserver.displayManager.session = [
+    {
+      manage = "desktop";
+      name = "bspwm";
+      start = ''
+              exec bspwm
+      '';     
+    }
+  ];
    
   services.xserver.displayManager.startx.enable = true;
   services.udev.packages = if lib.hasAttr "steamPackages" pkgs then

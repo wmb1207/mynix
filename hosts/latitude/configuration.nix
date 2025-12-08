@@ -18,8 +18,6 @@
   networking.hostName = "nixos"; # Define your hostname.
   networking.extraHosts =
   ''
-    100.69.24.180    admin_mensajeria_test.sinacofi.cl
-    100.69.24.180    mensajeria_test.sinacofi.cl
     #RB OCI
     100.66.15.24	C1PROW19PRB01
     #DEV

@@ -51,7 +51,6 @@ case "$POSITION" in
      external)
 	 xrandr --output eDP-1 --off --output "$CONNECTED_EXTERNAL_CMD"  --mode "$CONNECTED_EXTERNAL_RESOLUTION"
 	 bspc monitor eDP-1 -r
-
 	 bspc monitor "$CONNECTED_EXTERNAL_CMD" -d Hollow Thorne Grimoire Abyss Nocturne
 	 pkill -9 polybar
 	 polybar -c ~/.config/polybar/config.ini top-external &
@@ -71,12 +70,11 @@ case "$KEYBOARD" in
 	setxkbmap -layout us -variant "" -option ""
 	;;
     qwerty)
-	setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl
+
 	;;
     *)
 	exit 3
 	;;
 esac
-
 
 bspc wm -r

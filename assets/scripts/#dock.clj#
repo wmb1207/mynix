@@ -50,7 +50,6 @@
 (defn xrandr-commands
   [position display]
   (let [base ["xrandr" "--output" "eDP-1"]]  ; Fixed: removed extra dash
-    (print display)
     [{:cmd
       (into base
             (case position
