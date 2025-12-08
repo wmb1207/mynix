@@ -1,6 +1,6 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# and+ in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
 
@@ -39,7 +39,7 @@ in
   boot.kernelModules = ["amdgpu"];
   boot.initrd.availableKernelModules = ["amdgpu"];
   boot.initrd.kernelModules = ["amdgpu"];
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "desktop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -123,16 +123,16 @@ in
     programs.dconf.enable = true;
     programs.nix-ld.enable = true;
   # Enable automatic login for the user.
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "wmb";
+  # services.displayManager.autoLogin.enable = true;
+  # services.displayManager.autoLogin.user = "wmb";
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
+  # systemd.services."getty@tty1".enable = false;
+  # systemd.services."autovt@tty1".enable = false;
 
   # Install firefox.
   programs.firefox.enable = true;
-
+  console.keyMap = "dvorak";
   # Allow unfree packages
   # nixpkgs.config.allowUnfree = true;
 

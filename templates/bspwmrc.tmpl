@@ -10,10 +10,8 @@ fi;
 if xrandr --query | grep "DP-1" | grep -v "eDP-1" | grep -q " connected "; then
     bspc monitor DP-1 -d "(first)" "(second)" "(third)"
     bspc monitor eDP-1 -d  "(fourth)" "(fifth)"
-    setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl
 else
     bspc monitor -d "(first)" "(second)" "(third)" "(fourth)" "(fifth)"
-    setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl
 fi
 
 bspc config border_width 1
@@ -65,4 +63,9 @@ fi
 
 sxhkd &
 
-setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl &
+if [ "$(hostname)" = 'desktop' ]; then
+    setxkbmap -layout us -variant dvorak &
+else
+    setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl &    
+fi;
+

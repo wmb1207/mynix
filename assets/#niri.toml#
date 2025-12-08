@@ -1,0 +1,98 @@
+# General Configuration
+[general]
+# Modifier key (usually "Mod4" for the Super key)
+modkey = "Mod4"
+
+# Window Management
+[window]
+border_width = 1
+focused_border_color = "#ff5555"  # Change to your preferred color
+normal_border_color = "#444444"
+window_gap = 10
+split_ratio = 0.55
+borderless_monocle = true
+gapless_monocle = true
+
+# Autostart Programs
+[[autostart]]
+command = "swaylock -f"  # Lock screen on startup
+[[autostart]]
+command = "waybar"       # Start Waybar status bar
+[[autostart]]
+command = "swaybg -i ~/.config/wallpapers/wallpaper-10.jpg -m fill"  # Set wallpaper
+[[autostart]]
+command = "mako"         # Start Mako notification daemon
+
+# Workspace Configuration
+[[workspaces]]
+monitor = "eDP-1"
+names = ["1", "2", "3", "4", "5"]
+
+[[workspaces]]
+monitor = "DP-1"
+names = ["6", "7", "8", "9", "10"]
+
+# Keybindings
+[[bindings]]
+key = "Return"
+modkey = "Mod4"
+action = "spawn terminal"
+
+[[bindings]]
+key = "q"
+modkey = "Mod4"
+action = "close_window"
+
+[[bindings]]
+key = "f"
+modkey = "Mod4"
+action = "focus_direction west"
+
+[[bindings]]
+key = "space"
+modkey = "Mod4"
+action = "focus_direction next"
+
+[[bindings]]
+key = "Tab"
+modkey = "Mod4"
+action = "switch_workspace next"
+
+[[bindings]]
+key = "1"
+modkey = "Mod4"
+action = "switch_workspace 1"
+
+[[bindings]]
+key = "2"
+modkey = "Mod4"
+action = "switch_workspace 2"
+
+[[bindings]]
+key = "3"
+modkey = "Mod4"
+action = "switch_workspace 3"
+
+[[bindings]]
+key = "4"
+modkey = "Mod4"
+action = "switch_workspace 4"
+
+[[bindings]]
+key = "5"
+modkey = "Mod4"
+action = "switch_workspace 5"
+
+[[bindings]]
+key = "Shift+Return"
+modkey = "Mod4"
+action = "spawn emacs"
+
+[[bindings]]
+key = "Shift+q"
+modkey = "Mod4"
+action = "close_window"
+
+# Optional: Add more keybindings for window resizing, workspace management, etc.
+
+# You can add additional modules for things like widgets, volume, battery, etc. depending on your needs.
