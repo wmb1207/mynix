@@ -8,24 +8,29 @@
     [ (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "nvme" "xhci_pci" "usbhid" "sr_mod" ];
+  boot.initrd.availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "nvme" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-    fileSystems."/" =
-    { device = "/dev/disk/by-uuid/80c46709-d373-468e-91e9-ef94fc2b4d4a";
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/50565275-48c8-4a3c-8d65-f40c57595b02";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/60E7-E825";
+    { device = "/dev/disk/by-uuid/3ACB-6CF9";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
+  fileSystems."/home" =
+    { device = "/dev/disk/by-uuid/21d9b31c-64a0-4ba3-9a80-0560407a5eb4";
+      fsType = "ext4";
+    };
+
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/9af3883e-b53a-4ee3-b008-022d0a8c90eb"; }
+    [ { device = "/dev/disk/by-uuid/b313f3c6-3f0e-4da3-b69c-2280d1849688"; }
     ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
