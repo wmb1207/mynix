@@ -27,6 +27,7 @@ in {
     ".config/wallpapers/gradient.png" = mkSource ../assets/gradient.png;
     ".config/wallpapers/galaxy-plant.jpeg" = mkSource ../assets/galaxy-plant.jpeg;
     ".config/dunst/dunstrc" = mkSource ../assets/dunstrc;
+    ".fvwm/config" = mkSource ../assets/fvwm3.conf;
 
     #scripts
     ".local/bin/battery.clj" = mkExecutable ../assets/scripts/battery.clj;

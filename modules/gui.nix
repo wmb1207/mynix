@@ -14,6 +14,7 @@ let
     mupdf
     pcmanfm
     librewolf
+    zed-editor
   ];
 
   x86_64Packages = with pkgs; [

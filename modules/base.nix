@@ -19,6 +19,11 @@
     vulkan-tools
     xsecurelock
     xautolock
+    dockapps.wmsystemtray
+    dockapps.wmsm-app
+    dockapps.wmCalClock
+    dockapps.libdockapp
+    dockapps.AlsaMixer-app
   ];
 
   programs.mtr.enable = true;

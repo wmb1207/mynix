@@ -80,7 +80,13 @@
   };
 
   # Configure console keymap
-  console.keyMap = "dvorak";
+  
+  console = {
+    font = "ter-v12n";
+    packages = with pkgs; [ terminus_font ];
+    earlySetup = true;
+    keyMap = "dvorak";
+  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -119,7 +125,6 @@
      packages = with pkgs; [
        tree
        git
-       emacs
        asusctl
        supergfxctl
        glxinfo
