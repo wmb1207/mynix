@@ -104,14 +104,14 @@ hm  (package-refresh-contents)
 
 (defun theming ()
   (set-margins)
-  (defun my-open-dired-on-new-frame (frame)
-    (select-frame-set-input-focus frame)
-    (with-selected-frame frame
-      (ignore-errors
-	(dired-sidebar-toggle-sidebar)
-	(ibuffer-sidebar-toggle-sidebar))))
+  ;; (defun my-open-dired-on-new-frame (frame)
+  ;;   (select-frame-set-input-focus frame)
+  ;;   (with-selected-frame frame
+  ;;     (ignore-errors
+  ;; 	(dired-sidebar-toggle-sidebar)
+  ;; 	(ibuffer-sidebar-toggle-sidebar))))
   
-  (add-hook 'after-make-frame-functions 'my-open-dired-on-new-frame)
+  ;;(add-hook 'after-make-frame-functions 'my-open-dired-on-new-frame)
   (global-set-key (kbd "<escape>") 'keyboard-quit)
   (display-fill-column-indicator-mode t)
   (require 'neotree)
@@ -136,7 +136,7 @@ hm  (package-refresh-contents)
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'modus-vivendi t)
+  (load-theme 'ef-elea-dark t)
 
   (set-face-background 'default "#000000")
   ;; (global-whitespace-mode 1)
@@ -174,6 +174,7 @@ hm  (package-refresh-contents)
 
   (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
   (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
+  (add-to-list 'default-frame-alist '(mouse-color . "white"))
   (setq ring-bell-function 'ignore)
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-headerline-breadcrumb-icons-enable nil)

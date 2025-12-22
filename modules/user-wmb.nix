@@ -154,8 +154,8 @@ in
 
     xsession.enable = true;
     xresources.properties = {
-      "XTerm*faceName" = "Monospace";
-      "XTerm*faceSize" = 10;
+      "XTerm*faceName" = "CozetteVector";
+      "XTerm*faceSize" = 12;
 
       "XTerm*foreground" = "#ffffff";
       "XTerm*background" = "#000000";
@@ -169,16 +169,20 @@ in
       "XTerm*metaSendsEscape" = true;
       "XTerm*eightBitInput" = false;
 
-      "XTerm*selectToClipboard" = false;
+      "XTerm*selectToClipboard" = true;
       "XTerm*cutNewline" = true;
     };
-    xresources.extraConfig = ''
-      XTerm*VT100.Translations: #override \
-      Ctrl <Key>w: cut-selection() \n\
-      Meta <Key>w: copy-selection() \n\
-      Ctrl <Key>y: insert-selection()
-    '';
 
+    xresources.extraConfig = ''
+  XTerm*VT100.Translations: #override \
+    Ctrl Shift <Key>w: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0) \n\
+    Ctrl Shift <Key>y: insert-selection(CLIPBOARD, PRIMARY) \n
+'';
+   
+    programs.bash.initExtra = ''
+        bind '"\C-w":""'
+        bind '"\C-y":""'
+          '';
 
     home.packages =
       cli
