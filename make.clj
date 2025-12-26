@@ -40,7 +40,7 @@
 (def assets-folder "assets")
 (def transparency "100")
 ;;(def theme "modus-vivendi")
-(def theme "ef-elea-dark")
+(def theme "tango")
 ;(def theme "base16-vesper")
 (def light-theme "ef-day")
 (def ghostty-theme "Wez")

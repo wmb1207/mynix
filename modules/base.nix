@@ -24,6 +24,7 @@
     dockapps.wmCalClock
     dockapps.libdockapp
     dockapps.AlsaMixer-app
+    nfs-utils
   ];
 
   programs.mtr.enable = true;

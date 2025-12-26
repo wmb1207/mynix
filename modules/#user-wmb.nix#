@@ -153,80 +153,32 @@ in
     programs.home-manager.enable = true;
 
     xsession.enable = true;
+    xresources.enable = true;
     xresources.properties = {
-  # Font configuration
-  "URxvt.font" = "xft:CozetteVector:size=14";
-  "URxvt.boldFont" = "xft:CozetteVector:bold:size=14";
-  "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
-  
-  # Colors
-  "URxvt.foreground" = "#ffffff";
-  "URxvt.background" = "#000000";
-  "URxvt.cursorColor" = "#00ff00";
-  
-  # Scrollbar
-  "URxvt.scrollBar" = false;
-  
-  # Border and padding
-  "URxvt.internalBorder" = 2;
-  "URxvt.borderWidth" = 0;
-  
-  # Scrollback
-  "URxvt.saveLines" = 1000;
-  
-  # Clipboard and selection
-  "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
-  "URxvt.clipboard.autocopy" = true;
-  "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
-  "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
-  
-  # Meta key behavior (equivalent to metaSendsEscape)
-  "URxvt.meta8" = false;
-  
-  # ISO 14755 mode (disable for cleaner input)
-  "URxvt.iso14755" = false;
-  "URxvt.iso14755_52" = false;
-};
+      "XTerm*faceName" = "Monospace";
+      "XTerm*faceSize" = 10;
 
-xresources.extraConfig = ''
-  URxvt.keysym.Control-Shift-w: perl:clipboard:copy
-  URxvt.keysym.Control-Shift-y: perl:clipboard:paste
+      "XTerm*foreground" = "#ffffff";
+      "XTerm*background" = "#000000";
+      "XTerm*cursorColor" = "#00ff00";
+
+      "XTerm*scrollBar" = false;
+      "XTerm*internalBorder" = 2;
+      "XTerm*saveLines" = 1000;
+      "XTerm*borderWidth" = 0;
+
+      "XTerm*metaSendsEscape" = true;
+      "XTerm*eightBitInput" = false;
+
+      "XTerm*selectToClipboard" = false;
+      "XTerm*cutNewline" = true;
+    };
+    xresources.extraConfig = ''
+  XTerm*VT100.Translations: #override \
+    Ctrl <Key>w: cut-selection() \n\
+    Meta <Key>w: copy-selection() \n\
+    Ctrl <Key>y: insert-selection()
 '';
-
-programs.bash.initExtra = ''
-  bind '"\C-w":""'
-  bind '"\C-y":""'
-'';
-#     xresources.properties = {
-#       "XTerm*faceName" = "CozetteVector";
-#       "XTerm*faceSize" = 12;
-
-#       "XTerm*foreground" = "#ffffff";
-#       "XTerm*background" = "#000000";
-#       "XTerm*cursorColor" = "#00ff00";
-
-#       "XTerm*scrollBar" = false;
-#       "XTerm*internalBorder" = 2;
-#       "XTerm*saveLines" = 1000;
-#       "XTerm*borderWidth" = 0;
-
-#       "XTerm*metaSendsEscape" = true;
-#       "XTerm*eightBitInput" = false;
-
-#       "XTerm*selectToClipboard" = true;
-#       "XTerm*cutNewline" = true;
-#     };
-
-#     xresources.extraConfig = ''
-#   XTerm*VT100.Translations: #override \
-#     Ctrl Shift <Key>w: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0) \n\
-#     Ctrl Shift <Key>y: insert-selection(CLIPBOARD, PRIMARY) \n
-# '';
-   
-    # programs.bash.initExtra = ''
-    #     bind '"\C-w":""'
-    #     bind '"\C-y":""'
-    #       '';
 
     home.packages =
       cli

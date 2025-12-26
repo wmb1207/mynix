@@ -6,8 +6,8 @@ let
     brave
     firefox
     flameshot
-    ghostty
     xterm
+    rxvt-unicode
     pavucontrol
     postman
     vlc
