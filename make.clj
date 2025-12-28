@@ -15,8 +15,8 @@
 ;;(def white "#e0d8c7")
 ;;(def black "#383035") ;; doric valley
 
-(def black "#000000")
-(def white "#ffffff")
+(def black "#323232")
+(def white "#C8C8C8")
 (def green "#44bc44")          ; modus-vivendi green
 (def blue "#2fafff")           ; modus-vivendi blue  
 (def red "#ff8059")            ; modus-vivendi red
@@ -40,7 +40,7 @@
 (def assets-folder "assets")
 (def transparency "100")
 ;;(def theme "modus-vivendi")
-(def theme "tango")
+(def theme "tango-2")
 ;(def theme "base16-vesper")
 (def light-theme "ef-day")
 (def ghostty-theme "Wez")

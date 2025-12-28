@@ -9,7 +9,7 @@ super + alt + e
       emacs
 
 super + space
-      dmenu_run -fn "CozetteVector" -nb "#000000" -nf "#ffffff" -sb "#ffffff" -sf "#000000"
+      dmenu_run -fn "CozetteVector" -nb "#323232" -nf "#C8C8C8" -sb "#C8C8C8" -sf "#323232"
 
 super + c
       emacsclient -c 

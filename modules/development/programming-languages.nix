@@ -27,6 +27,10 @@ with pkgs; [
   crystalline
   shards
 
+  scala
+  metals
+  scalafmt
+
   tree-sitter-grammars.tree-sitter-php
   gopls
   go-outline

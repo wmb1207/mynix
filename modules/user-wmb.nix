@@ -40,30 +40,14 @@ let
         epkgs.lsp-mode
         epkgs.vterm
       ]);
-
-  grammars = with pkgs.tree-sitter-grammars; [
-    tree-sitter-php
-    tree-sitter-typescript
-    tree-sitter-tsx
-    tree-sitter-python
-    tree-sitter-rust
-    tree-sitter-clojure
-    tree-sitter-go
-    tree-sitter-elixir
-    tree-sitter-ocaml
-  ];
-
+  
   treeSitterLibDir =
-    pkgs.linkFarm "tree-sitter-libs"
-      (builtins.concatLists (map (grammar:
-        let
-          path = grammar + "/parser";
-        in
-          if builtins.pathExists path then
-            [{ name = "lib${grammar.pname}.so"; path = path; }]
-          else
-            []
-      ) grammars));
+    pkgs.linkFarm "tree-sitter-libs" [
+      {
+        name = "libtree-sitter-scala.so";
+        path = "${pkgs.tree-sitter-grammars.tree-sitter-scala}/parser";
+      }
+    ];
 in
 {
   users.users.wmb = {
@@ -160,13 +144,29 @@ in
   "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
   
   # Colors
-  "URxvt.foreground" = "#ffffff";
-  "URxvt.background" = "#000000";
-  "URxvt.cursorColor" = "#00ff00";
-  
-  # Scrollbar
-  "URxvt.scrollBar" = false;
-  
+/* Couleurs Tango */
+"URxvt.foreground" ="#C8C8C8";
+"URxvt.background" ="#323232";
+"URxvt.color0" =    "#2E3436";
+"URxvt.color1" =    "#CC0000";
+"URxvt.color2" =    "#4E9A06";
+"URxvt.color3" =    "#C4A000";
+"URxvt.color4" =    "#3465A4";
+"URxvt.color5" =    "#75507B";
+"URxvt.color6" =    "#06989A";
+"URxvt.color7" =    "#D3D7CF";
+"URxvt.color8" =    "#555753";
+"URxvt.color9" =    "#EF2929";
+"URxvt.color10" =   "#8AE234";
+"URxvt.color11" =   "#FCE94F";
+"URxvt.color12" =   "#729FCF";
+"URxvt.color13" =   "#AD7FA8";
+"URxvt.color14" =   "#34E2E2";
+"URxvt.color15" =   "#EEEEEC";
+"URxvt.scrollBar" =        false;
+"URxvt.scrollTtyOutput" =  false;
+"URxvt.scrollWithBuffer" = true;
+"URxvt.scrollTtyKeypress" = true;
   # Border and padding
   "URxvt.internalBorder" = 2;
   "URxvt.borderWidth" = 0;
@@ -226,7 +226,8 @@ programs.bash.initExtra = ''
     # programs.bash.initExtra = ''
     #     bind '"\C-w":""'
     #     bind '"\C-y":""'
-    #       '';
+#       '';
+
 
     home.packages =
       cli
@@ -241,6 +242,22 @@ programs.bash.initExtra = ''
         pkgs.xsecurelock
         pkgs.picom
         pkgs.typescript
+        pkgs.tree-sitter
+        (pkgs.symlinkJoin {
+          name = "tree-sitter-grammars";
+          paths = with pkgs.tree-sitter-grammars; [
+            tree-sitter-php
+            tree-sitter-typescript
+            tree-sitter-tsx
+            tree-sitter-python
+            tree-sitter-rust
+            tree-sitter-clojure
+            tree-sitter-go
+            tree-sitter-elixir
+            tree-sitter-ocaml
+            tree-sitter-scala
+          ];
+        })
       ];
 
     gtk = {
@@ -254,6 +271,8 @@ programs.bash.initExtra = ''
     home.sessionVariables = {
       EDITOR = "emacs";
       TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
+        
+      # TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
       GPUI_X11_SCALE_FACTOR = "1";
     };
 

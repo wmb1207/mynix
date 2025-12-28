@@ -6,7 +6,9 @@
       '((:package base16-theme)
 	(:package gptel
 		  :ensure t)
-	(:package sunrise-commander
+	(:package tango-plus-theme
+		  :ensure t)
+	(:package tango-2-theme
 		  :ensure t)
 	(:package tuareg
 		  :ensure t)
@@ -76,7 +78,7 @@
                  (setq dape-inlay-hints t)
                  (add-hook 'dape-compile-hook 'kill-buffer))
         (:package clojure-mode)
-        (:Package InfC-clojure
+        (:package Inf-clojure
          :hook ((clojure-mode . inf-clojure-minor-mode))
          :config (setq inf-clojure-program "bb"))
         (:package repeat
@@ -148,8 +150,10 @@
         (:package cider)
         (:package inf-clojure)
         (:package clojure-ts-mode)
-        (:package scala-mode
-         :interpreter ("scala" . scala-mode))
+        (:package scala-ts-mode
+		  :interpreter ("scala" . scala-mode))
+	(:package lsp-metals
+		  :ensure t)
         (:package sbt-mode
          :commands (sbt-start sbt-command)
          :config (substitute-key-definition
