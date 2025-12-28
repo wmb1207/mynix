@@ -15,7 +15,7 @@
 ;;(def white "#e0d8c7")
 ;;(def black "#383035") ;; doric valley
 
-(def black "#323232")
+(def black "#121212")
 (def white "#C8C8C8")
 (def green "#44bc44")          ; modus-vivendi green
 (def blue "#2fafff")           ; modus-vivendi blue  

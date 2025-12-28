@@ -138,7 +138,7 @@ hm  (package-refresh-contents)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
   (load-theme 'tango-2 t)
 
-;;  (set-face-background 'default "#323232")
+;;  (set-face-background 'default "#121212")
   ;; (global-whitespace-mode 1)
 
   ;; (setq whitespace-style
@@ -151,23 +151,23 @@ hm  (package-refresh-contents)
   ;;         ))
 
   ;; (when (display-graphic-p)
-  ;;   (set-face-background 'fringe "#323232")
+  ;;   (set-face-background 'fringe "#121212")
   ;;   (set-frame-font "CozetteVector-14" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
   ;; (set-face-attribute 'line-number nil
-  ;;                     :background "#323232") ;; optional
+  ;;                     :background "#121212") ;; optional
   
   ;; (set-face-attribute 'header-line nil
-  ;;                     :background "#323232"
+  ;;                     :background "#121212"
   ;;                     :box nil)
 
   ;; (set-face-attribute 'mode-line-inactive nil
-  ;;                   :background "#323232")
+  ;;                   :background "#121212")
 
   ;; (set-face-attribute 'mode-line nil
-  ;;                     :background "#323232"
+  ;;                     :background "#121212"
   ;; 		      :box nil)
 
   ;;(when (display-graphic-p)
