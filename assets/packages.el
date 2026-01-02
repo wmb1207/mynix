@@ -4,6 +4,10 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package acme-theme
+		  :ensure t)
+	(:package direnv
+		  :ensure t)
 	(:package gptel
 		  :ensure t)
 	(:package tango-plus-theme
@@ -78,9 +82,9 @@
                  (setq dape-inlay-hints t)
                  (add-hook 'dape-compile-hook 'kill-buffer))
         (:package clojure-mode)
-        (:package Inf-clojure
-         :hook ((clojure-mode . inf-clojure-minor-mode))
-         :config (setq inf-clojure-program "bb"))
+        ;; (:package Inf-clojure
+        ;;  :hook ((clojure-mode . inf-clojure-minor-mode))
+        ;;  :config (setq inf-clojure-program "bb"))
         (:package repeat
          :config (repeat-mode))
         (:package ef-themes)

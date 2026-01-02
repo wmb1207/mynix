@@ -15,13 +15,26 @@
 ;;(def white "#e0d8c7")
 ;;(def black "#383035") ;; doric valley
 
-(def black "#121212")
-(def white "#C8C8C8")
-(def green "#44bc44")          ; modus-vivendi green
-(def blue "#2fafff")           ; modus-vivendi blue  
-(def red "#ff8059")            ; modus-vivendi red
-(def dark-gray "#0e1014")      ; modus-vivendi background
-(def cream "#f2ecbc")          ; modus-vivendi off-white
+;; (def black "#121212")
+;; (def white "#C8C8C8")
+;; (def green "#44bc44")          ; modus-vivendi green
+;; (def blue "#2fafff")           ; modus-vivendi blue  
+;; (def red "#ff8059")            ; modus-vivendi red
+;; (def dark-gray "#0e1014")      ; modus-vivendi background
+;; (def cream "#f2ecbc")          ; modus-vivendi off-white
+
+;; Plan 9 / acme inspired colors
+
+(def black "#000000")     ;; absolute black (rio background)
+(def white "#e6e6e6")     ;; chalky white (text)
+
+(def green "#5f875f")     ;; muted sage green
+(def blue  "#5f87af")     ;; dusty blue (links / selection)
+(def red   "#875f5f")     ;; brick / error red
+
+(def dark-gray "#444444") ;; window dividers / inactive
+(def cream "#ffffe0")    ;; acme selection background
+
 
 ;;(def font "DejaVu Sans Mono")
 ;;(def font "JetBrains Mono")
@@ -40,7 +53,7 @@
 (def assets-folder "assets")
 (def transparency "100")
 ;;(def theme "modus-vivendi")
-(def theme "tango-2")
+(def theme "acme")
 ;(def theme "base16-vesper")
 (def light-theme "ef-day")
 (def ghostty-theme "Wez")
@@ -167,10 +180,11 @@
   (->Template "dunstrc"
               (str assets-folder "/dunstrc")
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
-              [(->TemplateField "{{black}}" black)
-               (->TemplateField "{{green}}" white)
+              [(->TemplateField "{{black}}" "#99cccc")
+               (->TemplateField "{{frame}}" "#eaffff")
+               (->TemplateField "{{green}}" black)
                (->TemplateField "{{red}}" red)
-               (->TemplateField "{{white}}" white)
+               (->TemplateField "{{white}}" black)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 

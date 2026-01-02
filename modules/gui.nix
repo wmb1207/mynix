@@ -15,12 +15,13 @@ let
     pcmanfm
     librewolf
     zed-editor
+    arandr
   ];
 
   x86_64Packages = with pkgs; [
     slack
     steam
-    discord
+    #discord
     jetbrains.datagrip
     jetbrains.phpstorm
     jetbrains-toolbox

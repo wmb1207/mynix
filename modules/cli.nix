@@ -1,6 +1,8 @@
 { pkgs }:
 
 with pkgs; [
+  loksh
+  
   xdotool
   xdo
   docker-compose
@@ -41,4 +43,5 @@ with pkgs; [
   ameba # Crystal linter
 
   clipmenu
+  nix-search-cli
 ]

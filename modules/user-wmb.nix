@@ -54,6 +54,7 @@ in
     isNormalUser = true;
     description = "wmb";
     extraGroups = [ "wheel" "networkmanager" "docker" "audio" ];
+    shell = pkgs.loksh;
   };
 
   #### Console #############################################################
@@ -134,58 +135,119 @@ in
     nixpkgs.config.allowUnfree = true;
 
     programs.bash.enable = true;
+    
+
     programs.home-manager.enable = true;
 
     xsession.enable = true;
     xresources.properties = {
-  # Font configuration
+  # Font configuration (unchanged)
   "URxvt.font" = "xft:CozetteVector:size=14";
   "URxvt.boldFont" = "xft:CozetteVector:bold:size=14";
   "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
-  
-  # Colors
-/* Couleurs Tango */
-"URxvt.foreground" ="#C8C8C8";
-"URxvt.background" ="#323232";
-"URxvt.color0" =    "#2E3436";
-"URxvt.color1" =    "#CC0000";
-"URxvt.color2" =    "#4E9A06";
-"URxvt.color3" =    "#C4A000";
-"URxvt.color4" =    "#3465A4";
-"URxvt.color5" =    "#75507B";
-"URxvt.color6" =    "#06989A";
-"URxvt.color7" =    "#D3D7CF";
-"URxvt.color8" =    "#555753";
-"URxvt.color9" =    "#EF2929";
-"URxvt.color10" =   "#8AE234";
-"URxvt.color11" =   "#FCE94F";
-"URxvt.color12" =   "#729FCF";
-"URxvt.color13" =   "#AD7FA8";
-"URxvt.color14" =   "#34E2E2";
-"URxvt.color15" =   "#EEEEEC";
-"URxvt.scrollBar" =        false;
-"URxvt.scrollTtyOutput" =  false;
-"URxvt.scrollWithBuffer" = true;
-"URxvt.scrollTtyKeypress" = true;
-  # Border and padding
+
+  # ── Colors (Acme / Plan 9 inspired) ──
+  "URxvt.foreground" = "#000000";
+  "URxvt.background" = "#FFFFEA";
+
+  # ANSI palette — muted, low saturation
+  "URxvt.color0"  = "#000000"; # black
+  "URxvt.color1"  = "#AA0000"; # red
+  "URxvt.color2"  = "#006600"; # green
+  "URxvt.color3"  = "#999900"; # yellow
+  "URxvt.color4"  = "#000099"; # blue
+  "URxvt.color5"  = "#660066"; # magenta
+  "URxvt.color6"  = "#006666"; # cyan
+  "URxvt.color7"  = "#CCCCAA"; # white-ish
+
+  "URxvt.color8"  = "#555555"; # bright black
+  "URxvt.color9"  = "#CC0000";
+  "URxvt.color10" = "#008800";
+  "URxvt.color11" = "#BBBB00";
+  "URxvt.color12" = "#0000BB";
+  "URxvt.color13" = "#880088";
+  "URxvt.color14" = "#008888";
+  "URxvt.color15" = "#FFFFFF";
+
+  # Cursor & selection (Acme-like)
+  "URxvt.cursorColor" = "#000000";
+  "URxvt.highlightColor" = "#000000";
+  "URxvt.highlightTextColor" = "#FFFFEA";
+
+  # Scrollbar & scrolling (unchanged)
+  "URxvt.scrollBar" = false;
+  "URxvt.scrollTtyOutput" = false;
+  "URxvt.scrollWithBuffer" = true;
+  "URxvt.scrollTtyKeypress" = true;
+
+  # Border and padding (slightly tighter, Acme feel)
   "URxvt.internalBorder" = 2;
   "URxvt.borderWidth" = 0;
-  
+
   # Scrollback
   "URxvt.saveLines" = 1000;
-  
+
   # Clipboard and selection
   "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
   "URxvt.clipboard.autocopy" = true;
   "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
   "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
-  
-  # Meta key behavior (equivalent to metaSendsEscape)
+
+  # Meta key behavior
   "URxvt.meta8" = false;
-  
-  # ISO 14755 mode (disable for cleaner input)
+
+  # ISO 14755 mode
   "URxvt.iso14755" = false;
   "URxvt.iso14755_52" = false;
+
+#   # Font configuration
+#   "URxvt.font" = "xft:CozetteVector:size=14";
+#   "URxvt.boldFont" = "xft:CozetteVector:bold:size=14";
+#   "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
+  
+#   # Colors
+# /* Couleurs Tango */
+# "URxvt.foreground" ="#C8C8C8";
+# "URxvt.background" ="#323232";
+# "URxvt.color0" =    "#2E3436";
+# "URxvt.color1" =    "#CC0000";
+# "URxvt.color2" =    "#4E9A06";
+# "URxvt.color3" =    "#C4A000";
+# "URxvt.color4" =    "#3465A4";
+# "URxvt.color5" =    "#75507B";
+# "URxvt.color6" =    "#06989A";
+# "URxvt.color7" =    "#D3D7CF";
+# "URxvt.color8" =    "#555753";
+# "URxvt.color9" =    "#EF2929";
+# "URxvt.color10" =   "#8AE234";
+# "URxvt.color11" =   "#FCE94F";
+# "URxvt.color12" =   "#729FCF";
+# "URxvt.color13" =   "#AD7FA8";
+# "URxvt.color14" =   "#34E2E2";
+# "URxvt.color15" =   "#EEEEEC";
+# "URxvt.scrollBar" =        false;
+# "URxvt.scrollTtyOutput" =  false;
+# "URxvt.scrollWithBuffer" = true;
+# "URxvt.scrollTtyKeypress" = true;
+#   # Border and padding
+#   "URxvt.internalBorder" = 2;
+#   "URxvt.borderWidth" = 0;
+  
+#   # Scrollback
+#   "URxvt.saveLines" = 1000;
+  
+#   # Clipboard and selection
+#   "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
+#   "URxvt.clipboard.autocopy" = true;
+#   "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
+#   "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
+  
+#   # Meta key behavior (equivalent to metaSendsEscape)
+#   "URxvt.meta8" = false;
+  
+#   # ISO 14755 mode (disable for cleaner input)
+#   "URxvt.iso14755" = false;
+#   "URxvt.iso14755_52" = false;
 };
 
 xresources.extraConfig = ''
@@ -197,38 +259,6 @@ programs.bash.initExtra = ''
   bind '"\C-w":""'
   bind '"\C-y":""'
 '';
-#     xresources.properties = {
-#       "XTerm*faceName" = "CozetteVector";
-#       "XTerm*faceSize" = 12;
-
-#       "XTerm*foreground" = "#ffffff";
-#       "XTerm*background" = "#000000";
-#       "XTerm*cursorColor" = "#00ff00";
-
-#       "XTerm*scrollBar" = false;
-#       "XTerm*internalBorder" = 2;
-#       "XTerm*saveLines" = 1000;
-#       "XTerm*borderWidth" = 0;
-
-#       "XTerm*metaSendsEscape" = true;
-#       "XTerm*eightBitInput" = false;
-
-#       "XTerm*selectToClipboard" = true;
-#       "XTerm*cutNewline" = true;
-#     };
-
-#     xresources.extraConfig = ''
-#   XTerm*VT100.Translations: #override \
-#     Ctrl Shift <Key>w: copy-selection(CLIPBOARD, PRIMARY, CUT_BUFFER0) \n\
-#     Ctrl Shift <Key>y: insert-selection(CLIPBOARD, PRIMARY) \n
-# '';
-   
-    # programs.bash.initExtra = ''
-    #     bind '"\C-w":""'
-    #     bind '"\C-y":""'
-#       '';
-
-
     home.packages =
       cli
       ++ programming-languages
@@ -268,14 +298,26 @@ programs.bash.initExtra = ''
       };
     };
 
+    # === Session Variables ===
     home.sessionVariables = {
-      EDITOR = "emacs";
+      EDITOR = "emacsclient -c -a emacs";
+      VISUAL = "$EDITOR";
+      PAGER = "less -R";
+      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
       TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
         
       # TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
       GPUI_X11_SCALE_FACTOR = "1";
+      ENV = "$HOME/.kshrc";  
     };
-
+    
+    # === Session Path ===
+    home.sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/go/bin"
+      "$HOME/.cargo/bin"
+    ];
+    
     home.activation.initEl =
       dag.entryAfter [ "writeBoundary" ] ''
         mkdir -p "$HOME/.emacs.d/lisp"
@@ -283,6 +325,51 @@ programs.bash.initExtra = ''
         ln -sf ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
       '';
 
-    home.file = assets.wallpapers 10 // assets.assets;
+    home.file = assets.wallpapers 10 // assets.assets // {
+      ".kshrc".text = ''
+  # Only interactive shells   
+  [[ $- != *i* ]] && return   
+  
+  # === History ===
+  HISTFILE="$HOME/.ksh_history"
+  HISTSIZE=10000
+  SAVEHIST=20000
+  
+
+  PS1='\033[38;5;58m$(pwd | sed "s|$HOME|~|")\033[0m $ '
+  
+  # === Aliases ===
+  alias ll='ls -lh --color=auto'
+  alias la='ls -lah --color=auto'
+  alias gs='git status'
+  alias gc='git commit'
+  alias ga='git add'
+  alias gl='git log --oneline --graph --decorate'
+  alias em='emacsclient -nw'
+  alias e='emacsclient -c -a emacs'
+  alias ns='nix-shell'
+  alias nb='nix build'
+  alias nr='nixos-rebuild switch --flake .#'
+  alias nf='nix flake show'
+  alias nh='nix develop'
+  
+  # === fzf ===
+  if command -v fzf >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+  fi
+  
+  # === Direnv ===
+  ${lib.optionalString config.programs.direnv.enable ''
+    eval "$(direnv hook ksh)"
+  ''}
+  
+  # === Starship ===
+  ${lib.optionalString config.programs.starship.enable ''
+    eval "$(starship init ksh)"
+  ''}
+'';
+    };
   };
 }
