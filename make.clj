@@ -2,60 +2,33 @@
 
 ;;(ns my-nix
 (require '[babashka.process :refer [shell check]])
+(require '[babashka.cli :as cli])
 (require '[babashka.fs :as fs])
 
-;;(def black "#0d0e1c")
-
-;;(def black "#181616")
-;;(def black "#303f2d") ;; doric -pine
-;;(def black "#112328")
-;;(def black "#222524")
-;;(def white "#c8c093")
-;;(def white "#ffffff")
-;;(def white "#e0d8c7")
-;;(def black "#383035") ;; doric valley
-
-;; (def black "#121212")
-;; (def white "#C8C8C8")
-;; (def green "#44bc44")          ; modus-vivendi green
-;; (def blue "#2fafff")           ; modus-vivendi blue  
-;; (def red "#ff8059")            ; modus-vivendi red
-;; (def dark-gray "#0e1014")      ; modus-vivendi background
-;; (def cream "#f2ecbc")          ; modus-vivendi off-white
+(def cli-opts
+  {:spec {:clear {:desc "clear all the previous instances"
+                  :alias :c}
+          :apply {:desc "apply the template"
+                  :alias :a}}})
 
 ;; Plan 9 / acme inspired colors
-
 (def black "#000000")     ;; absolute black (rio background)
 (def white "#e6e6e6")     ;; chalky white (text)
-
 (def green "#5f875f")     ;; muted sage green
 (def blue  "#5f87af")     ;; dusty blue (links / selection)
 (def red   "#875f5f")     ;; brick / error red
-
 (def dark-gray "#444444") ;; window dividers / inactive
 (def cream "#ffffe0")    ;; acme selection background
 
 
-;;(def font "DejaVu Sans Mono")
-;;(def font "JetBrains Mono")
-(def font "CozetteVector")
-
-
-;;(def theme "modus-vivendi-tinted")
-;;(def theme "reykjavik")
-;;(def theme "modus-vivendi")
-;;(def theme "ef-tr") ;; DOOM emacs little nice theme
-;;(def theme "doric-valley")
-;;(def light-theme "modus-operandi-tinted")
-
-
+(def font "DejaVu Sans Mono")
 (def templates-folder "templates")
 (def assets-folder "assets")
 (def transparency "100")
-;;(def theme "modus-vivendi")
+
 (def theme "acme")
-;(def theme "base16-vesper")
 (def light-theme "ef-day")
+
 (def ghostty-theme "Wez")
 (def ghostty-theme-light "GruvboxLight")
 
@@ -66,7 +39,6 @@
                      ^String output
                      ^String content
                      ^clojure.lang.IPersistentCollection fields])
-
 
 (defn ensure-sudo!
   "Prompt for sudo upfront and exit on failure."
@@ -218,36 +190,29 @@
     ghostty-light
     ghostty-dark))
 
-;; (defn clear
-;;   (let [cmd ["sudo" "nix-collect-garbage" "-d"]
-;;         result (try
-;;                  (println "Executing " cmd)
-;;                  (shell cmd)
-;;                  (catch Exception e
-;;                    (println "!! Exception during shell invocation:" (.getMessage e))
-;;                    {:exit 1 :out "" :err (.getMessage e)}))]
-;;     (let [{:keys [exit out err]} result]
-;;       (if (zero? exit)
-;;         (println "Flake applied on" host "\n" out)
-;;         (do
-;;           (println "!! nixos-collect-garbage failed (exit" exit "):\n" err)
-;;           (System/exit exit))))))
-;;   )
+(defn clear
+  []
+  (let [cmd ["sudo" "nix-collect-garbage" "-d"]]
+    (try
+      (println "Executing" cmd)
+      (shell cmd)
+      (catch Exception e
+        (println "!! Exception during shell invocation:" (.getMessage e))
+        {:exit 1 :out "" :err (.getMessage e)}))))
 
-
-
-;; (def eww
-;;   (->Template "eww"
-;;               (str assets-folder "/eww.scss")
-;;               (slurp (str "./" template-folder "/eww.scss"))
-;;               []))
+(defn run
+  [args]
+  (println args)
+  (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc])
+  (ensure-sudo!)
+  (remove-init-el)
+  (apply-flake (second args)))
 
 (defn main
   [& args]
-  (println args)
-  (apply-tmpls! [polybar bspwmrc sxhkdrc (ghostty args) (emacs args) dunstrc])
-  (ensure-sudo!)
-  (remove-init-el)
-  (apply-flake (first args)))
+  (let [opts (cli/parse-opts args cli-opts)]
+    (cond
+      (:clear opts) (clear)
+      (:apply opts) (run args))))
 
 (apply main *command-line-args*)

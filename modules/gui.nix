@@ -12,10 +12,10 @@ let
     postman
     vlc
     mupdf
-    pcmanfm
     librewolf
     zed-editor
     arandr
+    xfe
   ];
 
   x86_64Packages = with pkgs; [
@@ -23,8 +23,8 @@ let
     steam
     #discord
     jetbrains.datagrip
-    jetbrains.phpstorm
-    jetbrains-toolbox
+    # jetbrains.phpstorm
+    # jetbrains-toolbox
   ];
 
   aarch64Packages = with pkgs; [

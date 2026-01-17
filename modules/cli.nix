@@ -2,6 +2,7 @@
 
 with pkgs; [
   loksh
+  dtach
   
   xdotool
   xdo

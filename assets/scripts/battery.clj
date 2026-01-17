@@ -1,10 +1,7 @@
 #!/usr/bin/env bb
 
-;; LISP
-;; LISt Processor
-
 (require '[babashka.cli :as cli]
-         '[babashka.process :refer [shell check]]
+         '[babashka.process :refer [shell]]
          '[babashka.fs :as fs])
 
 (def cli-opts
@@ -21,17 +18,17 @@
 
 (defn notify
   [message]
-  (let [cmd ["notify-send" message]
-        result (try (shell cmd)
-                    (catch Exception e
-                      (println "!! Exception catch during shell invocation" (.getMessage e))
-                      {:exit 1 :out "" :err (.getMessage e)}))]))
+  (let [cmd ["notify-send" message]]
+    (try (shell cmd)
+         (catch Exception e
+           (println "!! Exception catch during shell invocation" (.getMessage e))
+           {:exit 1 :out "" :err (.getMessage e)}))))
   
 (defn notify-battery
   [percentage state]
   (let [p (Integer. percentage)]
     (println percentage)
-    (if-not (= percentage state)
+    (when (= percentage state)
       (cond
         (< p 15) (notify (notify-message percentage))
         (= 0 (mod p 5)) (notify (notify-message percentage))))))

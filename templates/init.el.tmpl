@@ -121,11 +121,11 @@ hm  (package-refresh-contents)
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
   (add-to-list 'default-frame-alist '(internal-border-width . 0)) ;;pading
-  (add-to-list 'default-frame-alist '(font . "{{font}}-14"))
+  (add-to-list 'default-frame-alist '(font . "{{font}}-11"))
   (set-face-attribute
    'default nil
    :font "{{font}}"
-   :height 14
+   :height 11
    :weight 'regular)
 
 
@@ -152,7 +152,7 @@ hm  (package-refresh-contents)
 
   ;; (when (display-graphic-p)
   ;;   (set-face-background 'fringe "{{background}}")
-  ;;   (set-frame-font "{{font}}-14" nil t))
+  ;;   (set-frame-font "{{font}}-11" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
@@ -203,10 +203,94 @@ hm  (package-refresh-contents)
   ;; (require 'buffer-box)
   ;; (buffer-box)
   (set-mouse-color "white")  ;; White cursor
-  (custom-set-faces
-   '(nano-modeline-active   ((t (:inherit mode-line))))
-   '(nano-modeline-inactive ((t (:inherit mode-line-inactive))))))
-   
+  ;; (custom-set-faces
+  ;;  '(nano-modeline-active   ((t (:inherit mode-line))))
+  ;;  '(nano-modeline-inactive ((t (:inherit mode-line-inactive))))))
+  (defun my-simple-modeline ()
+  "Return a very small mode-line string."
+  (let* ((buf (buffer-name))
+         (mod (if (buffer-modified-p) "*" ""))
+         (pos (format "L%s C%s"
+                      (line-number-at-pos)
+                      (current-column)))
+         (time (format-time-string "%H:%M")))
+    (format " %s%s  |  %s  |  %s " buf mod pos time)))
+
+  (setq-default
+   mode-line-format
+   '((:eval (my-simple-modeline))))
+  
+  ;; No header-line
+  (setq-default header-line-format nil)
+  
+  ;; Fixed height, no extra padding
+  (set-face-attribute 'mode-line nil
+                      :box nil
+                    :height 0.9)
+  (set-face-attribute 'mode-line-inactive nil
+                      :box nil
+                      :height 0.9)
+  
+   ;; Minimal tab-bar: "1:main  2:api*  3:notes"
+ (setq tab-bar-close-button-show nil)
+ (setq tab-bar-new-button-show nil)
+ (setq tab-bar-back-button-show nil)
+ (setq tab-bar-separator " ")
+
+ (defun my-tab-bar-name-format (tab i)
+   (let* ((name (alist-get 'name tab))
+	  ;; crude but useful: mark tab if *any* buffer is modified
+	  (dirty (if (seq-some (lambda (b) (buffer-modified-p (get-buffer b)))
+			       (mapcar #'buffer-name (buffer-list)))
+		     "*" "")))
+     (format "%d:%s%s" i name dirty)))
+
+ (setq tab-bar-tab-name-format-function #'my-tab-bar-name-format)
+
+
+ ;; Optional: make it visually flat
+ (set-face-attribute 'tab-bar nil :box nil :height 0.9)
+ (set-face-attribute 'tab-bar-tab nil :box nil)
+ (set-face-attribute 'tab-bar-tab-inactive nil :box nil)
+
+ (defvar my-ui-scale 0.9)
+
+ ;; Modeline
+ (set-face-attribute 'mode-line nil
+		     :height my-ui-scale
+		     :box nil)
+
+ (set-face-attribute 'mode-line-inactive nil
+		     :height my-ui-scale
+		     :box nil)
+
+ ;; Tab-bar
+ (set-face-attribute 'tab-bar nil
+		     :height my-ui-scale
+		     :box nil)
+
+ (set-face-attribute 'tab-bar-tab nil :box nil)
+ (set-face-attribute 'tab-bar-tab-inactive nil :box nil)
+
+ ;; Minibuffer prompt
+ (set-face-attribute 'minibuffer-prompt nil
+		     :height my-ui-scale)
+
+ ;; Header-line (even though we disabled it, keeps consistency)
+ (set-face-attribute 'header-line nil
+		     :height my-ui-scale
+		     :box nil)
+
+ ;; Tooltip (just in case)
+ (set-face-attribute 'tooltip nil
+		     :height my-ui-scale)
+
+ (setq-default line-spacing 0.0)
+
+ (set-fringe-mode 0)
+ (add-to-list 'default-frame-alist '(internal-border-width . 0)))
+
+
 ;; End Theme
 
 (defun prog-time ()
@@ -293,21 +377,21 @@ hm  (package-refresh-contents)
   (add-hook 'tuareg-mode-hook
 	    (lambda()
 	      (setq-local comment-style 'multi-line)
-	      (setq-local comment-continue "   ")))
+	      (setq-local comment-continue "   "))))
     
-  (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
-  (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
-  (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
-  (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
-  (add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
-  (add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
-  (add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
-  (add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
-  (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
-  (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
-  (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
-  (add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
-  (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode))
+  ;; (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
+  ;; (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
+  ;; (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
+  ;; (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
+  ;; (add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
+  ;; (add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
+  ;; (add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
+  ;; (add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
+  ;; (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
+  ;; (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
+  ;; (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
+  ;; (add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
+  ;; (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode))
 
 
 
@@ -353,8 +437,8 @@ hm  (package-refresh-contents)
     (load bootstrap-file nil 'nomessage))
   (straight-use-package '(myron-themes :host github :repo "neeasade/myron-themes" :files ("*.el" "themes/*.el")))
   (straight-use-package '(cognitive-complexity :host github :repo "emacs-vs/cognitive-complexity"))
-  (straight-use-package '(nano-theme :type git :host github
-                                     :repo "rougier/nano-theme"))
+  ;; (straight-use-package '(nano-theme :type git :host github
+  ;;                                    :repo "rougier/nano-theme"))
   (prog-time))
 
 (configure)
@@ -418,6 +502,16 @@ hm  (package-refresh-contents)
                  (split-window window nil (if split-window-right
                                               'left
                                             'right))))))))
+
+(defun my/open-project-sidebars ()
+  (unless (bound-and-true-p my/project-sidebars-opened)
+    (setq my/project-sidebars-opened t)
+
+    (when (fboundp 'dired-sidebar-toggle-sidebar)
+      (dired-sidebar-toggle-sidebar))
+
+    (when (fboundp 'ibuffer-sidebar-show-sidebar)
+      (ibuffer-sidebar-show-sidebar))))
 
 (setq-default split-height-threshold  4
               split-width-threshold   160) ; the reasonable limit for horizontal splits

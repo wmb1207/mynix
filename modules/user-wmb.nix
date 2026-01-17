@@ -142,9 +142,9 @@ in
     xsession.enable = true;
     xresources.properties = {
   # Font configuration (unchanged)
-  "URxvt.font" = "xft:CozetteVector:size=14";
-  "URxvt.boldFont" = "xft:CozetteVector:bold:size=14";
-  "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
+  "URxvt.font" = "xft:DejaVu Sans Mono:size=10";
+  "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
+  "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
 
   # ── Colors (Acme / Plan 9 inspired) ──
   "URxvt.foreground" = "#000000";
@@ -201,9 +201,9 @@ in
   "URxvt.iso14755_52" = false;
 
 #   # Font configuration
-#   "URxvt.font" = "xft:CozetteVector:size=14";
-#   "URxvt.boldFont" = "xft:CozetteVector:bold:size=14";
-#   "URxvt.italicFont" = "xft:CozetteVector:italic:size=14";
+#   "URxvt.font" = "xft:DejaVu Sans Mono:size=14";
+#   "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=14";
+#   "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=14";
   
 #   # Colors
 # /* Couleurs Tango */
@@ -308,7 +308,7 @@ programs.bash.initExtra = ''
         
       # TREE_SITTER_LIBDIR = "${treeSitterLibDir}";
       GPUI_X11_SCALE_FACTOR = "1";
-      ENV = "$HOME/.kshrc";  
+      ENV = "$HOME/.kshrc";
     };
     
     # === Session Path ===

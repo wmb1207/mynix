@@ -34,7 +34,7 @@
 # # part of the value. For example, this will have a value of "#123abc":
 theme = Wez
 background = #000000
-font-family = CozetteVector
+font-family = DejaVu Sans Mono
 font-size = 14
 window-decoration = full
 #background-opacity = 0.100

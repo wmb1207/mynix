@@ -33,7 +33,14 @@ in {
     ".local/bin/battery.clj" = mkExecutable ../assets/scripts/battery.clj;
     ".local/bin/lock.sh" = mkExecutable ../assets/scripts/lock.sh;
     ".local/bin/dock.clj" = mkExecutable ../assets/scripts/dock.clj;
+    ".local/bin/backlight.clj" = mkExecutable ../assets/scripts/backlight.clj;
     ".local/bin/polybar.sh" = mkExecutable ../assets/scripts/polybar.sh;
+
+    # templates - dev-shells
+    # ".local/templates/php.nix" = mkSource ../templates/devshells/php.nix;
+    # ".local/templates/python.nix" = mkSource ../templates/devshells/python.nix;
+    # ".local/templates/nodejs.nix" = mkSource ../templates/devshells/nodejs.nix;
+    # ".local/templates/raw.nix" = mkSource ../templates/devshells/raw.nix;
   };
 }
     
