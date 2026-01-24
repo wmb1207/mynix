@@ -136,7 +136,7 @@ hm  (package-refresh-contents)
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'acme t)
+  (load-theme 'doric-beach t)
 
 ;;  (set-face-background 'default "#000000")
   ;; (global-whitespace-mode 1)
@@ -232,20 +232,20 @@ hm  (package-refresh-contents)
                       :height 0.9)
   
    ;; Minimal tab-bar: "1:main  2:api*  3:notes"
- (setq tab-bar-close-button-show nil)
- (setq tab-bar-new-button-show nil)
- (setq tab-bar-back-button-show nil)
- (setq tab-bar-separator " ")
+ ;; (setq tab-bar-close-button-show nil)
+ ;; (setq tab-bar-new-button-show nil)
+ ;; (setq tab-bar-back-button-show nil)
+ ;; (setq tab-bar-separator " ")
 
- (defun my-tab-bar-name-format (tab i)
-   (let* ((name (alist-get 'name tab))
-	  ;; crude but useful: mark tab if *any* buffer is modified
-	  (dirty (if (seq-some (lambda (b) (buffer-modified-p (get-buffer b)))
-			       (mapcar #'buffer-name (buffer-list)))
-		     "*" "")))
-     (format "%d:%s%s" i name dirty)))
+ ;; (defun my-tab-bar-name-format (tab i)
+ ;;   (let* ((name (alist-get 'name tab))
+ ;; 	  ;; crude but useful: mark tab if *any* buffer is modified
+ ;; 	  (dirty (if (seq-some (lambda (b) (buffer-modified-p (get-buffer b)))
+ ;; 			       (mapcar #'buffer-name (buffer-list)))
+ ;; 		     "*" "")))
+ ;;     (format "%d:%s%s" i name dirty)))
 
- (setq tab-bar-tab-name-format-function #'my-tab-bar-name-format)
+ ;; (setq tab-bar-tab-name-format-function #'my-tab-bar-name-format)
 
 
  ;; Optional: make it visually flat
@@ -264,13 +264,13 @@ hm  (package-refresh-contents)
 		     :height my-ui-scale
 		     :box nil)
 
- ;; Tab-bar
- (set-face-attribute 'tab-bar nil
-		     :height my-ui-scale
-		     :box nil)
+ ;; ;; Tab-bar
+ ;; (set-face-attribute 'tab-bar nil
+ ;; 		     :height my-ui-scale
+ ;; 		     :box nil)
 
- (set-face-attribute 'tab-bar-tab nil :box nil)
- (set-face-attribute 'tab-bar-tab-inactive nil :box nil)
+ ;; (set-face-attribute 'tab-bar-tab nil :box nil)
+ ;; (set-face-attribute 'tab-bar-tab-inactive nil :box nil)
 
  ;; Minibuffer prompt
  (set-face-attribute 'minibuffer-prompt nil

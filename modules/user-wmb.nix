@@ -148,7 +148,8 @@ in
 
   # ── Colors (Acme / Plan 9 inspired) ──
   "URxvt.foreground" = "#000000";
-  "URxvt.background" = "#FFFFEA";
+  #"URxvt.background" = "#FFFFEA";
+  "URxvt.background" = "#eae3d8";
 
   # ANSI palette — muted, low saturation
   "URxvt.color0"  = "#000000"; # black
@@ -172,7 +173,8 @@ in
   # Cursor & selection (Acme-like)
   "URxvt.cursorColor" = "#000000";
   "URxvt.highlightColor" = "#000000";
-  "URxvt.highlightTextColor" = "#FFFFEA";
+  #"URxvt.highlightTextColor" = "#FFFFEA";
+  "URxvt.highlightTextColor" = "#eae3d8";
 
   # Scrollbar & scrolling (unchanged)
   "URxvt.scrollBar" = false;

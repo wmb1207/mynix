@@ -26,7 +26,8 @@
 (def assets-folder "assets")
 (def transparency "100")
 
-(def theme "acme")
+;;(def theme "acme")
+(def theme "doric-beach")
 (def light-theme "ef-day")
 
 (def ghostty-theme "Wez")

@@ -1,4 +1,4 @@
-.#!/usr/bin/env bb
+#!/usr/bin/env bb
 
 (require '[babashka.cli :as cli]
          '[babashka.process :refer [shell check process]]
@@ -62,5 +62,3 @@
         :else (println "Usage: battery.clj [--daemon|-d] [--notify|-n]")))))
     
 (apply -main *command-line-args*)
-
-(set-background-color "#f2f1e5")

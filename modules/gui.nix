@@ -13,18 +13,16 @@ let
     vlc
     mupdf
     librewolf
-    zed-editor
     arandr
     xfe
+    edwood
+    chromium
   ];
 
   x86_64Packages = with pkgs; [
     slack
     steam
-    #discord
     jetbrains.datagrip
-    # jetbrains.phpstorm
-    # jetbrains-toolbox
   ];
 
   aarch64Packages = with pkgs; [
