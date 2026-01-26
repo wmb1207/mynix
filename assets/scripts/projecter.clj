@@ -1,8 +1,9 @@
 #!/usr/bin/env bb
 
-(require '[babashka.cli :as cli]
-         '[babashka.fs :as fs]
-         '[clojure.string :as str])
+(ns projecter
+  (:require [babashka.cli :as cli]
+            [babashka.fs :as fs]
+            [clojure.string :as str]))
 
 (def allowed-templates #{"php" "python" "nodejs" "raw"})
 
@@ -25,6 +26,8 @@
                      ^clojure.lang.IPersistentCollection tags])
 
 (def template-path "/home/wmb/.local/templates/")
+(def scripts-path "/home/wmb/.local/bin/")
+(def scripts ["tunnel" ""])
 
 
 (def templates
@@ -48,6 +51,8 @@
       (fs/create-dirs dir))
     (fs/copy (fs/path template-path (:template template))
              (fs/path dir (:template template)))
+    (doseq [i scripts] (fs/copy (fs/path (str scripts-path i "clj"))
+                                (fs/path dir (:template template))))
     (println "New dev shell ready to be used")
     (println "Run: cd" dir)))
 

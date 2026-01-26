@@ -1,8 +1,8 @@
 #!/usr/bin/env bb
-
-(require '[babashka.cli :as cli]
-         '[babashka.process :refer [shell check process]]
-         '[babashka.fs :as fs])
+(ns backlight
+  (:require [babashka.cli :as cli]
+         [babashka.process :refer [shell check process]]
+         [babashka.fs :as fs]))
 
 (def cli-opts
   {:spec {:increase {:desc "increase backlight"

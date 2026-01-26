@@ -6,17 +6,11 @@
    [babashka.cli :as cli]))
 
 (def envs
-  {:dev  {:local-port 54321
-          :db-host "warc-development-rds-postgres.cfko0ca8atxw.eu-north-1.rds.amazonaws.com"
-          :db-port 5432
-          :bastion "BastionWarcDEV"
-          :user "lao"}
-
-   :prod {:local-port 54322
-          :db-host "warc-production-rds-postgres.cfko0ca8atxw.eu-north-1.rds.amazonaws.com"
-          :db-port 5432
-          :bastion "BastionWarc"
-          :user "lao"}})
+  {:dev  {:local-port 0
+          :db-host ""
+          :db-port 0
+          :bastion ""
+          :user ""}})
 
 
 (defn start-tunnel! [env]

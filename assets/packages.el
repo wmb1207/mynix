@@ -4,6 +4,10 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package persp-mode
+		  :ensure t
+		  :init
+		  (persp-mode 1))
 	(:package ibuffer-sidebar
 		  :ensure t)
 	(:package  detached
