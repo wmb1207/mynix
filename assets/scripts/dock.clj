@@ -142,3 +142,5 @@
     (println (handler opts displays))))
 
 (apply -main *command-line-args*)
+
+(set-mouse-color "olive")

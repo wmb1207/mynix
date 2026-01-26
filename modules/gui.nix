@@ -17,6 +17,7 @@ let
     xfe
     edwood
     chromium
+    xorg.xclock
   ];
 
   x86_64Packages = with pkgs; [
