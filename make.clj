@@ -27,7 +27,7 @@
 (def transparency "100")
 
 ;;(def theme "acme")
-(def theme "doric-beach")
+(def theme "doric-earth")
 (def light-theme "ef-day")
 
 (def ghostty-theme "Wez")
@@ -153,9 +153,9 @@
   (->Template "dunstrc"
               (str assets-folder "/dunstrc")
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
-              [(->TemplateField "{{black}}" "#99cccc")
-               (->TemplateField "{{frame}}" "#eaffff")
-               (->TemplateField "{{green}}" black)
+              [(->TemplateField "{{black}}" "#f3efe6")
+               (->TemplateField "{{frame}}" "#2a8f8a")
+               (->TemplateField "{{green}}" "#f3efe6")
                (->TemplateField "{{red}}" red)
                (->TemplateField "{{white}}" black)
                (->TemplateField "{{transparency}}" transparency)

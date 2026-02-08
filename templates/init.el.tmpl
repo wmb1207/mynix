@@ -122,12 +122,6 @@ hm  (package-refresh-contents)
   (setq neo-window-fixed-size nil)
   (add-to-list 'default-frame-alist '(internal-border-width . 0)) ;;pading
   (add-to-list 'default-frame-alist '(font . "{{font}}-11"))
-  (set-face-attribute
-   'default nil
-   :font "{{font}}"
-   :height 11
-   :weight 'regular)
-
 
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
   (setq-default left-margin-width 0 right-margin-width 0 internal-border-width 0) ; Define new widths.
@@ -137,6 +131,17 @@ hm  (package-refresh-contents)
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
   (load-theme '{{theme}} t)
+
+  ;; Set font AFTER load-theme so the theme can't clobber it.
+  ;; :height is in half-points (110 = 11pt).
+  (defun my-reset-font ()
+    (set-face-attribute 'default nil
+                        :font "{{font}}"
+                        :height 110
+                        :weight 'regular))
+  (my-reset-font)
+  ;; Re-apply after any theme change at runtime
+  (add-hook 'after-load-theme-hook #'my-reset-font)
 
 ;;  (set-face-background 'default "{{background}}")
   ;; (global-whitespace-mode 1)
@@ -288,8 +293,17 @@ hm  (package-refresh-contents)
  (setq-default line-spacing 0.0)
 
  (set-fringe-mode 0)
- (add-to-list 'default-frame-alist '(internal-border-width . 0)))
+ (require 'beframe)
 
+ ;; This is the default value.  Write here the names of buffers that
+ ;; should not be beframed.
+ (setq beframe-global-buffers '("*scratch*" "*Messages*" "*Backtrace*"))
+
+ (beframe-mode 1)
+
+ ;; Bind Beframe commands to a prefix key, such as C-c b:
+ (define-key global-map (kbd "C-c b") #'beframe-prefix-map)
+ (add-to-list 'default-frame-alist '(internal-border-width . 0)))
 
 ;; End Theme
 

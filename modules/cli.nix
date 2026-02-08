@@ -45,4 +45,5 @@ with pkgs; [
 
   clipmenu
   nix-search-cli
+  claude-code
 ]

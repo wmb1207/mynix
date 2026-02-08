@@ -1,8 +1,9 @@
 #!/usr/bin/env bb
 (ns backlight
   (:require [babashka.cli :as cli]
-         [babashka.process :refer [shell check process]]
-         [babashka.fs :as fs]))
+            [clojure.string :as str]
+            [babashka.process :refer [shell check process]]
+            [babashka.fs :as fs]))
 
 (def cli-opts
   {:spec {:increase {:desc "increase backlight"

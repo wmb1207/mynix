@@ -4,7 +4,6 @@ let
   # Define groups of packages for each arch
   commonPackages = with pkgs; [
     brave
-    firefox
     flameshot
     xterm
     rxvt-unicode
@@ -16,8 +15,9 @@ let
     arandr
     xfe
     edwood
-    chromium
     xorg.xclock
+    xorg.xload
+    qutebrowser
   ];
 
   x86_64Packages = with pkgs; [

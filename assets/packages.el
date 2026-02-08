@@ -4,6 +4,10 @@
 
 (setq packages
       '((:package base16-theme)
+	(:package standard-themes
+		  :ensure t)
+	(:package beframe
+		  :ensure t)
 	(:package persp-mode
 		  :ensure t
 		  :init
