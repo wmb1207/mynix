@@ -17,19 +17,19 @@ in
   hardware.enableRedistributableFirmware = true;
   hardware.firmware = [pkgs.linux-firmware];
   hardware.opengl = {
-  enable = true;
-  driSupport32Bit = true;
+    enable = true;
+    driSupport32Bit = true;
 
-  extraPackages = with pkgs; [
-    mesa
-    mesa.drivers
-  ];
+    extraPackages = with pkgs; [
+      mesa
+      mesa.drivers
+    ];
 
-  extraPackages32 = with pkgs.pkgsi686Linux; [
-    mesa
-    mesa.drivers
-  ];
-};
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      mesa
+      mesa.drivers
+    ];
+  };
 
 
   # Bootlhoader.
@@ -104,24 +104,55 @@ in
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-    users.users.wmb = {
+  users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
     extraGroups = [ "networkmanager" "wheel" "docker"];
-     packages = with pkgs; [
-       tree
-       git
-       emacs
-       asusctl
-       supergfxctl
-       glxinfo
-       mangohud
-       protonup-qt
-     ];
+    packages = with pkgs; [
+      tree
+      git
+      emacs
+      asusctl
+      supergfxctl
+      glxinfo
+      mangohud
+      protonup-qt
+    ];
   };
-    services.dbus.enable = true;
-    programs.dconf.enable = true;
-    programs.nix-ld.enable = true;
+  
+  fileSystems."/mnt/NAS/games" = {
+    device = "192.168.88.18:/mnt/NAS/games";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "async"
+      "nfsvers=4"
+      "rsize=1048576"
+      "wsize=1048576"
+    ];
+  };
+
+  fileSystems."/mnt/NAS/media" = {
+    device = "192.168.88.18:/mnt/NAS/media";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "nfsvers=4"
+      "rsize=8192"
+      "wsize=8192"
+    ];
+  };
+  services.dbus.enable = true;
+  programs.dconf.enable = true;
+  programs.nix-ld.enable = true;
   # Enable automatic login for the user.
   # services.displayManager.autoLogin.enable = true;
   # services.displayManager.autoLogin.user = "wmb";
@@ -139,10 +170,10 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-     emacs
-     linux-firmware
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
+    emacs
+    linux-firmware
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -172,5 +203,4 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
-
 }

@@ -53,20 +53,17 @@ in
   users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
-    extraGroups = [ "wheel" "networkmanager" "docker" "audio" ];
     shell = pkgs.loksh;
+    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "input"];
   };
 
-  #### Console #############################################################
+  services.udev.packages = [pkgs.game-devices-udev-rules];
 
-  console = {
-    font = "ter-v12n";
-    packages = [ pkgs.terminus_font ];
-    earlySetup = true;
-  };
-
-  #### System services #####################################################
-
+  services.udev.extraRules = ''
+                           KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
+                           KERNEL=="hidraw*", KERNELS=="*054C:0CE6*", MODE="0660", TAG+="uaccess"
+'';
+  
   services.emacs = {
     enable = true;
     package = myEmacs;
@@ -112,16 +109,6 @@ in
     windowmaker.enable = true;
     fvwm3.enable = true;
   };
-
-
-  #### udev ################################################################
-
-  services.udev.packages =
-    if lib.hasAttr "steamPackages" pkgs then
-      lib.optional (!builtins.elem system [ "aarch64-linux" ])
-        pkgs.steamPackages.steam
-    else
-      [];
 
   #### Fonts ###############################################################
 

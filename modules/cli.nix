@@ -3,7 +3,7 @@
 with pkgs; [
   loksh
   dtach
-  
+  usbutils
   xdotool
   xdo
   docker-compose
