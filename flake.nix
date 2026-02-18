@@ -3,9 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     teleport-installer.url = "path:./flakes/teleport";
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -113,25 +111,18 @@
             system = "aarch64-linux";
           };
         };
-      };
 
-      homeConfigurations = {
-        wmb = home-manager.lib.homeManagerConfiguration {
+        postgres = nixpkgs.lib.nixosSystem {
+          inherit system;
           pkgs = pkgsFor system;
-          modules = [
-            ./modules/user-wmb.nix
-            {
-              home.username = "wmb";
-              home.homeDirectory = "/home/wmb";
-              home.stateVersion = "23.05";
-            }
-            {
-              home.packages = [
-                teleport-installer.packages.${system}.default
-              ];
-            }
+          modules = baseModules ++ [
+            ./hosts/postgres/configuration.nix
           ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
-      };
+      };  # End of nixosConfigurations
+
     };
 }

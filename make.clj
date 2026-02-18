@@ -190,11 +190,11 @@
                (->TemplateField "{{font}}" font)
                (->TemplateField "{{background}}" black)]))
 
-(defn emacs
-  [args]
-  (if (some #(= "--light" %) args)
-    emacs-light
-    emacs-dark))
+;(defn emacs
+;  [args]
+;  (if (some #(= "--light" %) args)
+;    emacs-light
+ ;   emacs-dark))
 
 (defn ghostty
   [args]
@@ -229,7 +229,7 @@
 (defn main
   [& args]
   (println args)
-  (apply-tmpls! [polybar bspwmrc sxhkdrc (ghostty args) (emacs args) dunstrc])
+  (apply-tmpls! [polybar bspwmrc sxhkdrc (ghostty args) dunstrc])
   (ensure-sudo!)
   (remove-init-el)
   (apply-flake (first args)))
