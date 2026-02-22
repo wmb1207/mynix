@@ -14,6 +14,9 @@
 		  (persp-mode 1))
 	(:package ibuffer-sidebar
 		  :ensure t)
+	(:package envrc
+		  :ensure t
+		  :hook (after-init . envrc-global-mode))
 	(:package  detached
 		   :ensure t
 		   :init

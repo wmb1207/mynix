@@ -123,131 +123,130 @@ in
 
     programs.bash.enable = true;
     
-
     programs.home-manager.enable = true;
 
     xsession.enable = true;
     xresources.properties = {
-  # Font configuration (unchanged)
-  "URxvt.font" = "xft:DejaVu Sans Mono:size=10";
-  "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
-  "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
+      # Font configuration (unchanged)
+      "URxvt.font" = "xft:DejaVu Sans Mono:size=10";
+      "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
+      "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
 
-  # ── Colors (Acme / Plan 9 inspired) ──
-  "URxvt.foreground" = "#000000";
-  #"URxvt.background" = "#FFFFEA";
-  "URxvt.background" = "#eae3d8";
+      # ── Colors (Acme / Plan 9 inspired) ──
+      "URxvt.foreground" = "#000000";
+      #"URxvt.background" = "#FFFFEA";
+      "URxvt.background" = "#eae3d8";
 
-  # ANSI palette — muted, low saturation
-  "URxvt.color0"  = "#000000"; # black
-  "URxvt.color1"  = "#AA0000"; # red
-  "URxvt.color2"  = "#006600"; # green
-  "URxvt.color3"  = "#999900"; # yellow
-  "URxvt.color4"  = "#000099"; # blue
-  "URxvt.color5"  = "#660066"; # magenta
-  "URxvt.color6"  = "#006666"; # cyan
-  "URxvt.color7"  = "#CCCCAA"; # white-ish
+      # ANSI palette — muted, low saturation
+      "URxvt.color0"  = "#000000"; # black
+      "URxvt.color1"  = "#AA0000"; # red
+      "URxvt.color2"  = "#006600"; # green
+      "URxvt.color3"  = "#999900"; # yellow
+      "URxvt.color4"  = "#000099"; # blue
+      "URxvt.color5"  = "#660066"; # magenta
+      "URxvt.color6"  = "#006666"; # cyan
+      "URxvt.color7"  = "#CCCCAA"; # white-ish
 
-  "URxvt.color8"  = "#555555"; # bright black
-  "URxvt.color9"  = "#CC0000";
-  "URxvt.color10" = "#008800";
-  "URxvt.color11" = "#BBBB00";
-  "URxvt.color12" = "#0000BB";
-  "URxvt.color13" = "#880088";
-  "URxvt.color14" = "#008888";
-  "URxvt.color15" = "#FFFFFF";
+      "URxvt.color8"  = "#555555"; # bright black
+      "URxvt.color9"  = "#CC0000";
+      "URxvt.color10" = "#008800";
+      "URxvt.color11" = "#BBBB00";
+      "URxvt.color12" = "#0000BB";
+      "URxvt.color13" = "#880088";
+      "URxvt.color14" = "#008888";
+      "URxvt.color15" = "#FFFFFF";
 
-  # Cursor & selection (Acme-like)
-  "URxvt.cursorColor" = "#000000";
-  "URxvt.highlightColor" = "#000000";
-  #"URxvt.highlightTextColor" = "#FFFFEA";
-  "URxvt.highlightTextColor" = "#eae3d8";
+      # Cursor & selection (Acme-like)
+      "URxvt.cursorColor" = "#000000";
+      "URxvt.highlightColor" = "#000000";
+      #"URxvt.highlightTextColor" = "#FFFFEA";
+      "URxvt.highlightTextColor" = "#eae3d8";
 
-  # Scrollbar & scrolling (unchanged)
-  "URxvt.scrollBar" = false;
-  "URxvt.scrollTtyOutput" = false;
-  "URxvt.scrollWithBuffer" = true;
-  "URxvt.scrollTtyKeypress" = true;
+      # Scrollbar & scrolling (unchanged)
+      "URxvt.scrollBar" = false;
+      "URxvt.scrollTtyOutput" = false;
+      "URxvt.scrollWithBuffer" = true;
+      "URxvt.scrollTtyKeypress" = true;
 
-  # Border and padding (slightly tighter, Acme feel)
-  "URxvt.internalBorder" = 2;
-  "URxvt.borderWidth" = 0;
+      # Border and padding (slightly tighter, Acme feel)
+      "URxvt.internalBorder" = 2;
+      "URxvt.borderWidth" = 0;
 
-  # Scrollback
-  "URxvt.saveLines" = 1000;
+      # Scrollback
+      "URxvt.saveLines" = 1000;
 
-  # Clipboard and selection
-  "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
-  "URxvt.clipboard.autocopy" = true;
-  "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
-  "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
+      # Clipboard and selection
+      "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
+      "URxvt.clipboard.autocopy" = true;
+      "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
+      "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
 
-  # Meta key behavior
-  "URxvt.meta8" = false;
+      # Meta key behavior
+      "URxvt.meta8" = false;
 
-  # ISO 14755 mode
-  "URxvt.iso14755" = false;
-  "URxvt.iso14755_52" = false;
+      # ISO 14755 mode
+      "URxvt.iso14755" = false;
+      "URxvt.iso14755_52" = false;
 
-#   # Font configuration
-#   "URxvt.font" = "xft:DejaVu Sans Mono:size=14";
-#   "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=14";
-#   "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=14";
-  
-#   # Colors
-# /* Couleurs Tango */
-# "URxvt.foreground" ="#C8C8C8";
-# "URxvt.background" ="#323232";
-# "URxvt.color0" =    "#2E3436";
-# "URxvt.color1" =    "#CC0000";
-# "URxvt.color2" =    "#4E9A06";
-# "URxvt.color3" =    "#C4A000";
-# "URxvt.color4" =    "#3465A4";
-# "URxvt.color5" =    "#75507B";
-# "URxvt.color6" =    "#06989A";
-# "URxvt.color7" =    "#D3D7CF";
-# "URxvt.color8" =    "#555753";
-# "URxvt.color9" =    "#EF2929";
-# "URxvt.color10" =   "#8AE234";
-# "URxvt.color11" =   "#FCE94F";
-# "URxvt.color12" =   "#729FCF";
-# "URxvt.color13" =   "#AD7FA8";
-# "URxvt.color14" =   "#34E2E2";
-# "URxvt.color15" =   "#EEEEEC";
-# "URxvt.scrollBar" =        false;
-# "URxvt.scrollTtyOutput" =  false;
-# "URxvt.scrollWithBuffer" = true;
-# "URxvt.scrollTtyKeypress" = true;
-#   # Border and padding
-#   "URxvt.internalBorder" = 2;
-#   "URxvt.borderWidth" = 0;
-  
-#   # Scrollback
-#   "URxvt.saveLines" = 1000;
-  
-#   # Clipboard and selection
-#   "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
-#   "URxvt.clipboard.autocopy" = true;
-#   "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
-#   "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
-  
-#   # Meta key behavior (equivalent to metaSendsEscape)
-#   "URxvt.meta8" = false;
-  
-#   # ISO 14755 mode (disable for cleaner input)
-#   "URxvt.iso14755" = false;
-#   "URxvt.iso14755_52" = false;
-};
+      #   # Font configuration
+      #   "URxvt.font" = "xft:DejaVu Sans Mono:size=14";
+      #   "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=14";
+      #   "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=14";
+      
+      #   # Colors
+      # /* Couleurs Tango */
+      # "URxvt.foreground" ="#C8C8C8";
+      # "URxvt.background" ="#323232";
+      # "URxvt.color0" =    "#2E3436";
+      # "URxvt.color1" =    "#CC0000";
+      # "URxvt.color2" =    "#4E9A06";
+      # "URxvt.color3" =    "#C4A000";
+      # "URxvt.color4" =    "#3465A4";
+      # "URxvt.color5" =    "#75507B";
+      # "URxvt.color6" =    "#06989A";
+      # "URxvt.color7" =    "#D3D7CF";
+      # "URxvt.color8" =    "#555753";
+      # "URxvt.color9" =    "#EF2929";
+      # "URxvt.color10" =   "#8AE234";
+      # "URxvt.color11" =   "#FCE94F";
+      # "URxvt.color12" =   "#729FCF";
+      # "URxvt.color13" =   "#AD7FA8";
+      # "URxvt.color14" =   "#34E2E2";
+      # "URxvt.color15" =   "#EEEEEC";
+      # "URxvt.scrollBar" =        false;
+      # "URxvt.scrollTtyOutput" =  false;
+      # "URxvt.scrollWithBuffer" = true;
+      # "URxvt.scrollTtyKeypress" = true;
+      #   # Border and padding
+      #   "URxvt.internalBorder" = 2;
+      #   "URxvt.borderWidth" = 0;
+      
+      #   # Scrollback
+      #   "URxvt.saveLines" = 1000;
+      
+      #   # Clipboard and selection
+      #   "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
+      #   "URxvt.clipboard.autocopy" = true;
+      #   "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
+      #   "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
+      
+      #   # Meta key behavior (equivalent to metaSendsEscape)
+      #   "URxvt.meta8" = false;
+      
+      #   # ISO 14755 mode (disable for cleaner input)
+      #   "URxvt.iso14755" = false;
+      #   "URxvt.iso14755_52" = false;
+    };
 
-xresources.extraConfig = ''
+    xresources.extraConfig = ''
   URxvt.keysym.Control-Shift-w: perl:clipboard:copy
   URxvt.keysym.Control-Shift-y: perl:clipboard:paste
-'';
+  '';
 
-programs.bash.initExtra = ''
+  programs.bash.initExtra = ''
   bind '"\C-w":""'
   bind '"\C-y":""'
-'';
+  '';
     home.packages =
       cli
       ++ programming-languages
@@ -255,6 +254,13 @@ programs.bash.initExtra = ''
       ++ iac
       ++ wm-tools
       ++ [
+        
+        (pkgs.writeShellScriptBin "Ldef" "exec L def \"$@\"")
+        (pkgs.writeShellScriptBin "Lrefs" "exec L refs \"$@\"")
+        (pkgs.writeShellScriptBin "Lrn" "exec L rn \"$@\"")
+        (pkgs.writeShellScriptBin "Lassist" "exec L assist \"$@\"")
+
+        #pkgs.acme-lsp
         pkgs.acpi
         pkgs.networkmanager
         pkgs.xorg.xmodmap
@@ -278,6 +284,27 @@ programs.bash.initExtra = ''
           ];
         })
       ];
+    # systemd.user.services.acme-lsp = {
+    #   Unit = {
+    #     Description = "acme-lsp (LSP bridge for Edwood/Acme)";
+    #     After = [ "graphical-session.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
+
+    #   Service = {
+    #     ExecStart = "${pkgs.acme-lsp}/bin/acme-lsp";
+    #     Restart = "always";
+    #     RestartSec = 1;
+
+    #     # Makes logs easy to see in `journalctl --user -u acme-lsp -f`
+    #     StandardOutput = "journal";
+    #     StandardError = "journal";
+    #   };
+
+    #   Install = {
+    #     WantedBy = [ "default.target" ];
+    #   };
+    # };
 
     gtk = {
       enable = true;
@@ -324,8 +351,7 @@ programs.bash.initExtra = ''
   HISTSIZE=10000
   SAVEHIST=20000
   
-
-  PS1='\033[38;5;58m$(pwd | sed "s|$HOME|~|")\033[0m $ '
+  PS1='\033[38;5;67m$(pwd | sed "s|$HOME|~|")\033[0m $ '
   
   # === Aliases ===
   alias ll='ls -lh --color=auto'

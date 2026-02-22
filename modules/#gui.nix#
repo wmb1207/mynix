@@ -15,9 +15,10 @@ let
     arandr
     xfe
     edwood
-    plan9port
     xorg.xclock
     xorg.xload
+    qutebrowser
+    moonlight-qt0
   ];
 
   x86_64Packages = with pkgs; [

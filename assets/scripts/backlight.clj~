@@ -1,0 +1,5 @@
+#!/usr/bin/env bb
+
+(require '[babashka.cli :as cli]
+         '[babashka.process :refer [shell check]]
+         '[babashka.fs :as fs])

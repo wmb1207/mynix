@@ -26,6 +26,29 @@
             "fcitx5-with-addons" = null;
           };
         })
+
+        # acme-lsp overlay
+        (final: prev: {
+          acme-lsp = prev.buildGoModule {
+            pname = "acme-lsp";
+            version = "unstable";
+
+            src = prev.fetchFromGitHub {
+              owner = "9fans";
+              repo = "acme-lsp";
+              rev = "master";
+              sha256 = "sha256-91t9K2u5Goow6Wfozd9ZXUnnv6WEDij+YKiqkQKJyx0=";
+            };
+
+            vendorHash = "sha256-tFbEm5xTO5LBJtxtspFPF8iNkmQKdRry8HCv4cgrEmk=";
+
+            subPackages = [
+              "cmd/acme-lsp"
+              "cmd/L"
+              "cmd/acmefocused"
+            ];
+          };
+        })
       ];
 
       pkgsFor = system: import nixpkgs {

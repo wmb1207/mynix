@@ -1,0 +1,38 @@
+#!/usr/bin/env bb
+
+(ns tunnel
+  (:require [babashka.process :refer [process]]
+            [babashka.cli :as cli]))
+
+(def envs
+  {:dev  {:local-port 54321
+          :db-host "warc-development-rds-postgres.cfko0ca8atxw.eu-north-1.rds.amazonaws.com"
+          :db-port 5432
+          :bastion "BastionWarcDEV"
+          :user "lao"}
+
+   :prod {:local-port 55432
+          :db-host "db.prod.internal"
+          :db-port 5432
+          :jump "user@jump.prod.example.com"
+          :target "user@db.prod.internal"}})
+
+(defn tunnel-cmd [{:keys [local-port db-host db-port jump target]}]
+  ["ssh"
+   "-N"
+   "-L" (str local-port ":" db-host ":" db-port)
+   "-J" jump
+   target])
+
+(defn start-tunnel! [env]
+  (let [cfg (get envs env)]
+    (when-not cfg
+      (throw (ex-info "Unknown env" {:env env})))
+    (println "Starting tunnel for" (name env))
+    (process (tunnel-cmd cfg) {:inherit true})))
+
+(defn -main [& args]
+  (let [{:keys [env]} (cli/parse-opts args {:env {:coerce keyword}})]
+    (start-tunnel! env)))
+
+(apply -main *command-line-args*)

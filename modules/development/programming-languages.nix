@@ -36,5 +36,9 @@ with pkgs; [
   go-outline
   gopkgs
   gotools
-  delve 
+  delve
+
+  pyright
+  rust-analyzer
+  phpactor
 ]
