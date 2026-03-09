@@ -148,6 +148,17 @@
             inherit inputs system teleport-installer;
           };
         };
+
+        mongo = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = baseModules ++ [
+            ./hosts/mongo/configuration.nix
+          ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
+        };
       };
 
       homeConfigurations = {
