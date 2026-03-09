@@ -136,6 +136,22 @@ in
     ];
   };
 
+  fileSystems."/mnt/NAS/wmb" = {
+    device = "192.168.88.18:/mnt/NAS/wmb";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "async"
+      "nfsvers=4"
+      "rsize=1048576"
+      "wsize=1048576"
+    ];
+  };
+
   fileSystems."/mnt/NAS/media" = {
     device = "192.168.88.18:/mnt/NAS/media";
     fsType = "nfs";
