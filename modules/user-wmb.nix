@@ -187,55 +187,6 @@ in
       # ISO 14755 mode
       "URxvt.iso14755" = false;
       "URxvt.iso14755_52" = false;
-
-      #   # Font configuration
-      #   "URxvt.font" = "xft:DejaVu Sans Mono:size=14";
-      #   "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=14";
-      #   "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=14";
-      
-      #   # Colors
-      # /* Couleurs Tango */
-      # "URxvt.foreground" ="#C8C8C8";
-      # "URxvt.background" ="#323232";
-      # "URxvt.color0" =    "#2E3436";
-      # "URxvt.color1" =    "#CC0000";
-      # "URxvt.color2" =    "#4E9A06";
-      # "URxvt.color3" =    "#C4A000";
-      # "URxvt.color4" =    "#3465A4";
-      # "URxvt.color5" =    "#75507B";
-      # "URxvt.color6" =    "#06989A";
-      # "URxvt.color7" =    "#D3D7CF";
-      # "URxvt.color8" =    "#555753";
-      # "URxvt.color9" =    "#EF2929";
-      # "URxvt.color10" =   "#8AE234";
-      # "URxvt.color11" =   "#FCE94F";
-      # "URxvt.color12" =   "#729FCF";
-      # "URxvt.color13" =   "#AD7FA8";
-      # "URxvt.color14" =   "#34E2E2";
-      # "URxvt.color15" =   "#EEEEEC";
-      # "URxvt.scrollBar" =        false;
-      # "URxvt.scrollTtyOutput" =  false;
-      # "URxvt.scrollWithBuffer" = true;
-      # "URxvt.scrollTtyKeypress" = true;
-      #   # Border and padding
-      #   "URxvt.internalBorder" = 2;
-      #   "URxvt.borderWidth" = 0;
-      
-      #   # Scrollback
-      #   "URxvt.saveLines" = 1000;
-      
-      #   # Clipboard and selection
-      #   "URxvt.perl-ext-common" = "default,clipboard,selection-to-clipboard";
-      #   "URxvt.clipboard.autocopy" = true;
-      #   "URxvt.clipboard.copycmd" = "xclip -i -selection clipboard";
-      #   "URxvt.clipboard.pastecmd" = "xclip -o -selection clipboard";
-      
-      #   # Meta key behavior (equivalent to metaSendsEscape)
-      #   "URxvt.meta8" = false;
-      
-      #   # ISO 14755 mode (disable for cleaner input)
-      #   "URxvt.iso14755" = false;
-      #   "URxvt.iso14755_52" = false;
     };
 
     xresources.extraConfig = ''
@@ -284,27 +235,6 @@ in
           ];
         })
       ];
-    # systemd.user.services.acme-lsp = {
-    #   Unit = {
-    #     Description = "acme-lsp (LSP bridge for Edwood/Acme)";
-    #     After = [ "graphical-session.target" ];
-    #     PartOf = [ "graphical-session.target" ];
-    #   };
-
-    #   Service = {
-    #     ExecStart = "${pkgs.acme-lsp}/bin/acme-lsp";
-    #     Restart = "always";
-    #     RestartSec = 1;
-
-    #     # Makes logs easy to see in `journalctl --user -u acme-lsp -f`
-    #     StandardOutput = "journal";
-    #     StandardError = "journal";
-    #   };
-
-    #   Install = {
-    #     WantedBy = [ "default.target" ];
-    #   };
-    # };
 
     gtk = {
       enable = true;

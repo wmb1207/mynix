@@ -137,6 +137,17 @@
             system = "aarch64-linux";
           };
         };
+
+        postgres = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = baseModules ++ [
+            ./hosts/postgres/configuration.nix
+          ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
+        };
       };
 
       homeConfigurations = {

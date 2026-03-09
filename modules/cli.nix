@@ -1,6 +1,8 @@
 { pkgs }:
 
 with pkgs; [
+  abcde
+  flac
   loksh
   dtach
   usbutils
