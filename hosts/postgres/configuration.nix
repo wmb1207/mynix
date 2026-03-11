@@ -70,17 +70,17 @@
   ];
 
   services.postgresql = {
-  enable = true;
-  package = pkgs.postgresql_17;
+    enable = true;
+    package = pkgs.postgresql_17;
 
-  # This is the missing part ➜ include postgis in PostgreSQL's plugin set
-  extraPlugins = with pkgs.postgresql17Packages; [ postgis ];
+    # This is the missing part ➜ include postgis in PostgreSQL's plugin set
+    extraPlugins = with pkgs.postgresql17Packages; [ postgis ];
 
-  enableTCPIP = true;
-  authentication = ''
+    enableTCPIP = true;
+    authentication = ''
     host all all 0.0.0.0/0 md5
-  '';
-};
+    '';
+  };
 
 
 

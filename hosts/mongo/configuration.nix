@@ -64,7 +64,7 @@
     enable = true;
     package = pkgs.mongodb-ce; # Use mongodb-ce for pre-compiled binaries
     enableAuth = true;
-    initialRootPasswordFile = /path/to/secure/passwordFile;
+    initialRootPasswordFile = ./pass;
     bind_ip = "127.0.0.1";
     dbpath = "/var/db/mongodb";
   };   
