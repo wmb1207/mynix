@@ -35,12 +35,24 @@
       };
 
     in {
+      
       nixosConfigurations = {
 
         default = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules;
+        };
+        pi = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          pkgs = pkgsFor "aarch64-linux";
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
+            ./hosts/pi/configuration.nix
+            {
+              sdImage.compressImage = false;
+            }
+          ];
         };
 
         nixos = nixpkgs.lib.nixosSystem {
