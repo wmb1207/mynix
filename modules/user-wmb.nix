@@ -70,6 +70,7 @@ in
   };
 
   programs.dconf.enable = true;
+  services.tailscale.enable = true;
   security.polkit.enable = true;
 
   hardware.bluetooth = {
