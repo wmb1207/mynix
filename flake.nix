@@ -55,6 +55,33 @@
           ];
         };
 
+        workstationiso = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = baseModules ++ [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            ./modules/iso-base.nix
+            ./modules/iso-gui.nix
+            ./modules/user-wmb.nix
+            ./modules/laptop-keyboard.nix
+            teleport-installer.nixosModules.default
+
+            {
+              environment.systemPackages = [
+                teleport-installer.packages.${system}.teleport
+              ];
+
+              # usually good for install/live media
+              services.openssh.enable = true;
+
+              # often needed to avoid bootloader/disk config conflicts
+              boot.loader.grub.enable = false;
+            }
+          ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
+        };
+
         nixos = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
@@ -71,6 +98,7 @@
         rog = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
+          
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix
