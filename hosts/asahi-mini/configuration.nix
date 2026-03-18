@@ -28,7 +28,7 @@
     enable = true;
     settings.General.EnableNetworkConfiguration = true;
   };
-  networking.hostName = "asahibook";
+  networking.hostName = "mini";
     time.timeZone = "America/Argentina/Cordoba";
       i18n.defaultLocale = "en_US.UTF-8";
 
@@ -75,6 +75,7 @@
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.interfaces.end0.useDHCP = true;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
@@ -85,6 +86,65 @@
     pulse.enable = true;
     wireplumber.enable = true;
   };
+  users.users.wmb = {
+    isNormalUser = true;
+    description = "wmb";
+    extraGroups = [ "networkmanager" "wheel" "docker"];
+    packages = with pkgs; [
+      tree
+      git
+    ];
+  };
+  
+  fileSystems."/mnt/NAS/games" = {
+    device = "192.168.88.18:/mnt/NAS/games";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "async"
+      "nfsvers=4"
+      "rsize=1048576"
+      "wsize=1048576"
+    ];
+  };
+
+  fileSystems."/mnt/NAS/wmb" = {
+    device = "192.168.88.18:/mnt/NAS/wmb";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "async"
+      "nfsvers=4"
+      "rsize=1048576"
+      "wsize=1048576"
+    ];
+  };
+
+  fileSystems."/mnt/NAS/media" = {
+    device = "192.168.88.18:/mnt/NAS/media";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "_netdev"
+      "hard"
+      "intr"
+      "noatime"
+      "nfsvers=4"
+      "rsize=8192"
+      "wsize=8192"
+    ];
+  };
+  services.dbus.enable = true;
+  programs.dconf.enable = true;
+  programs.nix-ld.enable = true;
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
@@ -152,7 +212,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
