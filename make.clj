@@ -52,10 +52,10 @@
       (System/exit 1))))
 
 (defn apply-flake
-  "Run `nixos-rebuild switch --flake .#host` on the given host via sudo,
+  "Run `nixos-rebuild switch --flake .#host --impure` on the given host via sudo,
    using `shell` so we always get a proper {:exit :out :err} map."
   [host]
-  (let [cmd ["sudo" "nixos-rebuild" "switch" "--flake" (str ".#" host) "--upgrade"]
+  (let [cmd ["sudo" "nixos-rebuild" "switch" "--flake" (str ".#" host) "--upgrade" "--impure"]
         result (try
                  (println "Executing " cmd)
                  (shell cmd)
