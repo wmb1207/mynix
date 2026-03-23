@@ -35,9 +35,7 @@
       };
 
     in {
-      
       nixosConfigurations = {
-
         default = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
@@ -56,7 +54,9 @@
         };
 
         workstationiso = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+          inherit system;
+          pkgs = pkgsFor system;
+
           modules = baseModules ++ [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ./modules/iso-base.nix
@@ -80,6 +80,31 @@
           specialArgs = {
             inherit inputs system teleport-installer;
           };
+        };
+
+        genericlaptop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          moudles = baseModules ++ [
+            /etc/nixos/configuration.nix
+            ./modules/user-wmb.nix
+            ./modules/laptop-keyboard.nix
+            {
+              virtualisation.docker.enable = true;
+            }
+          ];
+        };
+
+        genericdesktop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          moudles = baseModules ++ [
+            /etc/nixos/configuration.nix
+            ./modules/user-wmb.nix
+            {
+              virtualisation.docker.enable = true;
+            }
+          ];
         };
 
         nixos = nixpkgs.lib.nixosSystem {
@@ -161,7 +186,6 @@
           modules = baseModules ++ [
             ./hosts/asahi-mini/configuration.nix
             ./modules/user-wmb.nix
-#            ./modules/laptop-keyboard.nix
           ];
           specialArgs = {
             inherit inputs teleport-installer;
@@ -183,12 +207,20 @@
         mongo = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          modules = baseModules ++ [
+          modules = [
             ./hosts/mongo/configuration.nix
           ];
           specialArgs = {
             inherit inputs system teleport-installer;
           };
+        };
+
+        tailscalevm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = [
+            ./hosts/tailscale/configuration.nix
+          ];
         };
       };
 

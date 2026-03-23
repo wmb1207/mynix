@@ -2,34 +2,37 @@
 ;;; commentary:
 ;;; Code:
 
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			 ("melpa" . "https://melpa.org/packages/")
-			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-			 ("org" . "https://orgmode.org/elpa/")))
+;; Packages are managed by Nix - no need for package archives
+;; Disable package.el since all packages come from NixOS
+(setq package-enable-at-startup nil)
+(setq package-archives nil)
+
+;; Still load the packages list for reference, but don't install
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-;;(setq package-archives nil)
-(require 'packages)
-(install-packages packages)
+;; (require 'packages)
+;; (install-packages packages)
 
 (setq inhibit-startup-message t)
 (tool-bar-mode 1)
 (menu-bar-mode 1)
 (scroll-bar-mode -1)
-(unless (package-installed-p 'exec-path-from-shell)
-hm  (package-refresh-contents)
-  (package-install 'exec-path-from-shell))
+
+;; Packages managed by Nix - no need to install at runtime
+;; (unless (package-installed-p 'exec-path-from-shell)
+;;   (package-refresh-contents)
+;;   (package-install 'exec-path-from-shell))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (add-to-list 'load-path "~/.emacs.d/manual-packages/")
 
-(unless (package-installed-p 'vc-use-package)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
-  
+;; (unless (package-installed-p 'vc-use-package)
+;;   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
 (setq treesit-language-source-alist
       '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
 
-(require 'package)
-(require 'package)
+;; No need to require package since packages are managed by Nix
+;; (require 'package)
 (require 'whitespace)
 (require 'lsp-mode)
 (require 'go-mode)

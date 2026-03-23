@@ -9,7 +9,14 @@
   {:spec {:clear {:desc "clear all the previous instances"
                   :alias :c}
           :apply {:desc "apply the template"
-                  :alias :a}}})
+                  :alias :a}
+          :tmpl {:desc "build the templates img"
+                  :alias :t}
+          :pi {:desc "build the pi img"
+                  :alias :p}
+          :iso {:desc "build the iso"
+                  :alias :i}}})
+
 
 ;; Plan 9 / acme inspired colors
 (def black "#000000")     ;; absolute black (rio background)
@@ -18,7 +25,7 @@
 (def blue  "#5f87af")     ;; dusty blue (links / selection)
 (def red   "#875f5f")     ;; brick / error red
 (def dark-gray "#444444") ;; window dividers / inactive
-(def cream "#ffffe0")    ;; acme selection background
+(def cream "#ffffe0")     ;; acme selection background
 
 
 (def font "DejaVu Sans Mono")
@@ -27,7 +34,7 @@
 (def transparency "100")
 
 ;;(def theme "acme")
-(def theme "doric-earth")
+(def theme "gruber-darker")
 (def light-theme "ef-day")
 
 (def ghostty-theme "Wez")
@@ -69,6 +76,40 @@
           (println "!! nixos-rebuild failed (exit" exit "):\n" err)
           (System/exit exit))))))
 
+(defn build-iso
+  "Run the nixos build to generate an iso"
+  [host]
+  (let [cmd ["nix" "build" (str ".#nixosConfigurations." host ".config.system.build.isoImage") "--impure"]
+        result (try
+                 (println "Executing " cmd)
+                 (shell cmd)
+                 (catch Exception e
+                   (println "!! Exception during shell invocation:" (.getMessage e))
+                   {:exit 1 :out "" :err (.getMessage e)}))]
+    (let [{:keys [exit out err]} result]
+      (if (zero? exit)
+        (println "buliding done for host: " host "\n" out)
+        (do
+          (println "!! nixos build failed (exit" exit "):\n" err)
+          (System/exit exit))))))
+
+(defn build-pi
+  "Run the nixos build to generate an img ready to be used with my pi3b+"
+  [host]
+  (let [cmd ["nix" "build" (str ".#nixosConfigurations." host ".config.system.build.sdImage")]
+        result (try
+                 (println "Executing " cmd)
+                 (shell cmd)
+                 (catch Exception e
+                   (println "!! Exception during shell invocation:" (.getMessage e))
+                   {:exit 1 :out "" :err (.getMessage e)}))]
+    (let [{:keys [exit out err]} result]
+      (if (zero? exit)
+        (println "buliding done for host: " host "\n" out)
+        (do
+          (println "!! nixos build failed (exit" exit "):\n" err)
+          (System/exit exit))))))
+
 (defn remove-file
   [file]
   (if (fs/exists? file)
@@ -98,6 +139,7 @@
 
 (defn apply-tmpls!
   [tmpls]
+  (println "Applying templates")
   (try
     (doseq [tmpl tmpls]
       (apply-tmpl tmpl))
@@ -213,6 +255,9 @@
   [& args]
   (let [opts (cli/parse-opts args cli-opts)]
     (cond
+      (:iso opts) (build-iso (second args))
+      (:pi opts) (build-pi (second args))
+      (:tmpl opts) (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc])
       (:clear opts) (clear)
       (:apply opts) (run args))))
 

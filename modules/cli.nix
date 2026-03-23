@@ -31,7 +31,6 @@ with pkgs; [
   lf
   htop
   gtop
-  neofetch
   networkmanager
 
   postgresql

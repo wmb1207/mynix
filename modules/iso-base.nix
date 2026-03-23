@@ -23,17 +23,22 @@
   users.users.wmb = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
-    hashedPassword = "$6$PhrjZtGlKDk6ZEEf$K5K0xt1A1onZZCfIpLHd4Dd6zldhoC7UL4Y0jCzlEkAT/ssqtFskd/RYhH.2W9HDhvOM8BSnQkik3w9pNjqjO0";
+    hashedPassword = "$y$j9T$jp/HFYKwvCEghPwTx5VTL/$1BDWi3DMJjgPub.Xl6LlouxDhhFleiikrI.bYl./uq1";
   };
 
   # Common tools
   environment.systemPackages = with pkgs; [
     git
     tree
+    gptfdisk
+    (pkgs.writeScriptBin "install-wmb" (builtins.readFile ../install.sh))
   ];
 
+  # Copy flake to /etc/nixos/setup on ISO
+  environment.etc."nixos/setup".source = lib.cleanSource ../.;
+
   # Audio (modern default)
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   services.pipewire = {
