@@ -8,4 +8,5 @@ with pkgs; [
   terminus_font
   cozette
   tamzen
+  dejavu_fonts
 ]

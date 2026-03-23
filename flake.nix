@@ -35,9 +35,7 @@
       };
 
     in {
-      
       nixosConfigurations = {
-
         default = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
@@ -51,6 +49,60 @@
             ./hosts/pi/configuration.nix
             {
               sdImage.compressImage = false;
+            }
+          ];
+        };
+
+        workstationiso = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+
+          modules = baseModules ++ [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            ./modules/iso-base.nix
+            ./modules/iso-gui.nix
+            ./modules/user-wmb.nix
+            ./modules/laptop-keyboard.nix
+            teleport-installer.nixosModules.default
+
+            {
+              environment.systemPackages = [
+                teleport-installer.packages.${system}.teleport
+              ];
+
+              # usually good for install/live media
+              services.openssh.enable = true;
+
+              # often needed to avoid bootloader/disk config conflicts
+              boot.loader.grub.enable = false;
+            }
+          ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
+        };
+
+        genericlaptop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          moudles = baseModules ++ [
+            /etc/nixos/configuration.nix
+            ./modules/user-wmb.nix
+            ./modules/laptop-keyboard.nix
+            {
+              virtualisation.docker.enable = true;
+            }
+          ];
+        };
+
+        genericdesktop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          moudles = baseModules ++ [
+            /etc/nixos/configuration.nix
+            ./modules/user-wmb.nix
+            {
+              virtualisation.docker.enable = true;
             }
           ];
         };
@@ -71,6 +123,7 @@
         rog = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
+          
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix
@@ -133,7 +186,6 @@
           modules = baseModules ++ [
             ./hosts/asahi-mini/configuration.nix
             ./modules/user-wmb.nix
-#            ./modules/laptop-keyboard.nix
           ];
           specialArgs = {
             inherit inputs teleport-installer;
@@ -155,12 +207,20 @@
         mongo = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          modules = baseModules ++ [
+          modules = [
             ./hosts/mongo/configuration.nix
           ];
           specialArgs = {
             inherit inputs system teleport-installer;
           };
+        };
+
+        tailscalevm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = [
+            ./hosts/tailscale/configuration.nix
+          ];
         };
       };
 

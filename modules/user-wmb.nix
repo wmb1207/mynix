@@ -35,10 +35,136 @@ let
 
       emacsPkgSet = pkgs.emacsPackagesFor customEmacs;
     in
-      emacsPkgSet.emacsWithPackages (epkgs: [
-        epkgs.use-package
-        epkgs.lsp-mode
-        epkgs.vterm
+      emacsPkgSet.emacsWithPackages (epkgs: with epkgs; [
+        # Core packages
+        use-package
+
+        # LSP and completion
+        lsp-mode
+        lsp-ui
+        lsp-pyright
+        lsp-metals
+
+        # Terminal
+        vterm
+        multi-vterm
+        eat
+
+        # File and project management
+        magit
+        direnv
+        envrc
+        editorconfig
+        dired-sidebar
+        ibuffer-sidebar
+        neotree
+        treemacs
+        dired-subtree
+
+        # Completion and navigation
+        vertico
+        vertico-posframe
+        consult
+        ace-window
+
+        # Programming languages
+        ## Python
+        python-black
+        py-isort
+        python-isort
+        pyvenv
+        pet
+
+        ## Go
+        go-mode
+
+        ## Elixir
+        elixir-mode
+        inf-elixir
+
+        ## PHP
+        php-mode
+
+        ## TypeScript/JavaScript
+        typescript-mode
+        rjsx-mode
+        web-mode
+        prettier
+
+        ## Clojure
+        clojure-mode
+        clojure-ts-mode
+        cider
+        inf-clojure
+
+        ## Scala
+        scala-ts-mode
+        sbt-mode
+
+        ## OCaml
+        tuareg
+        merlin
+        merlin-eldoc
+
+        ## Ruby
+        inf-ruby
+
+        ## Nix
+        nix-mode
+
+        ## Other
+        dockerfile-mode
+        terraform-mode
+        yaml-mode
+
+        # Debuggers
+        dap-mode
+        dape
+        realgud
+        indium
+
+        # Flycheck
+        flycheck-inline
+        flycheck-golangci-lint
+
+        # Themes
+        gruber-darker-theme
+        base16-theme
+        standard-themes
+        plan9-theme
+        stimmung-themes
+        doric-themes
+        parchment-theme
+        srcery-theme
+        arjen-grey-theme
+        sublime-themes
+        creamsody-theme
+        acme-theme
+        tango-plus-theme
+        tango-2-theme
+        ef-themes
+        ample-theme
+        autothemer
+
+        # UI enhancements
+        beframe
+        persp-mode
+        rainbow-delimiters
+        solaire-mode
+
+        # Org mode
+        org
+        org-present
+        ob-restclient
+        verb
+
+        # Tools
+        exec-path-from-shell
+        gptel
+        detached
+        load-env-vars
+        emms
+        ein
       ]);
   
   treeSitterLibDir =
