@@ -37,5 +37,7 @@ swapon "${p}2"
 mkdir -p /mnt/etc/nixos
 cp -r "$src" /mnt/etc/nixos/setup
 
-nixos-generate-config --root /mnt --no-filesystems
-nixos-install --flake /mnt/etc/nixos/setup#${h}
+nixos-generate-config --root /mnt
+cp /mnt/etc/nixos/{configuration,hardware-configuration}.nix /mnt/etc/nixos/setup/hosts/genericlaptop/
+
+nixos-install --flake /mnt/etc/nixos/setup#${h} --impure

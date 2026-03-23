@@ -26,7 +26,7 @@
 
 ;; (unless (package-installed-p 'vc-use-package)
 ;;   (package-vc-install "https://github.com/slotThe/vc-use-package"))
-  
+
 (setq treesit-language-source-alist
       '((tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
         (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
@@ -133,7 +133,7 @@
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'doric-earth t)
+  (load-theme 'gruber-darker t)
 
   ;; Set font AFTER load-theme so the theme can't clobber it.
   ;; :height is in half-points (110 = 11pt).

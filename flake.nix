@@ -85,26 +85,42 @@
         genericlaptop = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          moudles = baseModules ++ [
-            /etc/nixos/configuration.nix
+          modules = baseModules ++ [
+            ./modules/genericlaptop/hardware-configuration.nix
+            ./modules/genericlaptop/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
             {
+              # Bootloader configuration
+              boot.loader.systemd-boot.enable = true;
+              boot.loader.efi.canTouchEfiVariables = true;
+
               virtualisation.docker.enable = true;
             }
           ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         genericdesktop = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          moudles = baseModules ++ [
-            /etc/nixos/configuration.nix
+          modules = baseModules ++ [
+            ./modules/genericdesktop/hardware-configuration.nix
+            ./modules/genericdesktop/configuration.nix
             ./modules/user-wmb.nix
             {
+              # Bootloader configuration
+              boot.loader.systemd-boot.enable = true;
+              boot.loader.efi.canTouchEfiVariables = true;
+
               virtualisation.docker.enable = true;
             }
           ];
+          specialArgs = {
+            inherit inputs system teleport-installer;
+          };
         };
 
         nixos = nixpkgs.lib.nixosSystem {
