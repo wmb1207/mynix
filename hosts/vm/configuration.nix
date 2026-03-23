@@ -114,7 +114,6 @@ in
       emacs
       asusctl
       supergfxctl
-      glxinfo
       mangohud
       protonup-qt
     ];

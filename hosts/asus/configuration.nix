@@ -112,7 +112,6 @@ console.useXkbConfig = true;
        emacs
        asusctl
        supergfxctl
-       glxinfo
        mangohud
        protonup-qt
      ];

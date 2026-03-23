@@ -128,7 +128,6 @@
        git
        asusctl
        supergfxctl
-       glxinfo
        mangohud
        protonup-qt
      ];
@@ -190,7 +189,7 @@
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver       # New VAAPI driver for Intel (replaces old iHD/i965)
-      vaapiVdpau               # Needed for apps using VDPAU
+      libva-vdpau-driver               # Needed for apps using VDPAU
       libvdpau-va-gl
       vulkan-loader
       vulkan-tools

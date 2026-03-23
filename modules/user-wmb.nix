@@ -391,12 +391,12 @@ in
       "$HOME/.cargo/bin"
     ];
     
-    home.activation.initEl =
-      dag.entryAfter [ "writeBoundary" ] ''
-        mkdir -p "$HOME/.emacs.d/lisp"
-        ln -sf ${../assets/init.el} "$HOME/.emacs.d/init.el"
-        ln -sf ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
-      '';
+    # home.activation.initEl =
+    #   dag.entryAfter [ "writeBoundary" ] ''
+    #     mkdir -p "$HOME/.emacs.d/lisp"
+    #     ln -sf ${../assets/init.el} "$HOME/.emacs.d/init.el"
+    #     ln -sf ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
+    #   '';
 
     home.file = assets.wallpapers 10 // assets.assets // {
       ".kshrc".text = ''

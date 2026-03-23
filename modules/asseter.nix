@@ -28,6 +28,8 @@ in {
     ".config/wallpapers/galaxy-plant.jpeg" = mkSource ../assets/galaxy-plant.jpeg;
     ".config/dunst/dunstrc" = mkSource ../assets/dunstrc;
     ".fvwm/config" = mkSource ../assets/fvwm3.conf;
+    ".emacs.d/init.el" = mkSource ../assets/init.el;
+    ".emacs.d/lisp/packages.el" = mkSource ../assets/packages.el;
 
     #scripts
     ".local/bin/battery.clj" = mkExecutable ../assets/scripts/battery.clj;
