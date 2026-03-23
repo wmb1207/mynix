@@ -18,14 +18,18 @@
                   :alias :i}}})
 
 
-;; Plan 9 / acme inspired colors
-(def black "#000000")     ;; absolute black (rio background)
-(def white "#e6e6e6")     ;; chalky white (text)
-(def green "#5f875f")     ;; muted sage green
-(def blue  "#5f87af")     ;; dusty blue (links / selection)
-(def red   "#875f5f")     ;; brick / error red
-(def dark-gray "#444444") ;; window dividers / inactive
-(def cream "#ffffe0")     ;; acme selection background
+;; mbo70s colors
+(def black     "#2c2c2c")  ;; default background
+(def bg-alt    "#41413f")  ;; lighter background / modeline / linum
+(def selection "#716C62")  ;; selection / region
+(def dark-gray "#726c74")  ;; comments / inactive
+(def white     "#ffffe9")  ;; default foreground
+(def red       "#cc3333")  ;; errors / deleted
+(def olive     "#ac9a74")  ;; strings / keywords / builtins
+(def green     "#609f60")  ;; added / success
+(def blue      "#326c77")  ;; functions / headings
+(def mauve     "#716C62")  ;; selection alias
+(def cream     "#c0c0b9")  ;; types / subtle foreground
 
 
 (def font "DejaVu Sans Mono")
@@ -34,7 +38,9 @@
 (def transparency "100")
 
 ;;(def theme "acme")
-(def theme "gruber-darker")
+;;(def theme "gruber-darker")
+;;(def theme "base16-ashes")
+(def theme "mbo70s")
 (def light-theme "ef-day")
 
 (def ghostty-theme "Wez")
@@ -161,8 +167,8 @@
   (->Template "bspwmrc"
               (str assets-folder "/bspwmrc")
               (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
-              [(->TemplateField "{{background}}" (str "\\" white))
-               (->TemplateField "{{normal-background}}" (str "\\" black))]))
+              [(->TemplateField "{{background}}" (str "\\" blue))
+               (->TemplateField "{{normal-background}}" (str "\\" bg-alt))]))
 
 (def sxhkdrc
   (->Template "sxhkdrc"
@@ -191,15 +197,31 @@
                (->TemplateField "{{theme}}" ghostty-theme-light)
                (->TemplateField "{{font}}" font)]))
 
+(def fvwm3
+  (->Template "fvwm3"
+              (str assets-folder "/fvwm3.conf")
+              (slurp (str "./" templates-folder "/fvwm3.conf.tmpl"))
+              [(->TemplateField "{{background}}"  black)
+               (->TemplateField "{{foreground}}"  white)
+               (->TemplateField "{{bg-alt}}"      bg-alt)
+               (->TemplateField "{{selection}}"   selection)
+               (->TemplateField "{{active}}"      blue)
+               (->TemplateField "{{active-alt}}"  cream)
+               (->TemplateField "{{comments}}"    dark-gray)
+               (->TemplateField "{{green}}"       green)
+               (->TemplateField "{{olive}}"       olive)
+               (->TemplateField "{{theme}}"       theme)
+               (->TemplateField "{{font}}"        font)]))
+
 (def dunstrc
   (->Template "dunstrc"
               (str assets-folder "/dunstrc")
               (slurp (str "./" templates-folder "/dunstrc.tmpl"))
-              [(->TemplateField "{{black}}" "#f3efe6")
-               (->TemplateField "{{frame}}" "#2a8f8a")
-               (->TemplateField "{{green}}" "#f3efe6")
+              [(->TemplateField "{{black}}" bg-alt)
+               (->TemplateField "{{frame}}" blue)
+               (->TemplateField "{{green}}" green)
                (->TemplateField "{{red}}" red)
-               (->TemplateField "{{white}}" black)
+               (->TemplateField "{{white}}" white)
                (->TemplateField "{{transparency}}" transparency)
                (->TemplateField "{{font}}" font)]))
 
@@ -243,13 +265,45 @@
         (println "!! Exception during shell invocation:" (.getMessage e))
         {:exit 1 :out "" :err (.getMessage e)}))))
 
+(defn stage-assets
+  "Stage generated asset files so nix flake picks up the changes."
+  []
+  (let [cmd ["git" "add"
+             "assets/init.el"
+             "assets/bspwmrc"
+             "assets/sxhkdrc"
+             "assets/dunstrc"
+             "assets/polybar.ini"
+             "assets/fvwm3.conf"]]
+    (println "Staging assets:" cmd)
+    (shell cmd)))
+
+(defn activate-home-manager
+  "Re-run the home-manager activation script for the current user."
+  []
+  (let [activate (str (System/getenv "HOME") "/.local/state/home-manager/gcroots/current-home/activate")
+        result (try
+                 (println "Running home-manager activation:" activate)
+                 (shell [activate])
+                 (catch Exception e
+                   (println "!! Exception during home-manager activation:" (.getMessage e))
+                   {:exit 1 :out "" :err (.getMessage e)}))]
+    (let [{:keys [exit out err]} result]
+      (if (zero? exit)
+        (println "Home-manager activation done.\n" out)
+        (do
+          (println "!! home-manager activation failed (exit" exit "):\n" err)
+          (System/exit exit))))))
+
 (defn run
   [args]
   (println args)
-  (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc])
+  (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc fvwm3])
+  (stage-assets)
   (ensure-sudo!)
   (remove-init-el)
-  (apply-flake (second args)))
+  (apply-flake (second args))
+  (activate-home-manager))
 
 (defn main
   [& args]
@@ -257,7 +311,7 @@
     (cond
       (:iso opts) (build-iso (second args))
       (:pi opts) (build-pi (second args))
-      (:tmpl opts) (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc])
+      (:tmpl opts) (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc fvwm3])
       (:clear opts) (clear)
       (:apply opts) (run args))))
 

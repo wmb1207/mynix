@@ -133,7 +133,7 @@
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'gruber-darker t)
+  (load-theme 'mbo70s t)
 
   ;; Set font AFTER load-theme so the theme can't clobber it.
   ;; :height is in half-points (110 = 11pt).
@@ -146,7 +146,7 @@
   ;; Re-apply after any theme change at runtime
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
-;;  (set-face-background 'default "#000000")
+;;  (set-face-background 'default "#2c2c2c")
   ;; (global-whitespace-mode 1)
 
   ;; (setq whitespace-style
@@ -159,23 +159,23 @@
   ;;         ))
 
   ;; (when (display-graphic-p)
-  ;;   (set-face-background 'fringe "#000000")
+  ;;   (set-face-background 'fringe "#2c2c2c")
   ;;   (set-frame-font "DejaVu Sans Mono-11" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
   ;; (set-face-attribute 'line-number nil
-  ;;                     :background "#000000") ;; optional
+  ;;                     :background "#2c2c2c") ;; optional
   
   ;; (set-face-attribute 'header-line nil
-  ;;                     :background "#000000"
+  ;;                     :background "#2c2c2c"
   ;;                     :box nil)
 
   ;; (set-face-attribute 'mode-line-inactive nil
-  ;;                   :background "#000000")
+  ;;                   :background "#2c2c2c")
 
   ;; (set-face-attribute 'mode-line nil
-  ;;                     :background "#000000"
+  ;;                     :background "#2c2c2c"
   ;; 		      :box nil)
 
   ;;(when (display-graphic-p)

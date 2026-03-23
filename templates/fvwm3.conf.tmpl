@@ -20,11 +20,11 @@ InfoStoreAdd terminal urxvt
 # Run command (Meta+Space / Super+Space)
 InfoStoreAdd runcmd "dmenu_run"
 
-InfoStoreAdd runcmdopt "-i -fn 'DejaVu Sans Mono' \
--nb '#2c2c2c' \
--nf '#ffffe9' \
--sb '#326c77' \
--sf '#2c2c2c'"
+InfoStoreAdd runcmdopt "-i -fn '{{font}}' \
+-nb '{{background}}' \
+-nf '{{foreground}}' \
+-sb '{{active}}' \
+-sf '{{background}}'"
 
 DesktopConfiguration global
 
@@ -44,8 +44,8 @@ AddToFunc   StartFunction
 + I Module FvwmButtons DeskButtons
 
 # bottom-left cluster (150x150 each)
-+ I Test (Init) Exec exec xclock -geometry 150x150+0-0  -bg "#2c2c2c" -fg "#ffffe9" &
-+ I Test (Init) Exec exec xload  -geometry 150x150+0-158 -bg "#2c2c2c" -fg "#609f60" &
++ I Test (Init) Exec exec xclock -geometry 150x150+0-0  -bg "{{background}}" -fg "{{foreground}}" &
++ I Test (Init) Exec exec xload  -geometry 150x150+0-158 -bg "{{background}}" -fg "{{green}}" &
 
 + I Module FvwmEvent EventNewDesk
 + I Test (Init) Exec exec dunst --config ~/.config/dunst/dunstrc &
@@ -55,7 +55,7 @@ AddToFunc   StartFunction
 + I Test (Init) Exec exec emacs --daemon --eval "(progn (select-frame (make-frame-on-display \":0\")) (make-frame-invisible))" &
 + I Test (Init) Exec exec xrdb -merge ~/.Xresources &
 + I Test (Init) Exec exec clipmenud &
-+ I Test (Init) Exec exec xsetroot -solid "#41413f" &
++ I Test (Init) Exec exec xsetroot -solid "{{bg-alt}}" &
 
 
 DestroyFunc RaiseMoveX
@@ -141,7 +141,7 @@ MoveThreshold 3
 
 Style * SloppyFocus, MouseFocusClickRaises
 
-DefaultFont "xft:DejaVu Sans Mono:Bold:size=10:antialias=True"
+DefaultFont "xft:{{font}}:Bold:size=10:antialias=True"
 
 Style * MinOverlapPlacement, GrabFocusOff, !UsePPosition
 
@@ -177,25 +177,25 @@ Style xclock      !Title, !Borders, !Handles, Sticky, WindowListSkip, NeverFocus
 Style xload       !Title, !Borders, !Handles, Sticky, WindowListSkip, NeverFocus, Layer 6
 
 ###########
-# 3: Colorsets - mbo70s
+# 3: Colorsets - {{theme}}
 ###########
 
-Colorset 0  fg #ffffe9, bg #2c2c2c, hi #41413f, sh #41413f, Plain, NoShape
-Colorset 1  fg #ffffe9, bg #2c2c2c, hi #41413f, sh #41413f, Plain, NoShape
-Colorset 2  fg #2c2c2c, bg #326c77,     hi #c0c0b9, sh #c0c0b9, Plain, NoShape
-Colorset 3  fg #c0c0b9, bg #c0c0b9, hi #c0c0b9, sh #c0c0b9, Plain, NoShape
-Colorset 4  fg #326c77,     bg #326c77,     hi #326c77,     sh #326c77,     Plain, NoShape
+Colorset 0  fg {{foreground}}, bg {{background}}, hi {{bg-alt}}, sh {{bg-alt}}, Plain, NoShape
+Colorset 1  fg {{foreground}}, bg {{background}}, hi {{bg-alt}}, sh {{bg-alt}}, Plain, NoShape
+Colorset 2  fg {{background}}, bg {{active}},     hi {{active-alt}}, sh {{active-alt}}, Plain, NoShape
+Colorset 3  fg {{active-alt}}, bg {{active-alt}}, hi {{active-alt}}, sh {{active-alt}}, Plain, NoShape
+Colorset 4  fg {{active}},     bg {{active}},     hi {{active}},     sh {{active}},     Plain, NoShape
 
-Colorset 5  fg #ffffe9, bg #2c2c2c, hi #41413f,     sh #41413f,     Plain, NoShape
-Colorset 6  fg #2c2c2c, bg #326c77,     hi #c0c0b9, sh #c0c0b9, Plain, NoShape
-Colorset 7  fg #726c74,   bg #2c2c2c, hi #41413f,     sh #41413f,     Plain, NoShape
-Colorset 8  fg #2c2c2c, bg #c0c0b9, hi #326c77,     sh #326c77,     Plain, NoShape
+Colorset 5  fg {{foreground}}, bg {{background}}, hi {{bg-alt}},     sh {{bg-alt}},     Plain, NoShape
+Colorset 6  fg {{background}}, bg {{active}},     hi {{active-alt}}, sh {{active-alt}}, Plain, NoShape
+Colorset 7  fg {{comments}},   bg {{background}}, hi {{bg-alt}},     sh {{bg-alt}},     Plain, NoShape
+Colorset 8  fg {{background}}, bg {{active-alt}}, hi {{active}},     sh {{active}},     Plain, NoShape
 
-Colorset 10 fg #ffffe9, bg #2c2c2c, hi #41413f,     sh #41413f,     Plain, NoShape
-Colorset 11 fg #2c2c2c, bg #326c77,     hi #c0c0b9, sh #c0c0b9, Plain, NoShape
-Colorset 12 fg #2c2c2c, bg #ac9a74,      hi #ac9a74,      sh #ac9a74,      Plain, NoShape
-Colorset 13 fg #2c2c2c, bg #c0c0b9, hi #326c77,     sh #326c77,     Plain, NoShape
-Colorset 14 fg #726c74,   bg #41413f,     hi #716C62,  sh #716C62,  Plain, NoShape
+Colorset 10 fg {{foreground}}, bg {{background}}, hi {{bg-alt}},     sh {{bg-alt}},     Plain, NoShape
+Colorset 11 fg {{background}}, bg {{active}},     hi {{active-alt}}, sh {{active-alt}}, Plain, NoShape
+Colorset 12 fg {{background}}, bg {{olive}},      hi {{olive}},      sh {{olive}},      Plain, NoShape
+Colorset 13 fg {{background}}, bg {{active-alt}}, hi {{active}},     sh {{active}},     Plain, NoShape
+Colorset 14 fg {{comments}},   bg {{bg-alt}},     hi {{selection}},  sh {{selection}},  Plain, NoShape
 
 
 #######
@@ -206,7 +206,7 @@ MenuStyle * MenuColorset 5, ActiveColorset 6, GreyedColorset 7, TitleColorset 8
 MenuStyle * Hilight3DOff, HilightBack, HilightTitleBack, SeparatorsLong
 MenuStyle * TrianglesSolid, TrianglesUseFore
 MenuStyle * ItemFormat "%s%|%3.1i%5.3l%5l%5r%5.3>%|"
-MenuStyle * Font "xft:DejaVu Sans Mono:Bold:size=10:antialias=True"
+MenuStyle * Font "xft:{{font}}:Bold:size=10:antialias=True"
 MenuStyle * IconsOff
 
 DestroyMenu MenuFvwmRoot
@@ -502,7 +502,7 @@ ButtonStyle All - Clear
 
 DestroyModuleConfig FvwmIdent:*
 *FvwmIdent: Colorset 10
-*FvwmIdent: Font "xft:DejaVu Sans Mono:size=12:antialias=True"
+*FvwmIdent: Font "xft:{{font}}:size=12:antialias=True"
 
 DestroyModuleConfig FvwmScript:*
 *FvwmScript: DefaultColorset 10
@@ -516,7 +516,7 @@ DestroyModuleConfig PagerDock:*
 *PagerDock: WindowColorsets 10 11
 *PagerDock: Font None
 *PagerDock: Balloons All
-*PagerDock: BalloonFont "xft:DejaVu Sans Mono:Bold:size=10:antialias=True"
+*PagerDock: BalloonFont "xft:{{font}}:Bold:size=10:antialias=True"
 *PagerDock: BallonYOffset +2
 *PagerDock: WindowBorders
 *PagerDock: MiniIcons false
@@ -528,7 +528,7 @@ DestroyModuleConfig RightPanel:*
 *RightPanel: Rows $[monitor.$[monitor.primary].height]
 *RightPanel: Columns 120
 *RightPanel: Frame 0
-*RightPanel: Font "xft:DejaVu Sans Mono:Bold:size=12:antialias=True"
+*RightPanel: Font "xft:{{font}}:Bold:size=12:antialias=True"
 *RightPanel: (140x5, Frame 0)
 *RightPanel: (10x20, Frame 0)
 *RightPanel: (25x20, Id desk0, Title "0", Action (Mouse 1) GotoDesk 0 0, Colorset 11, ActiveColorset 12, Frame 0)
@@ -568,7 +568,7 @@ DestroyModuleConfig IconManDock:*
 *IconManDock: MiniIcons false
 *IconManDock: ReliefThickness 0
 *IconManDock: Format "%t"
-*IconManDock: Font "xft:DejaVu Sans Mono:Bold:size=10:antialias=True"
+*IconManDock: Font "xft:{{font}}:Bold:size=10:antialias=True"
 
 *IconManDock: Action Mouse 1 A sendcommand IconManClick
 *IconManDock: Action Mouse 3 A sendcommand "Menu MenuIconOps"

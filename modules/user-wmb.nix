@@ -128,6 +128,7 @@ let
         flycheck-golangci-lint
 
         # Themes
+        mbo70s-theme
         gruber-darker-theme
         base16-theme
         standard-themes
@@ -259,35 +260,33 @@ in
       "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
       "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
 
-      # ── Colors (Acme / Plan 9 inspired) ──
-      "URxvt.foreground" = "#000000";
-      #"URxvt.background" = "#FFFFEA";
-      "URxvt.background" = "#eae3d8";
+      # ── Colors (mbo70s) ──
+      "URxvt.foreground" = "#ffffe9"; # default fg
+      "URxvt.background" = "#2c2c2c"; # default bg
 
-      # ANSI palette — muted, low saturation
-      "URxvt.color0"  = "#000000"; # black
-      "URxvt.color1"  = "#AA0000"; # red
-      "URxvt.color2"  = "#006600"; # green
-      "URxvt.color3"  = "#999900"; # yellow
-      "URxvt.color4"  = "#000099"; # blue
-      "URxvt.color5"  = "#660066"; # magenta
-      "URxvt.color6"  = "#006666"; # cyan
-      "URxvt.color7"  = "#CCCCAA"; # white-ish
+      # ANSI palette
+      "URxvt.color0"  = "#2c2c2c"; # black
+      "URxvt.color1"  = "#cc3333"; # red
+      "URxvt.color2"  = "#609f60"; # green
+      "URxvt.color3"  = "#ac9a74"; # yellow/tan (strings)
+      "URxvt.color4"  = "#326c77"; # blue/teal (functions)
+      "URxvt.color5"  = "#716C62"; # magenta (selection)
+      "URxvt.color6"  = "#00b7f0"; # cyan (links)
+      "URxvt.color7"  = "#c0c0b9"; # white (types)
 
-      "URxvt.color8"  = "#555555"; # bright black
-      "URxvt.color9"  = "#CC0000";
-      "URxvt.color10" = "#008800";
-      "URxvt.color11" = "#BBBB00";
-      "URxvt.color12" = "#0000BB";
-      "URxvt.color13" = "#880088";
-      "URxvt.color14" = "#008888";
-      "URxvt.color15" = "#FFFFFF";
+      "URxvt.color8"  = "#565652"; # bright black (inactive)
+      "URxvt.color9"  = "#C74000"; # bright red
+      "URxvt.color10" = "#009945"; # bright green
+      "URxvt.color11" = "#ffff87"; # bright yellow
+      "URxvt.color12" = "#4488cc"; # bright blue
+      "URxvt.color13" = "#b4a990"; # bright magenta
+      "URxvt.color14" = "#77bbdd"; # bright cyan
+      "URxvt.color15" = "#ffffe9"; # bright white (fg)
 
-      # Cursor & selection (Acme-like)
-      "URxvt.cursorColor" = "#000000";
-      "URxvt.highlightColor" = "#000000";
-      #"URxvt.highlightTextColor" = "#FFFFEA";
-      "URxvt.highlightTextColor" = "#eae3d8";
+      # Cursor & selection
+      "URxvt.cursorColor" = "#ffffec";
+      "URxvt.highlightColor" = "#716C62";
+      "URxvt.highlightTextColor" = "#ffffe9";
 
       # Scrollbar & scrolling (unchanged)
       "URxvt.scrollBar" = false;
@@ -331,7 +330,7 @@ in
       ++ gui
       ++ iac
       ++ wm-tools
-      ++ [
+      ++ [ myEmacs
         
         (pkgs.writeShellScriptBin "Ldef" "exec L def \"$@\"")
         (pkgs.writeShellScriptBin "Lrefs" "exec L refs \"$@\"")
