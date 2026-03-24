@@ -18,18 +18,18 @@
                   :alias :i}}})
 
 
-;; mbo70s colors
-(def black     "#2c2c2c")  ;; default background
-(def bg-alt    "#41413f")  ;; lighter background / modeline / linum
-(def selection "#716C62")  ;; selection / region
-(def dark-gray "#726c74")  ;; comments / inactive
-(def white     "#ffffe9")  ;; default foreground
-(def red       "#cc3333")  ;; errors / deleted
-(def olive     "#ac9a74")  ;; strings / keywords / builtins
-(def green     "#609f60")  ;; added / success
-(def blue      "#326c77")  ;; functions / headings
-(def mauve     "#716C62")  ;; selection alias
-(def cream     "#c0c0b9")  ;; types / subtle foreground
+;; gloomy creamsody colors
+(def black     "#1c1a18")  ;; default background
+(def bg-alt    "#252320")  ;; lighter background / modeline / linum
+(def selection "#302d29")  ;; selection / region / subtle border
+(def dark-gray "#6a6858")  ;; comments / inactive
+(def white     "#b5b2a0")  ;; default foreground (muted cream)
+(def red       "#884545")  ;; errors / deleted (deep rose)
+(def olive     "#8a7040")  ;; strings / keywords / desk highlight (dark amber)
+(def green     "#657050")  ;; added / success (muted olive)
+(def blue      "#4a6a78")  ;; functions / headings / focus (steel blue)
+(def mauve     "#785a5a")  ;; selection alias (dusty mauve)
+(def cream     "#9a9888")  ;; types / subtle foreground (warm grey)
 
 
 (def font "DejaVu Sans Mono")
@@ -40,7 +40,8 @@
 ;;(def theme "acme")
 ;;(def theme "gruber-darker")
 ;;(def theme "base16-ashes")
-(def theme "mbo70s")
+;;(def theme "mbo70s")
+(def theme "creamsody-darker")
 (def light-theme "ef-day")
 
 (def ghostty-theme "Wez")
@@ -159,7 +160,7 @@
               (slurp (str "./" templates-folder "/polybar.ini.tmpl"))
               [(->TemplateField "{{background}}" black)
                (->TemplateField "{{foreground}}" white)
-               (->TemplateField "{{focused-background}}" white)
+               (->TemplateField "{{focused-background}}" blue)
                (->TemplateField "{{focused-foreground}}" black)
                (->TemplateField "{{font}}" font)]))
 
@@ -167,8 +168,8 @@
   (->Template "bspwmrc"
               (str assets-folder "/bspwmrc")
               (slurp (str "./" templates-folder "/bspwmrc.tmpl"))
-              [(->TemplateField "{{background}}" (str "\\" blue))
-               (->TemplateField "{{normal-background}}" (str "\\" bg-alt))]))
+              [(->TemplateField "{{active}}" (str "\\" blue))
+               (->TemplateField "{{normal-border}}" (str "\\" selection))]))
 
 (def sxhkdrc
   (->Template "sxhkdrc"

@@ -86,8 +86,8 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
-            ./modules/genericlaptop/hardware-configuration.nix
-            ./modules/genericlaptop/configuration.nix
+            ./hosts/genericlaptop/hardware-configuration.nix
+            ./hosts/genericlaptop/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
             {
@@ -107,8 +107,8 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
-            ./modules/genericdesktop/hardware-configuration.nix
-            ./modules/genericdesktop/configuration.nix
+            ./hosts/genericdesktop/hardware-configuration.nix
+            ./hosts/genericdesktop/configuration.nix
             ./modules/user-wmb.nix
             {
               # Bootloader configuration

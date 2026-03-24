@@ -1,0 +1,21 @@
+# Nix
+result
+result-*
+.direnv/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Clojure/LSP
+.clj-kondo/
+.lsp/
+.cpcache/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store

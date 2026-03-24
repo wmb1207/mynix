@@ -131,9 +131,7 @@ let
         mbo70s-theme
         gruber-darker-theme
         base16-theme
-        standard-themes
         plan9-theme
-        stimmung-themes
         doric-themes
         parchment-theme
         srcery-theme
@@ -141,11 +139,10 @@ let
         sublime-themes
         creamsody-theme
         acme-theme
-        tango-plus-theme
-        tango-2-theme
         ef-themes
         ample-theme
         autothemer
+        punpun-themes
 
         # UI enhancements
         beframe
@@ -260,33 +257,33 @@ in
       "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
       "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
 
-      # ── Colors (mbo70s) ──
-      "URxvt.foreground" = "#ffffe9"; # default fg
-      "URxvt.background" = "#2c2c2c"; # default bg
+      # ── Colors (gloomy creamsody) ──
+      "URxvt.foreground" = "#b5b2a0"; # default fg
+      "URxvt.background" = "#1c1a18"; # default bg
 
       # ANSI palette
-      "URxvt.color0"  = "#2c2c2c"; # black
-      "URxvt.color1"  = "#cc3333"; # red
-      "URxvt.color2"  = "#609f60"; # green
-      "URxvt.color3"  = "#ac9a74"; # yellow/tan (strings)
-      "URxvt.color4"  = "#326c77"; # blue/teal (functions)
-      "URxvt.color5"  = "#716C62"; # magenta (selection)
-      "URxvt.color6"  = "#00b7f0"; # cyan (links)
-      "URxvt.color7"  = "#c0c0b9"; # white (types)
+      "URxvt.color0"  = "#1c1a18"; # black
+      "URxvt.color1"  = "#884545"; # red (deep rose)
+      "URxvt.color2"  = "#657050"; # green (olive)
+      "URxvt.color3"  = "#8a7040"; # yellow (dark amber)
+      "URxvt.color4"  = "#4a6a78"; # blue (steel)
+      "URxvt.color5"  = "#785a5a"; # magenta (mauve)
+      "URxvt.color6"  = "#4a7070"; # cyan (muted teal)
+      "URxvt.color7"  = "#9a9888"; # white (warm grey)
 
-      "URxvt.color8"  = "#565652"; # bright black (inactive)
-      "URxvt.color9"  = "#C74000"; # bright red
-      "URxvt.color10" = "#009945"; # bright green
-      "URxvt.color11" = "#ffff87"; # bright yellow
-      "URxvt.color12" = "#4488cc"; # bright blue
-      "URxvt.color13" = "#b4a990"; # bright magenta
-      "URxvt.color14" = "#77bbdd"; # bright cyan
-      "URxvt.color15" = "#ffffe9"; # bright white (fg)
+      "URxvt.color8"  = "#3a3830"; # bright black (dim)
+      "URxvt.color9"  = "#9a5035"; # bright red (burnt sienna)
+      "URxvt.color10" = "#7a8060"; # bright green (lighter olive)
+      "URxvt.color11" = "#9a8050"; # bright yellow (golden tan)
+      "URxvt.color12" = "#5a7888"; # bright blue (lighter steel)
+      "URxvt.color13" = "#8a7070"; # bright magenta (dusty rose)
+      "URxvt.color14" = "#5a8080"; # bright cyan (lighter teal)
+      "URxvt.color15" = "#b5b2a0"; # bright white (cream)
 
       # Cursor & selection
-      "URxvt.cursorColor" = "#ffffec";
-      "URxvt.highlightColor" = "#716C62";
-      "URxvt.highlightTextColor" = "#ffffe9";
+      "URxvt.cursorColor" = "#b0ad9a";
+      "URxvt.highlightColor" = "#3a3525";
+      "URxvt.highlightTextColor" = "#b5b2a0";
 
       # Scrollbar & scrolling (unchanged)
       "URxvt.scrollBar" = false;
@@ -390,14 +387,7 @@ in
       "$HOME/.cargo/bin"
     ];
     
-    # home.activation.initEl =
-    #   dag.entryAfter [ "writeBoundary" ] ''
-    #     mkdir -p "$HOME/.emacs.d/lisp"
-    #     ln -sf ${../assets/init.el} "$HOME/.emacs.d/init.el"
-    #     ln -sf ${../assets/packages.el} "$HOME/.emacs.d/lisp/packages.el"
-    #   '';
-
-    home.file = assets.wallpapers 10 // assets.assets // {
+    home.file = assets.wallpapers 11  // assets.assets // {
       ".kshrc".text = ''
   # Only interactive shells   
   [[ $- != *i* ]] && return   

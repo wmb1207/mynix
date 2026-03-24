@@ -146,7 +146,7 @@
   ;; Re-apply after any theme change at runtime
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
-;;  (set-face-background 'default "{{background}}")
+  (set-face-background 'default "{{background}}")
   ;; (global-whitespace-mode 1)
 
   ;; (setq whitespace-style
@@ -189,7 +189,7 @@
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
-  ;;(global-hl-line-mode 1)
+  (global-hl-line-mode 1)
   (line-number-mode 1)
   (setq display-line-numbers 'absolute)
   (vertico-mode 1)

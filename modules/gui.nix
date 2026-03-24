@@ -16,8 +16,9 @@ let
     xfe
     edwood
     plan9port
-    xorg.xclock
-    xorg.xload
+    xclip
+    xclock
+    xload
   ];
 
   x86_64Packages = with pkgs; [

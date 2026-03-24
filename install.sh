@@ -34,10 +34,13 @@ mount "${p}1" /mnt/boot
 swapon "${p}2"
 
 [ -d /etc/nixos/setup ] && src=/etc/nixos/setup || src="$(cd "$(dirname "$0")" && pwd)"
-mkdir -p /mnt/etc/nixos
-cp -r "$src" /mnt/etc/nixos/setup
 
-nixos-generate-config --root /mnt
-cp /mnt/etc/nixos/{configuration,hardware-configuration}.nix /mnt/etc/nixos/setup/hosts/genericlaptop/
+# Copy setup to a writable tmpdir so we can drop in the generated hardware config
+# without needing to write to /mnt or a potentially read-only src
+tmpdir=$(mktemp -d)
+cp -r "$src/." "$tmpdir/"
 
-nixos-install --flake /mnt/etc/nixos/setup#${h} --impure
+# Write hardware config directly to the host dir (stdout, never touches /mnt)
+nixos-generate-config --root /mnt --show-hardware-config > "$tmpdir/hosts/${h}/hardware-configuration.nix"
+
+nixos-install --flake "$tmpdir#${h}" --impure

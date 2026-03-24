@@ -1,8 +1,8 @@
 [global]
     font = "DejaVu Sans Mono 10"
-    background = "#41413f"
-    foreground = "#609f60"
-    frame_color = "#326c77"
+    background = "#252320"
+    foreground = "#657050"
+    frame_color = "#4a6a78"
     separator_color = "#101010"
     width = 150
     offset=0x0
@@ -15,28 +15,28 @@
     show_indicators = false
 
 [urgency_low]
-    background = "#41413f"
-    foreground = "#609f60"
-    frame_color = "#326c77"
+    background = "#252320"
+    foreground = "#657050"
+    frame_color = "#4a6a78"
     timeout = 10
 
 [urgency_normal]
-    background = "#41413f"
-    foreground = "#ffffe9"
-    frame_color = "#609f60"
+    background = "#252320"
+    foreground = "#b5b2a0"
+    frame_color = "#657050"
     timeout = 10
 
 [urgency_critical]
-    background = "#41413f"
-    foreground = "#cc3333"
-    frame_color = "#cc3333"
+    background = "#252320"
+    foreground = "#884545"
+    frame_color = "#884545"
     timeout = 0
 
 [spotify]
     appname = "Spotify"
-    background = "#41413f"
-    foreground = "#609f60"
-    frame_color = "#609f60"
+    background = "#252320"
+    foreground = "#657050"
+    frame_color = "#657050"
     timeout = 5
     format = "<b>%s</b>\n%b"
     alignment = center
@@ -45,7 +45,7 @@
 # Alternative rule if Spotify uses different app names
 [spotify_alt]
     desktop_entry = "spotify"
-    background = "#41413f"
-    foreground = "#609f60"
-    frame_color = "#609f60"
+    background = "#252320"
+    foreground = "#657050"
+    frame_color = "#657050"
     timeout = 5
