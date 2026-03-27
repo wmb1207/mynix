@@ -312,6 +312,13 @@
 
 (defun prog-time ()
   "All the programming languages stuff."
+
+  (setq dape-key-prefix "\C-\M-d")
+  (dape-breakpoint-global-mode)	 
+  (setq dape-buffer-window-arrangement 'right)
+  (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
+  (setq dape-inlay-hints t)
+  (add-hook 'dape-compile-hook 'kill-buffer)
   
   (require 'lsp-mode)
   (require 'prettier)
@@ -370,6 +377,7 @@
   ;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
   (add-hook 'go-mode-hook (lambda () (display-line-numbers-mode 1)))
 
+  (add-hook 'python-mode-hook (lambda () (require 'lsp-pyright)))
   (add-hook 'python-mode-hook 'python-ts-mode)
   (add-hook 'python-mode-hook 'pet-mode -10)
   (add-hook 'python-mode-hook 'python-black-on-save-mode)
@@ -380,10 +388,12 @@
   ;; (add-hook 'python-mode-hook (lambda() (corfu-mode 0)))
   (add-hook 'python-mode-hook (lambda () (display-line-numbers-mode 1)))
 
+
   (add-hook 'elixir-mode-hook #'lsp-deferred)
   (add-hook 'elixir-mode-hook (lambda () (display-line-numbers-mode 1)))
 
   (add-hook 'typescript-mode-hook 'prettier-mode)
+  (add-hook 'typescript-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook (lambda () (display-line-numbers-mode 1)))
 
   (add-hook 'after-init-hook #'global-prettier-mode)

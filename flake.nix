@@ -75,6 +75,7 @@
 
               # often needed to avoid bootloader/disk config conflicts
               boot.loader.grub.enable = false;
+              virtualisation.docker.enable = true; 
             }
           ];
           specialArgs = {
