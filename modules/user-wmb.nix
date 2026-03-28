@@ -230,8 +230,6 @@ in
   };
 
   services.xserver.windowManager = {
-    bspwm.enable = true;
-    windowmaker.enable = true;
     fvwm3.enable = true;
   };
 

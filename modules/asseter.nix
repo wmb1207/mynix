@@ -19,8 +19,6 @@ in {
 
     # configs
     ".config/ghostty/config" = mkSource ../assets/ghostty;
-    ".config/bspwm/bspwmrc" = mkExecutable ../assets/bspwmrc;
-    ".config/sxhkd/sxhkdrc" = mkSource ../assets/sxhkdrc;
     ".config/polybar/config.ini" = mkSource ../assets/polybar.ini;
     ".config/polybar/launch.sh" = mkExecutable ../assets/polybar-start.sh;
     ".config/picom/picom.conf" = mkSource ../assets/picom.conf;

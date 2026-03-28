@@ -11,8 +11,6 @@
     libvterm
     emacs
     gcc
-    bspwm
-    sxhkd
     rsync
     docker-compose
     mesa

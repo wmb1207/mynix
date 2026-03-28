@@ -147,20 +147,26 @@
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
   (set-face-background 'default "#1c1a18")
-  ;; (global-whitespace-mode 1)
+  (global-whitespace-mode 1)
 
-  ;; (setq whitespace-style
-  ;; 	'(face trailing tabs spaces lines-tail newline empty
-  ;;              indentation::space indentation::tab space-mark tab-mark newline-mark))
-  ;; (setq whitespace-display-mappings
-  ;; 	'((space-mark   ?\     [?\u00B7]     [?.])      ; space → ·
-  ;;         (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])  ; newline → ↵
-  ;;         (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
-  ;;         ))
+  (setq whitespace-style
+  	'(face trailing tabs spaces newline empty
+               indentation::space indentation::tab space-mark tab-mark newline-mark))
+  (setq whitespace-display-mappings
+  	'((space-mark   ?\     [?\u00B7]     [?.])      ; space → ·
+          (newline-mark ?\n    [?\u21B5 ?\n] [?$ ?\n])  ; newline → ↵
+          (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
+          ))
 
-  ;; (when (display-graphic-p)
-  ;;   (set-face-background 'fringe "#1c1a18")
-  ;;   (set-frame-font "DejaVu Sans Mono-11" nil t))
+  ;; Force whitespace faces to use our custom background, not the theme's.
+  (dolist (face '(whitespace-space whitespace-tab whitespace-newline
+                  whitespace-trailing whitespace-empty whitespace-indentation
+                  whitespace-space-before-tab whitespace-space-after-tab))
+    (set-face-attribute face nil :background "#1c1a18"))
+
+  (when (display-graphic-p)
+    (set-face-background 'fringe "#1c1a18")
+    (set-frame-font "DejaVu Sans Mono-11" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
@@ -354,9 +360,12 @@
     "Custom PHP mode setup to use 4 spaces for indentation."
     (setq tab-width 4)
     (setq c-basic-offset 4)
-    (setq indent-tabs-mode nil)) ;; Use spaces instead of tabs
+    (setq indent-tabs-mode nil) ;; Use spaces instead of tabs
+    (add-hook 'before-save-hook
+              (lambda () (untabify (point-min) (point-max))) nil t))
 
   (add-hook 'php-mode-hook 'my-php-mode-setup)
+  (add-hook 'php-ts-mode-hook 'my-php-mode-setup)
 
   (add-hook 'go-mode-hook #'lsp-deferred)
   (add-hook 'go-mode-hook #'line-number-mode)
