@@ -74,9 +74,9 @@
   #   variant = "dvorak";
   # };
 
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
-  services.xserver.libinput.touchpad = {
+  services.libinput.touchpad = {
     tapping = false;
   };
 
@@ -185,7 +185,7 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   # Intel GPU support
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver       # New VAAPI driver for Intel (replaces old iHD/i965)

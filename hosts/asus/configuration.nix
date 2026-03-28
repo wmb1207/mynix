@@ -53,8 +53,8 @@
   services.xserver.enable = true;
 
 services.xserver = {
-layout = "us";
-xkbVariant = "dvorak";
+xkb.layout = "us";
+xkb.variant = "dvorak";
 };
 console.useXkbConfig = true;   
 
@@ -72,7 +72,7 @@ console.useXkbConfig = true;
 	package = config.boot.kernelPackages.nvidiaPackages.stable; 
   };
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   programs.steam.enable = true;
 

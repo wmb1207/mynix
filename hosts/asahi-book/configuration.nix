@@ -18,7 +18,7 @@
   boot.loader.efi.canTouchEfiVariables = false;
   hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   services.xserver.videoDrivers = ["asahi"];
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   #boot.extraModprobeConfig = ''
   #  options hid_apple iso_layout=0
@@ -48,8 +48,8 @@
   services.xserver.enable = true;
 
   # Enable libinput driver
-  services.xserver.libinput.enable = true;
-  services.xserver.libinput.tapping = true;
+  services.libinput.enable = true;
+  services.libinput.touchpad.tapping = true;
 
   # Add a custom xorg config snippet for palm detection
   services.xserver.extraConfig = ''
@@ -65,8 +65,8 @@
   '';
 
   services.xserver = {
-    layout = "us";
-    xkbVariant = "dvorak";
+    xkb.layout = "us";
+    xkb.variant = "dvorak";
   };
   console.useXkbConfig = true;
   virtualisation.docker.enable = true;
