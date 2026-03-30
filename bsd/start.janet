@@ -45,7 +45,8 @@
       (fail (string "command failed (exit " exit "): " (string/join args " "))))))
 
 (defn sh-ok? [args]
-  (= 0 (os/execute args :p {:out :null :err :null})))
+  (let [proc (os/spawn args :p {:out :pipe :err :pipe})]
+    (= 0 (:wait proc))))
 
 (defn sh-out [args]
   (let [proc (os/spawn args :p {:out :pipe})
