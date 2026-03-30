@@ -1,0 +1,44 @@
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -36,6 +36,8 @@
+ static char text[BUFSIZ] = "";
+ static char *embed;
+ static int bh, mw, mh;
++static int dmx = 0, dmy = 0; /* put dmenu at these x,y positions */
++static unsigned int dmw = 0; /* make dmenu this wide */
+ static int inputw = 0, promptw;
+ static int lrpad; /* sum of left and right padding */
+ static size_t cursor;
+@@ -665,6 +667,9 @@
+ 		x = info[i].x_org;
+ 		y = info[i].y_org + (topbar ? 0 : info[i].height - mh);
+ 		mw = info[i].width;
++		x += dmx;
++		y += dmy;
++		if (dmw) mw = dmw;
+ 		XFree(info);
+ 	} else
+ #endif
+@@ -675,6 +680,9 @@
+ 		x = 0;
+ 		y = topbar ? 0 : wa.height - mh;
+ 		mw = wa.width;
++		x += dmx;
++		y += dmy;
++		if (dmw) mw = dmw;
+ 	}
+ 	promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
+ 	inputw = mw / 3; /* input width: ~33% of monitor width */
+@@ -757,6 +765,12 @@
+ 			colors[SchemeSel][ColFg] = argv[++i];
+ 		else if (!strcmp(argv[i], "-w"))   /* embedding window id */
+ 			embed = argv[++i];
++		else if (!strcmp(argv[i], "-x"))   /* window x offset */
++			dmx = atoi(argv[++i]);
++		else if (!strcmp(argv[i], "-y"))   /* window y offset */
++			dmy = atoi(argv[++i]);
++		else if (!strcmp(argv[i], "-W"))   /* window width */
++			dmw = atoi(argv[++i]);
+ 		else
+ 			usage();
+ 

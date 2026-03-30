@@ -20,7 +20,7 @@ InfoStoreAdd terminal urxvt
 # Run command (Meta+Space / Super+Space)
 InfoStoreAdd runcmd "dmenu_run"
 
-InfoStoreAdd runcmdopt "-i -fn '{{font}}' \
+InfoStoreAdd runcmdopt "-i -x 150 -fn '{{font}}' \
 -nb '{{background}}' \
 -nf '{{foreground}}' \
 -sb '{{active}}' \
@@ -353,9 +353,11 @@ Test (x FvwmPrompt) + "FvwmPrompt" ViewManPage FvwmPrompt
 Silent Key F1   A M Menu MenuFvwmRoot
 Silent Key Menu A A Menu MenuFvwmRoot
 
-# Window list (Alt+Super+Tab per your original: Tab with modifier 4)
+# Window list (Super+Tab and Alt+Tab)
 Silent Key Tab A 4 WindowList Root 0 0 \
     NoIcons, NoDeskSort, SelectOnRelease Meta_L, CurrentAtEnd
+Silent Key Tab A M WindowList Root c c \
+    NoIcons, NoGeometry, NoDeskSort, SelectOnRelease Meta_L, CurrentAtEnd, TruncateLabel 76
 
 # Cycle windows (Super + o)
 Silent Key o A 4 Next (CurrentPage, AcceptsFocus) Focus
@@ -415,6 +417,9 @@ Test (x $[infostore.runcmd]) Silent Key Space A 4 Exec exec $[infostore.runcmd] 
 Silent Key e A 4  Exec exec emacsclient -c
 Silent Key b A 4S Exec exec battery.clj -n
 Silent Key l A 4S Exec exec xsecurelock
+
+Silent Key XF86MonBrightnessDown A A Exec exec backlight.clj --decrease
+Silent Key XF86MonBrightnessUp   A A Exec exec backlight.clj --increase
 
 # Window Buttons
 Mouse 1 1 A Menu MenuWindowOps Delete
@@ -552,7 +557,13 @@ DestroyModuleConfig LeftPanel:*
 *LeftPanel: Columns 150
 *LeftPanel: Frame 0
 *LeftPanel: Font "xft:{{font}}:Bold:size=10:antialias=True"
-PipeRead 'echo "*LeftPanel: (150x$(($[monitor.$[monitor.primary].height]-450)), Top, Swallow(UseOld,NoClose) FvwmIconMan '\''Module FvwmIconMan IconManDock'\'', Frame 0)"'
+*LeftPanel: (150x24, Title "run", Action(Mouse 1) "Exec exec $[infostore.runcmd] $[infostore.runcmdopt]", Colorset 10, ActiveColorset 11, Frame 0)
+PipeRead 'echo "*LeftPanel: (150x$(($[monitor.$[monitor.primary].height]-522)), Top, Swallow(UseOld,NoClose) FvwmIconMan '\''Module FvwmIconMan IconManDock'\'', Frame 0)"'
+*LeftPanel: (50x24,  Title "bt",  Action(Mouse 1) "Exec exec $[infostore.terminal] -title bluetoothctl -e bluetoothctl", Colorset 10, ActiveColorset 11, Frame 0)
+*LeftPanel: (50x24,  Title "vol", Action(Mouse 1) "Exec exec $[infostore.terminal] -title pulsemixer -e pulsemixer",    Colorset 10, ActiveColorset 11, Frame 0)
+PipeRead 'echo "*LeftPanel: (50x24, Title '\''help'\'', Action(Mouse 1) '\''Exec exec $[infostore.terminal] -title keys -geometry 100x$(($[monitor.$[monitor.primary].height]/18))+$(($[monitor.$[monitor.primary].width]/2-400))+0 -e keys.clj'\'', Colorset 10, ActiveColorset 11, Frame 0)"'
+*LeftPanel: (75x24,  Title "br-", Action(Mouse 1) "Exec exec backlight.clj --decrease", Colorset 10, ActiveColorset 11, Frame 0)
+*LeftPanel: (75x24,  Title "br+", Action(Mouse 1) "Exec exec backlight.clj --increase", Colorset 10, ActiveColorset 11, Frame 0)
 *LeftPanel: (150x150, Swallow(UseOld,NoClose) FvwmPager 'Module FvwmPager PagerDock', Frame 0)
 *LeftPanel: (150x150, Swallow(UseOld,NoClose) xload 'Exec exec xload -bg "{{foreground}}" -fg "{{background}}"', Frame 0)
 *LeftPanel: (150x150, Swallow(UseOld,NoClose) xclock 'Exec exec xclock -bg "{{foreground}}" -fg "{{background}}"', Frame 0)

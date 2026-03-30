@@ -35,6 +35,7 @@ in {
     ".local/bin/dock.clj" = mkExecutable ../assets/scripts/dock.clj;
     ".local/bin/backlight.clj" = mkExecutable ../assets/scripts/backlight.clj;
     ".local/bin/polybar.sh" = mkExecutable ../assets/scripts/polybar.sh;
+    ".local/bin/keys.clj" = mkExecutable ../assets/scripts/keys.clj;
 
     # templates - dev-shells
     # ".local/templates/php.nix" = mkSource ../templates/devshells/php.nix;

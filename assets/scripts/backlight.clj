@@ -2,64 +2,46 @@
 (ns backlight
   (:require [babashka.cli :as cli]
             [clojure.string :as str]
-            [babashka.process :refer [shell check process]]
             [babashka.fs :as fs]))
 
 (def cli-opts
-  {:spec {:increase {:desc "increase backlight"
+  {:spec {:increase {:desc "increase backlight by 10%"
                      :alias :p}
-          :decrease {:desc "decrease backlight"
+          :decrease {:desc "decrease backlight by 10%"
                      :alias :d}
-          :set {:desc "set backlight"
-                     :alias :s}}})
+          :set {:desc "set backlight to N% (0-100)"
+                :alias :s
+                :coerce :long}}})
 
-(def backlight-path "/sys/class/backlight/intel_backlight/brightness")
+(def backlight-dir "/sys/class/backlight/intel_backlight")
+(def brightness-path (str backlight-dir "/brightness"))
+(def max-path (str backlight-dir "/max_brightness"))
 
-(defn ensure-sudo!
-  "Prompt for sudo upfront and exit on failure."
-  []
-  (try
-    (check (shell ["sudo" "-v"]))
-    (println "Sudo authenticated.")
-    (catch Exception _
-      (println "!! Failed to authenticate sudo.")
-      (System/exit 1))))
-
-(defn set-brightness
-  [amount]
-  (println "Setting the brightness to" amount)
-  (check
-    (process
-      ["sudo" "tee" backlight-path]
-      {:in (str amount "\n")})))
+(def max-brightness
+  (parse-long (str/trim (slurp max-path))))
 
 (def current
-  (let [content (slurp backlight-path)]
-    (parse-long (str/trim content))))
+  (parse-long (str/trim (slurp brightness-path))))
 
-(defn increase
-  [amount]
-    (let [result (+ current amount)]
-    (cond
-      (>= result 192000) 192000 ;; let's hope that this makes sense
-      :else result)))
+(defn pct->abs [pct]
+  (long (* max-brightness (/ pct 100.0))))
 
-(defn decrease
-  [amount ]
-  (let [result (- current amount)]
-    (cond
-      (< result 0) 0
-      :else result)))1
+(defn clamp [v]
+  (max 0 (min max-brightness v)))
 
-(defn -main
-  [& args]
-  (ensure-sudo!)
+(defn set-brightness [amount]
+  (let [pct (int (Math/round (* 100.0 (/ amount max-brightness))))]
+    (println "Setting brightness to" amount (str "(" pct "%)")))
+  (spit brightness-path (str amount "\n")))
+
+(defn -main [& args]
   (let [opts (cli/parse-opts args cli-opts)]
-    (if (fs/exists? backlight-path)
+    (if (fs/exists? brightness-path)
       (cond
-        (:increase opts) (set-brightness (increase 25000))
-        (:decrease opts) (set-brightness (decrease 25000))
-        (:set opts) (set-brightness (parse-long (second args)))
-        :else (println "Usage: battery.clj [--daemon|-d] [--notify|-n]")))))
-    
+        (:increase opts) (set-brightness (clamp (+ current (pct->abs 10))))
+        (:decrease opts) (set-brightness (clamp (- current (pct->abs 10))))
+        (:set opts)      (set-brightness (clamp (pct->abs (:set opts))))
+        :else (println "Usage: backlight.clj [--increase|-p] [--decrease|-d] [--set|-s N]"))
+      (println "Backlight not found:" brightness-path))))
+
 (apply -main *command-line-args*)

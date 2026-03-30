@@ -122,7 +122,7 @@
           specialArgs = {
             inherit inputs system teleport-installer;
           };
-        };
+        };                      # 
 
         nixos = nixpkgs.lib.nixosSystem {
           inherit system;
@@ -196,7 +196,7 @@
             system = "aarch64-linux";
           };
         };
-        
+
         asahimini = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
           pkgs = pkgsFor "aarch64-linux";
@@ -215,12 +215,34 @@
           pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/postgres/configuration.nix
+
+            ({ config, lib, pkgs, modulesPath, ... }: {
+              imports = [
+                "${modulesPath}/profiles/qemu-guest.nix"
+              ];
+              
+              fileSystems."/" = {
+                device = "/dev/disk/by-label/nixos";
+                fsType = "ext4";
+                autoResize = true;
+              };
+              
+              boot.loader.grub.enable = true;
+              boot.loader.grub.device = "/dev/vda";
+              
+              system.build.qcow2 = import "${modulesPath}/../lib/make-disk-image.nix" {
+                inherit lib config pkgs;
+                format = "qcow2";
+                diskSize = 20 * 1024;
+                partitionTableType = "hybrid";
+              };
+            })
           ];
           specialArgs = {
             inherit inputs system teleport-installer;
           };
         };
-
+        
         mongo = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;

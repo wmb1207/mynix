@@ -1,6 +1,7 @@
 { pkgs }:
 
 with pkgs; [
+  janet
   ocaml
   dune_3  # dune build system
   opam    # package manager (optional)

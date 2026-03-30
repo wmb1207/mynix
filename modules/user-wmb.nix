@@ -75,6 +75,9 @@ let
         pyvenv
         pet
 
+        ## janet
+        janet-mode
+
         ## Go
         go-mode
 
@@ -178,7 +181,7 @@ in
     isNormalUser = true;
     description = "wmb";
     shell = pkgs.loksh;
-    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "input"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "input" "video" ];
   };
 
   services.udev.packages = [pkgs.game-devices-udev-rules];
@@ -186,6 +189,7 @@ in
   services.udev.extraRules = ''
                            KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
                            KERNEL=="hidraw*", KERNELS=="*054C:0CE6*", MODE="0660", TAG+="uaccess"
+                           ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
 '';
   
   services.emacs = {
