@@ -198,7 +198,7 @@
                wm-packages
                system-packages
                font-packages)]
-    (sh! (array/concat ["pkg" "install" "-y"] all)))
+    (sh! (array/concat @["pkg" "install" "-y"] all)))
   (ok "all packages installed")
   (warn "some packages may not exist in ports — check output above for failures")
   (note "packages not in ports: gtop, clipmenu, ameba, postman, slack\ninstall manually or via npm/cargo/gem"))
