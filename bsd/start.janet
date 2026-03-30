@@ -93,7 +93,7 @@
 # ── packages ──────────────────────────────────────────────────────────────────
 
 (def cli-packages
-  ["loksh"
+  ["oksh"
    "git"
    "curl"
    "wget"
@@ -115,12 +115,10 @@
    "cmus"
    "mpv"
    "libtool"
-   "babashka"
    "janet"
    "abcde"
    "flac"
    "postgresql16-client"
-   "u2f-server"         # libfido2
    "xdotool"
    "pamixer"
    ])
@@ -151,23 +149,16 @@
    "feh"
    "dmenu"
    "polybar"
-   "eww"
-   "pulsemixer"
-   "xsecurelock"
+   "xlockmore"              # xsecurelock not in ports
    "xautolock"
-   "dockapp-wmsystemtray"
-   "dockapp-wmcalclock"
    ])
 
 (def system-packages
   ["emacs"
    "tailscale"
-   "NetworkManager"
+   # NetworkManager not in FreeBSD ports; networking via rc.conf
    "dbus"
    "polkit"
-   "rtkit"
-   "cups"
-   "nfs-utils"
    "vm-bhyve"           # for docker VM (setup/docker.janet)
    "bhyve-firmware"
    "grub2-bhyve"
@@ -186,7 +177,6 @@
   ["dejavu"
    "jetbrains-mono"
    "terminus-font"
-   "ibm-plex"
    ])
 
 (defn phase-packages []
