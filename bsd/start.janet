@@ -461,8 +461,9 @@
   (step "dotfiles + assets")
 
   (defn install-asset [src rel-dst]
-    (let [dst (home rel-dst)
-          dir (string/join (array/slice (string/split "/" dst) 0 -1) "/")]
+    (let [dst  (home rel-dst)
+          parts (string/split "/" dst)
+          dir  (string/join (array/slice parts 0 (- (length parts) 1)) "/")]
       (mkdir! dir)
       (copy! (string assets "/" src) dst)
       (ok (string rel-dst))))
