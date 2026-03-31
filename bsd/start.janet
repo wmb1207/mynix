@@ -1,6 +1,6 @@
 #!/usr/bin/env janet
 
-# start.janet — main orchestrator for FreeBSD laptop setup (Dell Latitude)
+# start.janet — main orchestrator for FreeBSD laptop setup (freedom)
 #
 # Run after bootstrap.sh has installed git + janet and cloned the repo.
 #
@@ -79,7 +79,7 @@
 # ── config ────────────────────────────────────────────────────────────────────
 
 (def username  "wmb")
-(def hostname  "latitude")
+(def hostname  "freedom")
 (def tz        "America/Argentina/Buenos_Aires")
 (def user-home (string "/home/" username))
 (def repo-dir  (os/cwd))   # we're run from bsd/
