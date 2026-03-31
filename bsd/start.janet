@@ -357,6 +357,7 @@
         (string
           "#!/bin/sh\n"
           "# autostart\n"
+          "xrandr --auto\n"
           "xautolock -time 5 -locker xsecurelock &\n"
           "picom -b &\n"
           "dunst &\n"
@@ -386,10 +387,15 @@
                           "  Option     \"TearFree\" \"true\"\n")
                         "")]
     # load the right KMS kernel module for this GPU
+    # loader.conf covers early boot; kld_list covers drm-kmod modules in /boot/modules/
     (cond
-      (= driver "modesetting") (file-append! "/boot/loader.conf" "i915kms_load=\"YES\"")
-      (= driver "amdgpu")      (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\""))
-    (ok (string "loader.conf KMS module for driver: " driver))
+      (= driver "modesetting")
+      (do (file-append! "/boot/loader.conf" "i915kms_load=\"YES\"")
+          (file-append! "/etc/rc.conf"      "kld_list=\"i915kms\""))
+      (= driver "amdgpu")
+      (do (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\"")
+          (file-append! "/etc/rc.conf"      "kld_list=\"amdgpu\"")))
+    (ok (string "KMS module configured for driver: " driver))
     (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
           (string
             "Section \"Device\"\n"
