@@ -371,22 +371,29 @@
   (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\"")
   (file-append! "/etc/rc.conf"      "kld_list=\"amdgpu\"")
   (ok "loader.conf + rc.conf: amdgpu")
-  (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
-        (string
-          "Section \"Device\"\n"
-          "  Identifier \"Card0\"\n"
-          "  Driver     \"amdgpu\"\n"
-          "  Option     \"DRI\" \"3\"\n"
-          "  Option     \"TearFree\" \"true\"\n"
-          "EndSection\n"
-          "\n"
-          "Section \"InputClass\"\n"
-          "  Identifier \"touchpad\"\n"
-          "  Driver \"libinput\"\n"
-          "  MatchIsTouchpad \"on\"\n"
-          "  Option \"Tapping\" \"off\"\n"
-          "EndSection\n"))
-  (ok "xorg.conf written (amdgpu)")
+  # get PCI bus ID for the AMD GPU so modesetting can find it unambiguously
+  (let [pci-line (sh-out ["sh" "-c" "pciconf -lv | grep -B1 'AMD' | grep vgapci | head -1"])
+        # pciconf line looks like: vgapci0@pci0:1:0:0: ...
+        bus-id   (let [m (peg/match '(* (thru "@pci") (capture (some (+ :d ":")))) pci-line)]
+                   (if m (string "PCI:" (0 m)) "PCI:1:0:0"))]
+    (info (string "GPU bus ID: " bus-id))
+    (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
+          (string
+            "Section \"Device\"\n"
+            "  Identifier  \"Card0\"\n"
+            "  Driver      \"modesetting\"\n"   # modesetting DDX + amdgpu KMS kernel module
+            "  BusID       \"" bus-id "\"\n"
+            "  Option      \"AccelMethod\" \"glamor\"\n"
+            "  Option      \"DRI\" \"3\"\n"
+            "EndSection\n"
+            "\n"
+            "Section \"InputClass\"\n"
+            "  Identifier \"touchpad\"\n"
+            "  Driver \"libinput\"\n"
+            "  MatchIsTouchpad \"on\"\n"
+            "  Option \"Tapping\" \"off\"\n"
+            "EndSection\n"))
+    (ok (string "xorg.conf written (modesetting, BusID " bus-id ")")))
 
   # load amdgpu now for this session (no reboot needed)
   (info "loading amdgpu...")
