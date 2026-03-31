@@ -1,50 +1,67 @@
-{ pkgs }:
+{ pkgs, isDarwin ? false }:
 
-with pkgs; [
-  abcde
-  flac
-  loksh
-  dtach
-  usbutils
-  xdotool
-  xdo
-  docker-compose
-  direnv
-  babashka
-  git
-  curl
-  wget
-  fzf
-  fd
-  ripgrep
-  jq
-  yq
-  unzip
-  zip
-  gnumake
-  xclip
+with pkgs;
+let
+  common = [
+    # shell & core
+    dtach
+    direnv
+    babashka
 
-  dysk
-  bat
-  tmux
+    # tools
+    git
+    curl
+    wget
+    fzf
+    fd
+    ripgrep
+    jq
+    yq
+    unzip
+    zip
+    gnumake
+    bat
+    tmux
+    lf
+    htop
+    gtop
 
-  lf
-  htop
-  gtop
-  networkmanager
+    # data
+    postgresql
 
-  postgresql
-  libfido2
+    # media
+    cmus
+    mpv
 
-  cmus
-  pamixer
-  mpv
+    # dev
+    libtool
+    php84Packages.phpmd
 
-  libtool
-  php84Packages.phpmd
-  ameba # Crystal linter
+    # nix
+    nix-search-cli
+    claude-code
+  ];
 
-  clipmenu
-  nix-search-cli
-  claude-code
-]
+  linux = [
+    loksh
+    abcde
+    flac
+    usbutils
+    xdotool
+    xdo
+    docker-compose
+    xclip
+    dysk
+    networkmanager
+    libfido2
+    pamixer
+    ameba
+    clipmenu
+  ];
+
+  darwin = [
+    oksh
+  ];
+
+in
+  common ++ (if isDarwin then darwin else linux)

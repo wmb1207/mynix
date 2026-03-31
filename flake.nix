@@ -10,9 +10,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, nix-darwin, teleport-installer, ... }:
     let
       system = "x86_64-linux";
 
@@ -260,6 +265,21 @@
           modules = [
             ./hosts/tailscale/configuration.nix
           ];
+        };
+      };
+
+      darwinConfigurations = {
+        macbook = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            home-manager.darwinModules.home-manager
+            ./hosts/macbook/configuration.nix
+            ./modules/user-wmb-darwin.nix
+          ];
+          specialArgs = {
+            inherit inputs;
+            system = "aarch64-darwin";
+          };
         };
       };
 
