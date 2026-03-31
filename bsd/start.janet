@@ -95,6 +95,7 @@
 
 (def cli-packages
   ["oksh"
+   "cmake"
    "doas"
    "git"
    "curl"
@@ -142,7 +143,6 @@
    "xload"
    "xrdb"
    "xsetroot"
-   "ghostty"
    ])
 
 (def wm-packages
