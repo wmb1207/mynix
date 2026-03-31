@@ -1,8 +1,7 @@
 { config, pkgs, lib, ... }:
 {
-  services.nix-daemon.enable = true;
-
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -10,6 +9,8 @@
   # Shell — must be declared for nix-darwin to accept it as a login shell
   programs.zsh.enable = true;
   environment.shells = [ pkgs.oksh ];
+
+  system.primaryUser = "wmb";
 
   # macOS system defaults
   system.defaults = {
