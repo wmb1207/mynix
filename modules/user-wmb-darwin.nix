@@ -145,6 +145,13 @@ let
 
 in
 {
+  #### User (registers existing macOS user with home-manager) ##############
+
+  users.users.wmb = {
+    name = "wmb";
+    home = "/Users/wmb";
+  };
+
   #### Window manager + hotkeys ############################################
 
   services.yabai = {
