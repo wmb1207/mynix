@@ -1,0 +1,41 @@
+# Only interactive shells
+[[ $- != *i* ]] && return
+
+# === History ===
+HISTFILE="$HOME/.ksh_history"
+HISTSIZE=10000
+
+PS1=$'\033[38;5;67m$(pwd | sed "s|$HOME|~|")\033[0m $ '
+
+# === Aliases ===
+alias ll='ls -lhG'
+alias la='ls -lahG'
+alias gs='git status'
+alias gc='git commit'
+alias ga='git add'
+alias gl='git log --oneline --graph --decorate'
+alias em='emacsclient -nw'
+alias e='emacsclient -c -a emacs'
+
+# === fzf ===
+if command -v fzf >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+fi
+
+export EDITOR='emacsclient -c -a emacs'
+export VISUAL="$EDITOR"
+export PAGER='less -R'
+export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$PATH"
+export ENV="$HOME/.kshrc"
+
+# === Direnv ===
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook ksh)"
+fi
+
+# === Starship ===
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init ksh)"
+fi

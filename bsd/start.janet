@@ -512,43 +512,7 @@
       (sh! ["cp" "-r" wp-src (home ".config/")])))
 
   # .kshrc
-  (spit (home ".kshrc")
-        (string
-          "# Only interactive shells\n"
-          "[[ $- != *i* ]] && return\n\n"
-          "# === History ===\n"
-          "HISTFILE=\"$HOME/.ksh_history\"\n"
-          "HISTSIZE=10000\n"
-          "SAVEHIST=20000\n\n"
-          "PS1='\\033[38;5;67m$(pwd | sed \"s|$HOME|~|\")\\033[0m $ '\n\n"
-          "# === Aliases ===\n"
-          "alias ll='ls -lh --color=auto'\n"
-          "alias la='ls -lah --color=auto'\n"
-          "alias gs='git status'\n"
-          "alias gc='git commit'\n"
-          "alias ga='git add'\n"
-          "alias gl='git log --oneline --graph --decorate'\n"
-          "alias em='emacsclient -nw'\n"
-          "alias e='emacsclient -c -a emacs'\n\n"
-          "# === fzf ===\n"
-          "if command -v fzf >/dev/null 2>&1; then\n"
-          "  export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob \"!.git/*\"'\n"
-          "  export FZF_CTRL_T_COMMAND=\"$FZF_DEFAULT_COMMAND\"\n"
-          "  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'\n"
-          "fi\n\n"
-          "export EDITOR='emacsclient -c -a emacs'\n"
-          "export VISUAL=\"$EDITOR\"\n"
-          "export PAGER='less -R'\n"
-          "export PATH=\"$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$PATH\"\n"
-          "export ENV=\"$HOME/.kshrc\"\n\n"
-          "# === Direnv ===\n"
-          "if command -v direnv >/dev/null 2>&1; then\n"
-          "  eval \"$(direnv hook ksh)\"\n"
-          "fi\n\n"
-          "# === Starship ===\n"
-          "if command -v starship >/dev/null 2>&1; then\n"
-          "  eval \"$(starship init ksh)\"\n"
-          "fi\n"))
+  (copy! (string repo-dir "/kshrc") (home ".kshrc"))
   (ok ".kshrc written")
 
   (chown! username user-home)
