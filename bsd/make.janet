@@ -137,6 +137,16 @@
     (spit path "exec fvwm3\n")
     (print "  wrote " path)))
 
+# -- fvwm3 config --
+(defn install-fvwm-config []
+  (let [home    (os/getenv "HOME")
+        dst-dir (string home "/.fvwm")
+        dst     (string dst-dir "/config")
+        src     (string assets-dir "/fvwm3.conf")]
+    (os/mkdir dst-dir)
+    (sh! ["cp" src dst])
+    (print "  wrote " dst)))
+
 # -- main --
 (defn usage []
   (print "usage: make.janet <command>")
@@ -163,5 +173,6 @@
       "apply"   (do (run-tmpls args)
                     (pkg-install)
                     (setup-rc)
-                    (write-xinitrc))
+                    (write-xinitrc)
+                    (install-fvwm-config))
       (usage))))

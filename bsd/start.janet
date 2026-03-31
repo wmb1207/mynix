@@ -274,7 +274,6 @@
   (each line
     ["kern.vty=vt"          # modern vt console
      "hw.vga.textmode=0"
-     "i915kms_load=\"YES\"" # Intel KMS (Latitude Intel GPU)
      "vmm_load=\"YES\""     # bhyve
      "if_bridge_load=\"YES\""
      "if_tap_load=\"YES\""]
@@ -376,11 +375,21 @@
                  (string/find "Intel"      pci) "modesetting"
                  (string/find "AMD"        pci) "amdgpu"
                  "scfb")
-        device-extras (if (= driver "modesetting")
+        device-extras (cond
+                        (= driver "modesetting")
                         (string
                           "  Option     \"AccelMethod\" \"glamor\"\n"
                           "  Option     \"DRI\" \"3\"\n")
+                        (= driver "amdgpu")
+                        (string
+                          "  Option     \"DRI\" \"3\"\n"
+                          "  Option     \"TearFree\" \"true\"\n")
                         "")]
+    # load the right KMS kernel module for this GPU
+    (cond
+      (= driver "modesetting") (file-append! "/boot/loader.conf" "i915kms_load=\"YES\"")
+      (= driver "amdgpu")      (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\""))
+    (ok (string "loader.conf KMS module for driver: " driver))
     (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
           (string
             "Section \"Device\"\n"
@@ -402,6 +411,7 @@
         (string
           "URxvt.font:            xft:DejaVu Sans Mono:size=10\n"
           "URxvt.boldFont:        xft:DejaVu Sans Mono:bold:size=10\n"
+          "URxvt.italicFont:      xft:DejaVu Sans Mono:italic:size=10\n"
           "URxvt.foreground:      #b5b2a0\n"
           "URxvt.background:      #1c1a18\n"
           "URxvt.color0:          #1c1a18\n"
@@ -420,13 +430,25 @@
           "URxvt.color13:         #8a7070\n"
           "URxvt.color14:         #5a8080\n"
           "URxvt.color15:         #b5b2a0\n"
-          "URxvt.cursorColor:     #b0ad9a\n"
-          "URxvt.scrollBar:       false\n"
-          "URxvt.saveLines:       1000\n"
-          "URxvt.internalBorder:  2\n"
-          "URxvt.borderWidth:     0\n"
-          "URxvt.perl-ext-common: default,clipboard,selection-to-clipboard\n"
-          "URxvt.clipboard.autocopy: true\n"))
+          "URxvt.cursorColor:          #b0ad9a\n"
+          "URxvt.highlightColor:       #3a3525\n"
+          "URxvt.highlightTextColor:   #b5b2a0\n"
+          "URxvt.scrollBar:            false\n"
+          "URxvt.scrollTtyOutput:      false\n"
+          "URxvt.scrollWithBuffer:     true\n"
+          "URxvt.scrollTtyKeypress:    true\n"
+          "URxvt.saveLines:            1000\n"
+          "URxvt.internalBorder:       2\n"
+          "URxvt.borderWidth:          0\n"
+          "URxvt.perl-ext-common:      default,clipboard,selection-to-clipboard\n"
+          "URxvt.clipboard.autocopy:   true\n"
+          "URxvt.clipboard.copycmd:    xclip -i -selection clipboard\n"
+          "URxvt.clipboard.pastecmd:   xclip -o -selection clipboard\n"
+          "URxvt.meta8:                false\n"
+          "URxvt.iso14755:             false\n"
+          "URxvt.iso14755_52:          false\n"
+          "URxvt.keysym.Control-Shift-w: perl:clipboard:copy\n"
+          "URxvt.keysym.Control-Shift-y: perl:clipboard:paste\n"))
   (ok ".Xresources written")
 
   (chown! username user-home)
