@@ -52,7 +52,11 @@
 
 # -- templates --
 (def fvwm3
-  (tmpl "fvwm3" "fvwm3.conf" "fvwm3.conf.tmpl"
+  # use BSD-specific template (bsd/fvwm3.conf.tmpl) rather than ../templates/fvwm3.conf.tmpl
+  {:name    "fvwm3"
+   :output  (string assets-dir "/fvwm3.conf")
+   :content (slurp "fvwm3.conf.tmpl")
+   :fields
         {"{{background}}"  black
          "{{foreground}}"  white
          "{{bg-alt}}"      bg-alt
@@ -63,7 +67,7 @@
          "{{green}}"       green
          "{{olive}}"       olive
          "{{theme}}"       theme
-         "{{font}}"        font}))
+         "{{font}}"        font}})
 
 (def ghostty-dark
   (tmpl "ghostty" "ghostty" "ghostty.tmpl"
