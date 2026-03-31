@@ -1,6 +1,6 @@
 #!/usr/bin/env janet
 
-# start.janet — main orchestrator for FreeBSD laptop setup (freedom)
+# start.janet — main orchestrator for FreeBSD desktop setup (freedom, Radeon RX 480)
 #
 # Run after bootstrap.sh has installed git + janet and cloned the repo.
 #
@@ -366,51 +366,40 @@
   (sh! ["chmod" "+x" (home ".xinitrc")])
   (ok ".xinitrc written")
 
-  # xorg.conf — detect GPU via pciconf and pick the right driver
+  # xorg.conf — amdgpu (Radeon RX 480)
   (mkdir! "/usr/local/etc/X11/xorg.conf.d")
-  (let [pci    (sh-out ["pciconf" "-lv"])
-        driver (cond
-                 (string/find "VMware"     pci) "vmware"
-                 (string/find "VirtualBox" pci) "vboxvideo"
-                 (string/find "QEMU"       pci) "scfb"
-                 (string/find "Intel"      pci) "modesetting"
-                 (string/find "AMD"        pci) "amdgpu"
-                 "scfb")
-        device-extras (cond
-                        (= driver "modesetting")
-                        (string
-                          "  Option     \"AccelMethod\" \"glamor\"\n"
-                          "  Option     \"DRI\" \"3\"\n")
-                        (= driver "amdgpu")
-                        (string
-                          "  Option     \"DRI\" \"3\"\n"
-                          "  Option     \"TearFree\" \"true\"\n")
-                        "")]
-    # load the right KMS kernel module for this GPU
-    # loader.conf covers early boot; kld_list covers drm-kmod modules in /boot/modules/
-    (cond
-      (= driver "modesetting")
-      (do (file-append! "/boot/loader.conf" "i915kms_load=\"YES\"")
-          (file-append! "/etc/rc.conf"      "kld_list=\"i915kms\""))
-      (= driver "amdgpu")
-      (do (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\"")
-          (file-append! "/etc/rc.conf"      "kld_list=\"amdgpu\"")))
-    (ok (string "KMS module configured for driver: " driver))
-    (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
-          (string
-            "Section \"Device\"\n"
-            "  Identifier \"Card0\"\n"
-            "  Driver     \"" driver "\"\n"
-            device-extras
-            "EndSection\n"
-            "\n"
-            "Section \"InputClass\"\n"
-            "  Identifier \"touchpad\"\n"
-            "  Driver \"libinput\"\n"
-            "  MatchIsTouchpad \"on\"\n"
-            "  Option \"Tapping\" \"off\"\n"
-            "EndSection\n"))
-    (ok (string "xorg.conf (driver: " driver ")")))
+  (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\"")
+  (file-append! "/etc/rc.conf"      "kld_list=\"amdgpu\"")
+  (ok "loader.conf + rc.conf: amdgpu")
+  (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
+        (string
+          "Section \"Device\"\n"
+          "  Identifier \"Card0\"\n"
+          "  Driver     \"amdgpu\"\n"
+          "  Option     \"DRI\" \"3\"\n"
+          "  Option     \"TearFree\" \"true\"\n"
+          "EndSection\n"
+          "\n"
+          "Section \"InputClass\"\n"
+          "  Identifier \"touchpad\"\n"
+          "  Driver \"libinput\"\n"
+          "  MatchIsTouchpad \"on\"\n"
+          "  Option \"Tapping\" \"off\"\n"
+          "EndSection\n"))
+  (ok "xorg.conf written (amdgpu)")
+
+  # load amdgpu now for this session (no reboot needed)
+  (info "loading amdgpu...")
+  (if (sh-ok? ["kldload" "amdgpu"])
+    (ok "amdgpu loaded")
+    (warn "kldload failed — may already be loaded, check: kldstat | grep amdgpu"))
+  (let [loaded (sh-out ["kldstat"])]
+    (if (string/find "amdgpu" loaded)
+      (ok "amdgpu confirmed in kldstat")
+      (warn "amdgpu NOT in kldstat — reboot may be required")))
+  (each line (string/split "\n" (sh-out ["dmesg"]))
+    (when (or (string/find "amdgpu" line) (string/find "drm" line))
+      (info line)))
 
   # Xresources (URxvt creamsody palette)
   (spit (home ".Xresources")
