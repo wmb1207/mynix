@@ -366,47 +366,42 @@
   (sh! ["chmod" "+x" (home ".xinitrc")])
   (ok ".xinitrc written")
 
-  # xorg.conf — amdgpu (Radeon RX 480)
+  # xorg.conf — modesetting DDX over amdgpu KMS (Radeon RX 480)
   (mkdir! "/usr/local/etc/X11/xorg.conf.d")
   (file-append! "/boot/loader.conf" "amdgpu_load=\"YES\"")
   (file-append! "/etc/rc.conf"      "kld_list=\"amdgpu\"")
   (ok "loader.conf + rc.conf: amdgpu")
-  # get PCI bus ID for the AMD GPU so modesetting can find it unambiguously
-  (let [pci-line (sh-out ["sh" "-c" "pciconf -lv | grep -B1 'AMD' | grep vgapci | head -1"])
-        # pciconf line looks like: vgapci0@pci0:1:0:0: ...
-        bus-id   (let [m (peg/match '(* (thru "@pci") (capture (some (+ :d ":")))) pci-line)]
-                   (if m (string "PCI:" (0 m)) "PCI:1:0:0"))]
-    (info (string "GPU bus ID: " bus-id))
-    (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
-          (string
-            "Section \"Device\"\n"
-            "  Identifier  \"Card0\"\n"
-            "  Driver      \"modesetting\"\n"   # modesetting DDX + amdgpu KMS kernel module
-            "  BusID       \"" bus-id "\"\n"
-            "  Option      \"AccelMethod\" \"glamor\"\n"
-            "  Option      \"DRI\" \"3\"\n"
-            "EndSection\n"
-            "\n"
-            "Section \"InputClass\"\n"
-            "  Identifier \"touchpad\"\n"
-            "  Driver \"libinput\"\n"
-            "  MatchIsTouchpad \"on\"\n"
-            "  Option \"Tapping\" \"off\"\n"
-            "EndSection\n"))
-    (ok (string "xorg.conf written (modesetting, BusID " bus-id ")")))
 
-  # load amdgpu now for this session (no reboot needed)
-  (info "loading amdgpu...")
+  # load amdgpu now so /dev/dri/card0 exists for this session
+  (info "loading amdgpu kernel module...")
   (if (sh-ok? ["kldload" "amdgpu"])
     (ok "amdgpu loaded")
-    (warn "kldload failed — may already be loaded, check: kldstat | grep amdgpu"))
+    (warn "kldload amdgpu failed — may already be loaded"))
   (let [loaded (sh-out ["kldstat"])]
     (if (string/find "amdgpu" loaded)
       (ok "amdgpu confirmed in kldstat")
-      (warn "amdgpu NOT in kldstat — reboot may be required")))
-  (each line (string/split "\n" (sh-out ["dmesg"]))
-    (when (or (string/find "amdgpu" line) (string/find "drm" line))
-      (info line)))
+      (fail "amdgpu NOT in kldstat — reboot and re-run desktop phase")))
+  # verify /dev/dri/card0 exists before writing xorg.conf
+  (if (sh-ok? ["test" "-e" "/dev/dri/card0"])
+    (ok "/dev/dri/card0 present")
+    (fail "/dev/dri/card0 missing — amdgpu did not initialise; check: dmesg | grep -i drm"))
+
+  (spit "/usr/local/etc/X11/xorg.conf.d/20-video.conf"
+        (string
+          "Section \"Device\"\n"
+          "  Identifier  \"Card0\"\n"
+          "  Driver      \"modesetting\"\n"
+          "  Option      \"AccelMethod\" \"glamor\"\n"
+          "  Option      \"DRI\" \"3\"\n"
+          "EndSection\n"
+          "\n"
+          "Section \"InputClass\"\n"
+          "  Identifier \"touchpad\"\n"
+          "  Driver \"libinput\"\n"
+          "  MatchIsTouchpad \"on\"\n"
+          "  Option \"Tapping\" \"off\"\n"
+          "EndSection\n"))
+  (ok "xorg.conf written (modesetting + amdgpu KMS)")
 
   # Xresources (URxvt creamsody palette)
   (spit (home ".Xresources")
