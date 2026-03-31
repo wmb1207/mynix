@@ -95,6 +95,7 @@
 
 (def cli-packages
   ["oksh"
+   "doas"
    "git"
    "curl"
    "wget"
@@ -222,9 +223,16 @@
       (sh! ["pw" "groupmod" g "-m" username])
       (ok (string "added to group " g))))
 
-  # doas config (equivalent of sudo wheel access)
+  # doas config
   (let [doas-conf "/usr/local/etc/doas.conf"]
-    (file-append! doas-conf "permit persist :wheel")
+    (spit doas-conf
+          (string
+            "# doas.conf\n"
+            "# wheel group: allow with password, persist token for 5 min\n"
+            "permit persist :wheel\n"
+            "# root can act as itself without a password\n"
+            "permit nopass root\n"))
+    (sh! ["chmod" "0400" doas-conf])
     (ok "doas configured"))
 
   (note (string "set password for " username " with: passwd " username)))
