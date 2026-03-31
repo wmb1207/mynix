@@ -478,6 +478,14 @@
       (copy! (string assets "/" src) dst)
       (ok (string rel-dst))))
 
+  (defn install-local [src rel-dst]
+    (let [dst  (home rel-dst)
+          parts (string/split "/" dst)
+          dir  (string/join (array/slice parts 0 (- (length parts) 1)) "/")]
+      (mkdir! dir)
+      (copy! (string repo-dir "/" src) dst)
+      (ok (string rel-dst))))
+
   (defn install-script [src rel-dst]
     (let [dst (home rel-dst)]
       (install-asset src rel-dst)
@@ -490,11 +498,8 @@
   (install-asset "polybar.ini"     ".config/polybar/config.ini")
   (install-asset "picom.conf"      ".config/picom/picom.conf")
   # BSD-specific emacs configs (MELPA-based, not Nix)
-  (mkdir! (home ".emacs.d/lisp"))
-  (copy! (string repo-dir "/init.el")     (home ".emacs.d/init.el"))
-  (copy! (string repo-dir "/packages.el") (home ".emacs.d/lisp/packages.el"))
-  (ok ".emacs.d/init.el")
-  (ok ".emacs.d/lisp/packages.el")
+  (install-local "init.el"     ".emacs.d/init.el")
+  (install-local "packages.el" ".emacs.d/lisp/packages.el")
 
   # scripts (janet versions instead of clj)
   (mkdir! (home ".local/bin"))
@@ -512,8 +517,7 @@
       (sh! ["cp" "-r" wp-src (home ".config/")])))
 
   # .kshrc
-  (copy! (string repo-dir "/kshrc") (home ".kshrc"))
-  (ok ".kshrc written")
+  (install-local "kshrc" ".kshrc")
 
   (chown! username user-home)
   (ok "dotfiles phase done"))
