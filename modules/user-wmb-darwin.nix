@@ -4,7 +4,7 @@ let
   cli  = import ./cli.nix { inherit pkgs; isDarwin = true; };
   iac  = import ./development/infrastructure.nix { inherit pkgs; };
   programming-languages =
-    import ./development/programming-languages.nix { inherit pkgs; };
+    import ./development/programming-languages.nix { inherit pkgs; isDarwin = true; };
 
   myEmacs =
     let

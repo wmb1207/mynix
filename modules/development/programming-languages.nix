@@ -1,45 +1,50 @@
-{ pkgs }:
+{ pkgs, isDarwin ? false }:
 
-with pkgs; [
-  janet
-  ocaml
-  dune_3  # dune build system
-  opam    # package manager (optional)
-  #utop    # nice REPL
-  ocamlPackages.ocamlformat  # formatter
-  ocamlPackages.merlin  # formatter
-  ocamlPackages.utop
-  ocamlPackages.lsp
-  ocamlPackages.ocaml-lsp
-  
-  #merlin  # editor support (LSP helper)
-  php84
-  nodejs
-  python313
-  #ruby
-  go
-  elixir
-  erlang
-  typescript
-  yarn
-  pipx
-  hex
-  crystal
-  crystalline
-  shards
+with pkgs;
+let
+  common = [
+    janet
+    ocaml
+    dune_3
+    opam
+    ocamlPackages.ocamlformat
+    ocamlPackages.merlin
+    ocamlPackages.utop
+    ocamlPackages.lsp
+    ocamlPackages.ocaml-lsp
 
-  scala
-  metals
-  scalafmt
+    php84
+    nodejs
+    python313
+    go
+    elixir
+    erlang
+    typescript
+    yarn
+    pipx
+    hex
 
-  tree-sitter-grammars.tree-sitter-php
-  gopls
-  go-outline
-  gopkgs
-  gotools
-  delve
+    scala
+    metals
+    scalafmt
 
-  pyright
-  rust-analyzer
-  phpactor
-]
+    tree-sitter-grammars.tree-sitter-php
+    gopls
+    go-outline
+    gopkgs
+    gotools
+    delve
+
+    pyright
+    rust-analyzer
+    phpactor
+  ];
+
+  linux = [
+    crystal
+    crystalline
+    shards
+  ];
+
+in
+  common ++ (if isDarwin then [] else linux)
