@@ -5,7 +5,9 @@
 HISTFILE="$HOME/.ksh_history"
 HISTSIZE=10000
 
-PS1=$'\033[38;5;67m$(pwd | sed "s|$HOME|~|")\033[0m $ '
+_c1=$(printf '\033[38;5;67m')
+_cr=$(printf '\033[0m')
+PS1='${_c1}$(pwd | sed "s|$HOME|~|")${_cr} $ '
 
 # === Aliases ===
 alias ll='ls -lhG'
