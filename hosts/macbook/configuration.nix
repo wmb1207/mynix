@@ -42,11 +42,14 @@
       "firefox"
       "brave-browser"
       "vlc"
-      "mupdf"
       "karabiner-elements" # Alt/Ctrl swap (swap_lalt_lctl equivalent)
       "raycast"            # dmenu equivalent (set cmd+space in Raycast prefs)
     ];
   };
+
+  # SSH
+  services.openssh.enable = true;
+  programs.ssh.startAgent = true;
 
   system.stateVersion = 5;
 }
