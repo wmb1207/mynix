@@ -47,6 +47,9 @@
     ];
   };
 
+  # Fonts
+  fonts.packages = [ pkgs.dejavu_fonts ];
+
   # SSH
   services.openssh.enable = true;
 

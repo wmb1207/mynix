@@ -150,6 +150,7 @@ in
   users.users.wmb = {
     name = "wmb";
     home = "/Users/wmb";
+    shell = pkgs.oksh;
   };
 
   #### Window manager + hotkeys ############################################
