@@ -61,6 +61,9 @@ let
 
   darwin = [
     oksh
+    colima
+    docker
+    docker-compose
   ];
 
 in
