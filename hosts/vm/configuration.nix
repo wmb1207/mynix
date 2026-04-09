@@ -23,7 +23,6 @@ in
     extraPackages = with pkgs; [
       mesa
       mesa.drivers
-      libva-mesa-driver
       libva
     ];
 
