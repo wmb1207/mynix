@@ -10,9 +10,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, ... }:
     let
       system = "x86_64-linux";
 

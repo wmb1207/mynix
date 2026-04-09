@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and+ in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
 	unstable = import <nixos-unstable> { };
@@ -71,9 +71,25 @@ in
   services.xserver.enable = true;
   services.xserver.videoDrivers = ["amdgpu"];	
 
-  # Enable the GNOME Desktop Environment.
-  # services.xserver.displayManager.gdm.enable = true;
-  # services.xserver.desktopManager.gnome.enable = true;
+  # Override greetd from user-wmb.nix — it needs manual TUI login which
+  # breaks Sunshine (no persistent X session). Use LightDM + autologin instead.
+  services.greetd.enable = lib.mkForce false;
+  services.xserver.displayManager.startx.enable = lib.mkForce false;
+
+  services.xserver.displayManager.lightdm.enable = true;
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "wmb";
+  };
+  # fvwm3 session comes from user-wmb.nix (services.xserver.windowManager.fvwm3)
+
+  # Sunshine game streaming server
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true; # required for KMS/DRM screen capture with amdgpu
+    openFirewall = true;
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {

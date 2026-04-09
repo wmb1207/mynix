@@ -112,6 +112,9 @@ let
         ## Ruby
         inf-ruby
 
+        ## Rust
+        rust-mode
+
         ## Nix
         nix-mode
 
@@ -330,6 +333,7 @@ in
       ++ iac
       ++ wm-tools
       ++ [ myEmacs
+        inputs.llm-agents.packages.${system}.coderabbit-cli
         
         (pkgs.writeShellScriptBin "Ldef" "exec L def \"$@\"")
         (pkgs.writeShellScriptBin "Lrefs" "exec L refs \"$@\"")
