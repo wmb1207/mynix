@@ -414,6 +414,8 @@ Silent Key p WTSF 4CM Resize keep w-25p
 Silent Key Return A 4 Exec exec $[infostore.terminal]
 Test (x $[infostore.runcmd]) Silent Key Space A 4 Exec exec $[infostore.runcmd] $[infostore.runcmdopt]
 
+Silent Key backslash A 4 ToggleLeftPanel
+
 Silent Key e A 4  Exec exec emacsclient -c
 Silent Key b A 4S Exec exec battery.clj -n
 Silent Key l A 4S Exec exec xsecurelock
@@ -440,6 +442,25 @@ Mouse 3 R    A Menu MenuWindowOpsLong
 Mouse 1 I    A RaiseMoveX Move "Iconify off"
 Mouse 3 T    A Menu MenuWindowOps
 Mouse 3 I    A Menu MenuIconOps
+
+DestroyFunc HideLeftPanel
+AddToFunc   HideLeftPanel
++ I KillModule FvwmButtons LeftPanel
++ I KillModule FvwmIconMan IconManDock
++ I KillModule FvwmPager PagerDock
++ I Exec exec pkill -9 xload
++ I Exec exec pkill -9 xclock
++ I EwmhBaseStruts 0 15 15 15
+
+DestroyFunc ShowLeftPanel
+AddToFunc   ShowLeftPanel
++ I Module FvwmButtons LeftPanel
++ I EwmhBaseStruts 170 15 15 15
+
+DestroyFunc ToggleLeftPanel
+AddToFunc   ToggleLeftPanel
++ I All (LeftPanel) HideLeftPanel
++ I TestRc (NoMatch) ShowLeftPanel
 
 DestroyFunc ShuffleDir
 AddToFunc   ShuffleDir
