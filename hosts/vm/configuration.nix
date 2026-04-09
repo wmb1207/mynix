@@ -23,6 +23,8 @@ in
     extraPackages = with pkgs; [
       mesa
       mesa.drivers
+      libva-mesa-driver
+      libva
     ];
 
     extraPackages32 = with pkgs.pkgsi686Linux; [
@@ -89,6 +91,10 @@ in
     autoStart = true;
     capSysAdmin = true; # required for KMS/DRM screen capture with amdgpu
     openFirewall = true;
+    settings = {
+      encoder = "vaapi";
+      adapter_name = "/dev/dri/renderD128";
+    };
   };
 
   # Configure keymap in X11
