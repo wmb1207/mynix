@@ -230,12 +230,6 @@ in
 
   services.xserver.displayManager.startx.enable = true;
 
-  services.xserver.xautolock = {
-    enable = true;
-    time = 2;
-    locker = "${pkgs.xsecurelock}/bin/xsecurelock";
-  };
-
   services.xserver.windowManager = {
     fvwm3.enable = true;
   };

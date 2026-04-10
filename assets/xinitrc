@@ -9,5 +9,4 @@
 xset s blank
 xset s 300
 xset dpms 600 900 1200
-xautolock -detectsleep -time 20 -locker "$HOME/.local/bin/lock" &
 exec fvwm3
