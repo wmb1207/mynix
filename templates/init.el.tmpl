@@ -133,6 +133,7 @@
   (add-hook 'prog-mode
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+  (mapc #'disable-theme custom-enabled-themes)
   (load-theme '{{theme}} t)
 
   ;; Set font AFTER load-theme so the theme can't clobber it.
@@ -146,7 +147,15 @@
   ;; Re-apply after any theme change at runtime
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
-  (set-face-background 'default "{{background}}")
+  ;; Make whitespace faces transparent so they inherit the theme background.
+  (defun my-reset-whitespace-faces ()
+    (dolist (face '(whitespace-space whitespace-tab whitespace-newline
+                    whitespace-trailing whitespace-empty whitespace-indentation
+                    whitespace-space-before-tab whitespace-space-after-tab))
+      (set-face-attribute face nil :background 'unspecified)))
+  (add-hook 'after-load-theme-hook #'my-reset-whitespace-faces)
+  (my-reset-whitespace-faces)
+
   (global-whitespace-mode 1)
 
   (setq whitespace-style
@@ -158,14 +167,7 @@
           (tab-mark     ?\t    [?\u2192 ?\t] [?\\ ?\t]) ; tab → →
           ))
 
-  ;; Force whitespace faces to use our custom background, not the theme's.
-  (dolist (face '(whitespace-space whitespace-tab whitespace-newline
-                  whitespace-trailing whitespace-empty whitespace-indentation
-                  whitespace-space-before-tab whitespace-space-after-tab))
-    (set-face-attribute face nil :background "{{background}}"))
-
   (when (display-graphic-p)
-    (set-face-background 'fringe "{{background}}")
     (set-frame-font "{{font}}-11" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
@@ -499,9 +501,11 @@
   (shell-command (concat "git rebase " branch)))
 
 (defun external-term ()
-  "Start urxvt in the current file's dir"
+  "Start urxvtc in the current file's dir"
   (interactive)
-  (start-process "open /Applications/iTerm.app" nil "open /Applications/iTerm.app"))
+  (let ((default-directory (or (and buffer-file-name (file-name-directory buffer-file-name))
+                               default-directory)))
+    (start-process "urxvtc" nil "urxvtc")))
   
 
 ;; Fix annoying vertical window splitting.

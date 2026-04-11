@@ -56,20 +56,20 @@
                      ^clojure.lang.IPersistentCollection fields])
 
 (defn ensure-sudo!
-  "Prompt for sudo upfront and exit on failure."
+  "Prompt for doas upfront and exit on failure."
   []
   (try
-    (check (shell ["sudo" "-v"]))
-    (println "Sudo authenticated.")
+    (check (shell ["doas" "-C" "/etc/doas.conf"]))
+    (println "Doas authenticated.")
     (catch Exception _
-      (println "!! Failed to authenticate sudo.")
+      (println "!! Failed to authenticate doas.")
       (System/exit 1))))
 
 (defn apply-flake
   "Run `nixos-rebuild switch --flake .#host --impure` on the given host via sudo,
    using `shell` so we always get a proper {:exit :out :err} map."
   [host]
-  (let [cmd ["sudo" "nixos-rebuild" "switch" "--flake" (str ".#" host) "--upgrade" "--impure"]
+  (let [cmd ["doas" "nixos-rebuild" "switch" "--flake" (str ".#" host) "--upgrade" "--impure"]
         result (try
                  (println "Executing " cmd)
                  (shell cmd)
@@ -122,7 +122,7 @@
   (if (fs/exists? file)
     (do
       (println "Removing the file" (str file))
-      (let [{:keys [exit err]} (shell ["sudo" "rm" "-f" (str file)])]
+      (let [{:keys [exit err]} (shell ["doas" "rm" "-f" (str file)])]
         (if (zero? exit)
           (println "Removed" file)
           (println "!!Could not remove" file ":" err))))
@@ -258,7 +258,7 @@
 
 (defn clear
   []
-  (let [cmd ["sudo" "nix-collect-garbage" "-d"]]
+  (let [cmd ["doas" "nix-collect-garbage" "-d"]]
     (try
       (println "Executing" cmd)
       (shell cmd)

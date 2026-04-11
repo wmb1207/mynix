@@ -16,7 +16,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-  networking.hostName = "laptop"; # Define your hostname.
+  networking.hostName = "latitude"; # Define your hostname.
   networking.extraHosts =
   ''
     #RB OCI

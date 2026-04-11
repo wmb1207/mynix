@@ -12,6 +12,96 @@ let
     import ./development/programming-languages.nix { inherit pkgs; };
   assets = import ./asseter.nix { inherit lib; };
 
+  # ── Themes ──────────────────────────────────────────────────────────────────
+
+  themes = import ./themes.nix {};
+  theme  = themes.dark;
+
+  # Render an fvwm-style {{var}} template using an attrset of substitutions
+  renderTemplate = tmplPath: vars:
+    let
+      keys  = builtins.attrNames vars;
+      froms = map (k: "{{${k}}}") keys;
+      tos   = map (k: builtins.toString vars.${k}) keys;
+    in
+      builtins.replaceStrings froms tos (builtins.readFile tmplPath);
+
+  # Generate dunstrc from a theme attrset
+  dunstrcFor = t: ''
+    [global]
+        font = "${t.font} 10"
+        background = "${t.bgAlt}"
+        foreground = "${t.comments}"
+        frame_color = "${t.active}"
+        separator_color = "${t.bgAlt}"
+        width = 150
+        offset=0x0
+        horizontal_padding = 0
+        padding = 0
+        frame_width = 2
+        gap_size = 10
+        origin = center-left
+        alignment = center
+        show_indicators = false
+
+    [urgency_low]
+        background = "${t.bgAlt}"
+        foreground = "${t.comments}"
+        frame_color = "${t.active}"
+        timeout = 10
+
+    [urgency_normal]
+        background = "${t.bgAlt}"
+        foreground = "${t.foreground}"
+        frame_color = "${t.comments}"
+        timeout = 10
+
+    [urgency_critical]
+        background = "${t.bgAlt}"
+        foreground = "${t.color1}"
+        frame_color = "${t.color1}"
+        timeout = 0
+
+    [spotify]
+        appname = "Spotify"
+        background = "${t.bgAlt}"
+        foreground = "${t.comments}"
+        frame_color = "${t.comments}"
+        timeout = 5
+        format = "<b>%s</b>\n%b"
+        alignment = center
+        word_wrap = yes
+
+    [spotify_alt]
+        desktop_entry = "spotify"
+        background = "${t.bgAlt}"
+        foreground = "${t.comments}"
+        frame_color = "${t.comments}"
+        timeout = 5
+  '';
+
+  # Serialize a theme attrset to EDN for theme.clj to consume at runtime
+  themeToEdn = t: ''
+    {:name           "${t.name}"
+     :font           "${t.font}"
+     :background     "${t.background}"
+     :foreground     "${t.foreground}"
+     :active         "${t.active}"
+     :bg-alt         "${t.bgAlt}"
+     :active-alt     "${t.activeAlt}"
+     :olive          "${t.olive}"
+     :comments       "${t.comments}"
+     :selection      "${t.selection}"
+     :emacs-theme    "${t.emacsTheme}"
+     :colors         ["${t.color0}"  "${t.color1}"  "${t.color2}"  "${t.color3}"
+                      "${t.color4}"  "${t.color5}"  "${t.color6}"  "${t.color7}"
+                      "${t.color8}"  "${t.color9}"  "${t.color10}" "${t.color11}"
+                      "${t.color12}" "${t.color13}" "${t.color14}" "${t.color15}"]
+     :cursor         "${t.cursor}"
+     :highlight      "${t.highlight}"
+     :highlight-text "${t.highlightText}"}
+  '';
+
   myEmacs =
     let
       customEmacs = pkgs.emacs30.overrideAttrs (old: {
@@ -246,43 +336,110 @@ in
     nixpkgs.config.allowUnfree = true;
 
     programs.bash.enable = true;
-    
+
     programs.home-manager.enable = true;
+
+    programs.tmux = {
+      enable = true;
+      prefix = "C-b";
+      keyMode = "emacs";
+      escapeTime = 0;
+      historyLimit = 50000;
+      mouse = true;
+      terminal = "screen-256color";
+      plugins = with pkgs.tmuxPlugins; [
+        {
+          plugin = resurrect;
+          extraConfig = ''
+            set -g @resurrect-capture-pane-contents 'on'
+          '';
+        }
+      ];
+      extraConfig = ''
+        set -g status-keys emacs
+
+        # Send literal C-b with C-b C-b
+        bind C-b send-prefix
+
+        # Emacs-style splits (C-b 2 / C-b 3)
+        unbind '"'
+        unbind %
+        bind 2 split-window -v -c "#{pane_current_path}"
+        bind 3 split-window -h -c "#{pane_current_path}"
+
+        # Emacs window/pane management
+        bind 0 kill-pane
+        bind 1 resize-pane -Z
+        bind o select-pane -t :.+
+        bind O select-pane -t :.-
+        bind k kill-window
+        bind b choose-window
+
+        # New window keeping current path
+        bind c new-window -c "#{pane_current_path}"
+
+        # Window navigation
+        bind n next-window
+        bind p previous-window
+
+        # Copy mode — pipe through xclip into X clipboard
+        bind [ copy-mode
+        bind ] paste-buffer
+        bind-key -T copy-mode M-w send-keys -X copy-pipe-and-cancel "xclip -in -selection clipboard"
+        bind-key -T copy-mode C-w send-keys -X copy-pipe-and-cancel "xclip -in -selection clipboard"
+        bind-key -T copy-mode C-g send-keys -X cancel
+
+        # Paste from X clipboard
+        bind C-y run "xclip -out -selection clipboard | tmux load-buffer - && tmux paste-buffer"
+
+        # Popup scratch terminal (C-b g)
+        bind g display-popup -E -w 80% -h 75% -x C -y C "urxvtc"
+
+        # Resurrect: C-b C-s save / C-b C-r restore
+        bind C-s run-shell "#{@resurrect-save-script-path} quiet"
+        bind C-r run-shell "#{@resurrect-restore-script-path}"
+
+        # Reload config
+        bind r source-file ~/.config/tmux/tmux.conf \; display "reloaded"
+
+        # Status bar
+        set -g status-position bottom
+        set -g status-style "fg=${theme.foreground},bg=${theme.background}"
+        set -g window-status-current-style "fg=${theme.background},bg=${theme.active}"
+        set -g status-left " [#S] "
+        set -g status-right " %H:%M "
+      '';
+    };
 
     xsession.enable = true;
     xresources.properties = {
-      # Font configuration (unchanged)
-      "URxvt.font" = "xft:DejaVu Sans Mono:size=10";
-      "URxvt.boldFont" = "xft:DejaVu Sans Mono:bold:size=10";
-      "URxvt.italicFont" = "xft:DejaVu Sans Mono:italic:size=10";
+      "URxvt.font"      = "xft:${theme.font}:size=10";
+      "URxvt.boldFont"  = "xft:${theme.font}:bold:size=10";
+      "URxvt.italicFont" = "xft:${theme.font}:italic:size=10";
 
-      # ── Colors (gloomy creamsody) ──
-      "URxvt.foreground" = "#b5b2a0"; # default fg
-      "URxvt.background" = "#1c1a18"; # default bg
+      "URxvt.foreground" = theme.foreground;
+      "URxvt.background" = theme.background;
 
-      # ANSI palette
-      "URxvt.color0"  = "#1c1a18"; # black
-      "URxvt.color1"  = "#884545"; # red (deep rose)
-      "URxvt.color2"  = "#657050"; # green (olive)
-      "URxvt.color3"  = "#8a7040"; # yellow (dark amber)
-      "URxvt.color4"  = "#4a6a78"; # blue (steel)
-      "URxvt.color5"  = "#785a5a"; # magenta (mauve)
-      "URxvt.color6"  = "#4a7070"; # cyan (muted teal)
-      "URxvt.color7"  = "#9a9888"; # white (warm grey)
+      "URxvt.color0"  = theme.color0;
+      "URxvt.color1"  = theme.color1;
+      "URxvt.color2"  = theme.color2;
+      "URxvt.color3"  = theme.color3;
+      "URxvt.color4"  = theme.color4;
+      "URxvt.color5"  = theme.color5;
+      "URxvt.color6"  = theme.color6;
+      "URxvt.color7"  = theme.color7;
+      "URxvt.color8"  = theme.color8;
+      "URxvt.color9"  = theme.color9;
+      "URxvt.color10" = theme.color10;
+      "URxvt.color11" = theme.color11;
+      "URxvt.color12" = theme.color12;
+      "URxvt.color13" = theme.color13;
+      "URxvt.color14" = theme.color14;
+      "URxvt.color15" = theme.color15;
 
-      "URxvt.color8"  = "#3a3830"; # bright black (dim)
-      "URxvt.color9"  = "#9a5035"; # bright red (burnt sienna)
-      "URxvt.color10" = "#7a8060"; # bright green (lighter olive)
-      "URxvt.color11" = "#9a8050"; # bright yellow (golden tan)
-      "URxvt.color12" = "#5a7888"; # bright blue (lighter steel)
-      "URxvt.color13" = "#8a7070"; # bright magenta (dusty rose)
-      "URxvt.color14" = "#5a8080"; # bright cyan (lighter teal)
-      "URxvt.color15" = "#b5b2a0"; # bright white (cream)
-
-      # Cursor & selection
-      "URxvt.cursorColor" = "#b0ad9a";
-      "URxvt.highlightColor" = "#3a3525";
-      "URxvt.highlightTextColor" = "#b5b2a0";
+      "URxvt.cursorColor"        = theme.cursor;
+      "URxvt.highlightColor"     = theme.highlight;
+      "URxvt.highlightTextColor" = theme.highlightText;
 
       # Scrollbar & scrolling (unchanged)
       "URxvt.scrollBar" = false;
@@ -387,7 +544,14 @@ in
       "$HOME/.cargo/bin"
     ];
     
-    home.file = assets.wallpapers 11  // assets.assets // {
+    home.file = assets.wallpapers 11 // assets.assets // {
+      # ── Theme files (override static assets) ──────────────────────────────
+      ".fvwm/config".text                = renderTemplate ../templates/fvwm3.conf.tmpl theme;
+      ".config/dunst/dunstrc".text       = dunstrcFor theme;
+      ".config/themes/dark.edn".text     = themeToEdn themes.dark;
+      ".config/themes/light.edn".text    = themeToEdn themes.light;
+      ".local/bin/theme.clj"             = { source = ../assets/scripts/theme.clj; executable = true; };
+      # ────────────────────────────────────────────────────────────────────
       ".kshrc".text = ''
   # Only interactive shells   
   [[ $- != *i* ]] && return   
@@ -397,7 +561,7 @@ in
   HISTSIZE=10000
   SAVEHIST=20000
   
-  PS1='\033[38;5;67m$(pwd | sed "s|$HOME|~|")\033[0m $ '
+  PS1='\033[38;5;67m$(hostname -s):$(pwd | sed "s|$HOME|~|")\033[0m $ '
   
   # === Aliases ===
   alias ll='ls -lh --color=auto'
