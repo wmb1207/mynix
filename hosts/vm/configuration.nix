@@ -226,6 +226,26 @@ in
   nix.settings.experimental-features = ["nix-command" "flakes"];
   services.openssh.enable = true;
 
+  networking.firewall = {
+    enable = true;
+
+    allowedTCPPorts = [
+      47984
+      47989
+      47990
+      48010
+    ];
+
+    allowedUDPPorts = [
+      47998
+      47999
+      48000
+      48002
+      48010
+      5353
+    ];
+  };
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

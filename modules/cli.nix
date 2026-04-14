@@ -8,7 +8,7 @@ with pkgs; [
   usbutils
   xdotool
   xdo
-  docker-compose
+  podman-compose
   direnv
   babashka
   git
@@ -34,6 +34,7 @@ with pkgs; [
   networkmanager
 
   postgresql
+  pgcli
   libfido2
 
   cmus

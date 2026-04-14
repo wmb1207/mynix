@@ -1,0 +1,212 @@
+{ config, pkgs, ... }:
+
+let
+  upstream = "192.168.88.38";
+
+  cert = pkgs.runCommand "wmb-arpa-cert" { buildInputs = [ pkgs.openssl ]; } ''
+    mkdir -p $out
+    openssl req -x509 -nodes -days 3650 \
+      -newkey rsa:2048 \
+      -keyout $out/key.pem \
+      -out $out/cert.pem \
+      -subj "/CN=*.wmb.arpa" \
+      -addext "subjectAltName=DNS:*.wmb.arpa,DNS:wmb.arpa"
+  '';
+
+  indexPage = pkgs.writeTextDir "index.html" ''
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>wmb.arpa</title>
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: "DejaVu Sans Mono", monospace;
+          background: #1c1a18;
+          color: #b5b2a0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 2rem;
+        }
+        .prompt {
+          color: #6a6858;
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+        }
+        .prompt .user { color: #4a6a78; }
+        .prompt .host { color: #657050; }
+        .prompt .cmd  { color: #b5b2a0; }
+        .list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          padding-left: 0;
+        }
+        a {
+          display: flex;
+          gap: 1.5rem;
+          text-decoration: none;
+          font-size: 0.9rem;
+          color: #b5b2a0;
+          padding: 0.1rem 0;
+          white-space: nowrap;
+        }
+        a:hover .name { color: #4a6a78; text-decoration: underline; }
+        .name  { min-width: 12ch; }
+        .url   { color: #6a6858; overflow: hidden; text-overflow: ellipsis; }
+        .cursor {
+          display: inline-block;
+          width: 0.55em;
+          height: 1em;
+          background: #b5b2a0;
+          margin-left: 0.1em;
+          vertical-align: text-bottom;
+          animation: blink 1.1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+      </style>
+    </head>
+    <body>
+      <div class="prompt">
+        <span class="user">wmb</span><span>@</span><span class="host">arpa</span><span> ~ $ </span><span class="cmd">open services</span>
+      </div>
+      <div class="list">
+        <a href="https://forgejo.wmb.arpa">
+          <span class="name">forgejo</span>
+          <span class="url">https://forgejo.wmb.arpa</span>
+        </a>
+        <a href="https://excalidraw.wmb.arpa">
+          <span class="name">excalidraw</span>
+          <span class="url">https://excalidraw.wmb.arpa</span>
+        </a>
+        <a href="https://cloudbeaver.wmb.arpa">
+          <span class="name">cloudbeaver</span>
+          <span class="url">https://cloudbeaver.wmb.arpa</span>
+        </a>
+        <a href="https://192.168.88.2:8006">
+          <span class="name">proxmox</span>
+          <span class="url">https://192.168.88.2:8006</span>
+        </a>
+        <a href="http://nas.wmb.arpa">
+          <span class="name">nas</span>
+          <span class="url">http://nas.wmb.arpa</span>
+        </a>
+        <a href="https://youtube.com">
+          <span class="name">youtube</span>
+          <span class="url">https://youtube.com</span>
+        </a>
+      </div>
+      <div class="prompt" style="margin-top:1rem;">
+        <span class="user">wmb</span><span>@</span><span class="host">arpa</span><span> ~ $ </span><span class="cursor"></span>
+      </div>
+    </body>
+    </html>
+  '';
+in
+{
+  imports = [ ../../modules/ssh-keys.nix ];
+
+  networking.hostName = "nginx";
+
+  time.timeZone = "America/Argentina/Cordoba";
+
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  users.users.wmb = {
+    isNormalUser = true;
+    description = "wmb";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [];
+  };
+
+  services.getty.autologinUser = "wmb";
+
+  environment.systemPackages = with pkgs; [
+    curl
+    wget
+  ];
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
+  services.nginx = {
+    enable = true;
+
+    virtualHosts."wmb.arpa" = {
+      default = true;
+      forceSSL = true;
+      sslCertificate = "${cert}/cert.pem";
+      sslCertificateKey = "${cert}/key.pem";
+      locations."/" = {
+        root = "${indexPage}";
+        extraConfig = ''
+          default_type text/html;
+          try_files /index.html =404;
+        '';
+      };
+    };
+
+    virtualHosts."forgejo.wmb.arpa" = {
+      forceSSL = true;
+      sslCertificate = "${cert}/cert.pem";
+      sslCertificateKey = "${cert}/key.pem";
+      locations."/" = {
+        proxyPass = "http://${upstream}:3000";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."excalidraw.wmb.arpa" = {
+      forceSSL = true;
+      sslCertificate = "${cert}/cert.pem";
+      sslCertificateKey = "${cert}/key.pem";
+      locations."/" = {
+        proxyPass = "http://${upstream}:5000";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."cloudbeaver.wmb.arpa" = {
+      forceSSL = true;
+      sslCertificate = "${cert}/cert.pem";
+      sslCertificateKey = "${cert}/key.pem";
+      locations."/" = {
+        proxyPass = "http://${upstream}:8978";
+        proxyWebsockets = true;
+      };
+    };
+
+  };
+
+  networking.networkmanager.enable = true;
+
+  services.nginx.streamConfig = ''
+    server {
+      listen 2222;
+      proxy_pass ${upstream}:2222;
+    }
+  '';
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 80 443 2222 ];
+  };
+
+  nix.settings.require-sigs = false;
+  nix.settings.trusted-users = [ "root" "wmb" ];
+
+  security.sudo.wheelNeedsPassword = false;
+
+  services.qemuGuest.enable = true;
+
+  system.stateVersion = "25.11";
+}

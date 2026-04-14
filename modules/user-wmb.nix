@@ -274,7 +274,9 @@ in
     isNormalUser = true;
     description = "wmb";
     shell = pkgs.loksh;
-    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "input" "video" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "input" "video" ];
+    openssh.authorizedKeys.keyFiles =
+      lib.optional (builtins.pathExists ../secrets/wmb.pub) ../secrets/wmb.pub;
   };
 
   services.udev.packages = [pkgs.game-devices-udev-rules];

@@ -31,6 +31,18 @@
             "fcitx5-with-addons" = null;
           };
         })
+        # cptofs (LKL tool used by make-disk-image.nix) hardcodes mem=100M which is
+        # too small for large NixOS closures (e.g. podman). Binary-patch it to 512M.
+        # Note: lkl has outputs=["dev" "lib" "out"], so `super.lkl` resolves to the
+        # dev output; we must use `super.lkl.out` explicitly to get the binaries.
+        (self: super: {
+          lkl = (super.runCommand "lkl-mempatched" {} ''
+            mkdir -p $out
+            cp -a ${super.lkl.out}/. $out/
+            chmod -R +w $out
+            sed -i 's/mem=100M/mem=512M/g' $out/bin/cptofs
+          '') // { inherit (super.lkl) lib dev; };
+        })
       ];
 
       pkgsFor = system: import nixpkgs {
@@ -38,6 +50,11 @@
         config.allowUnfree = true;
         overlays = myOverlays;
       };
+
+      sshKeys =
+        if builtins.pathExists /home/wmb/.ssh/id_rsa.pub
+        then [ (builtins.readFile /home/wmb/.ssh/id_rsa.pub) ]
+        else [];
 
     in {
       nixosConfigurations = {
@@ -264,6 +281,130 @@
           pkgs = pkgsFor system;
           modules = [
             ./hosts/tailscale/configuration.nix
+          ];
+        };
+
+        nginx = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          specialArgs = { inherit sshKeys; };
+          modules = [
+            ./hosts/nginx/configuration.nix
+
+            ({ config, lib, pkgs, modulesPath, ... }: {
+              imports = [
+                "${modulesPath}/profiles/qemu-guest.nix"
+              ];
+
+              fileSystems."/" = {
+                device = "/dev/disk/by-label/nixos";
+                fsType = "ext4";
+                autoResize = true;
+              };
+
+              boot.loader.grub.enable = true;
+              boot.loader.grub.device = "/dev/vda";
+
+              system.build.qcow2 = import "${modulesPath}/../lib/make-disk-image.nix" {
+                inherit lib config pkgs;
+                format = "qcow2";
+                diskSize = 10 * 1024;  # 10GB
+                partitionTableType = "hybrid";
+              };
+            })
+          ];
+        };
+
+        coredns = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          specialArgs = { inherit sshKeys; };
+          modules = [
+            ./hosts/coredns/configuration.nix
+
+            ({ config, lib, pkgs, modulesPath, ... }: {
+              imports = [
+                "${modulesPath}/profiles/qemu-guest.nix"
+              ];
+
+              fileSystems."/" = {
+                device = "/dev/disk/by-label/nixos";
+                fsType = "ext4";
+                autoResize = true;
+              };
+
+              boot.loader.grub.enable = true;
+              boot.loader.grub.device = "/dev/vda";
+
+              system.build.qcow2 = import "${modulesPath}/../lib/make-disk-image.nix" {
+                inherit lib config pkgs;
+                format = "qcow2";
+                diskSize = 5 * 1024;  # 5GB
+                partitionTableType = "hybrid";
+              };
+            })
+          ];
+        };
+
+        redis = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          modules = [
+            ./hosts/redis/configuration.nix
+
+            ({ config, lib, pkgs, modulesPath, ... }: {
+              imports = [
+                "${modulesPath}/profiles/qemu-guest.nix"
+              ];
+
+              fileSystems."/" = {
+                device = "/dev/disk/by-label/nixos";
+                fsType = "ext4";
+                autoResize = true;
+              };
+
+              boot.loader.grub.enable = true;
+              boot.loader.grub.device = "/dev/vda";
+
+              system.build.qcow2 = import "${modulesPath}/../lib/make-disk-image.nix" {
+                inherit lib config pkgs;
+                format = "qcow2";
+                diskSize = 10 * 1024;  # 10GB
+                partitionTableType = "hybrid";
+              };
+            })
+          ];
+        };
+
+        podman-server = nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = pkgsFor system;
+          specialArgs = { inherit sshKeys; };
+          modules = [
+            ./hosts/podman-server/configuration.nix
+
+            ({ config, lib, pkgs, modulesPath, ... }: {
+              imports = [
+                "${modulesPath}/profiles/qemu-guest.nix"
+              ];
+
+              fileSystems."/" = {
+                device = "/dev/disk/by-label/nixos";
+                fsType = "ext4";
+                autoResize = true;
+              };
+
+              boot.loader.grub.enable = true;
+              boot.loader.grub.device = "/dev/vda";
+
+              system.build.qcow2 = import "${modulesPath}/../lib/make-disk-image.nix" {
+                inherit lib config pkgs;
+                format = "qcow2";
+                diskSize = 40 * 1024;  # 40GB
+                memSize = 2048;
+                partitionTableType = "hybrid";
+              };
+            })
           ];
         };
       };

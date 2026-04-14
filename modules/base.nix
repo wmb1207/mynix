@@ -44,4 +44,6 @@
   services.openssh.enable = true;
 
   services.xserver.enable = true;
+
+  nix.settings.require-sigs = false;
 }

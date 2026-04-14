@@ -15,7 +15,19 @@
           :pi {:desc "build the pi img"
                   :alias :p}
           :iso {:desc "build the iso"
-                  :alias :i}}})
+                  :alias :i}
+          :qcow2 {:desc "build a qcow2 disk image"
+                  :alias :q}
+          :deploy {:desc "deploy to a remote host via nixos-rebuild switch"
+                   :alias :d}}})
+
+(def remote-hosts
+  {"nginx"         "192.168.88.26"
+   "podman-server" "192.168.88.38"
+   "coredns"       "192.168.88.27"
+   "postgres"      "192.168.88.10"
+   "vm"            "192.168.88.37"
+   "redis"         "192.168.88.11"})
 
 
 ;; gloomy creamsody colors
@@ -59,16 +71,18 @@
   "Prompt for doas upfront and exit on failure."
   []
   (try
-    (check (shell ["doas" "-C" "/etc/doas.conf"]))
+    (check (shell ["doas" "true"]))
     (println "Doas authenticated.")
     (catch Exception _
       (println "!! Failed to authenticate doas.")
       (System/exit 1))))
 
 (defn apply-flake
-  "Run `nixos-rebuild switch --flake .#host --impure` on the given host via sudo,
+  "Run `nixos-rebuild switch --flake .#host --impure` on the given host via doas,
    using `shell` so we always get a proper {:exit :out :err} map."
   [host]
+  (let [cwd (System/getProperty "user.dir")]
+    (shell ["doas" "git" "config" "--global" "--add" "safe.directory" cwd]))
   (let [cmd ["doas" "nixos-rebuild" "switch" "--flake" (str ".#" host) "--upgrade" "--impure"]
         result (try
                  (println "Executing " cmd)
@@ -100,10 +114,27 @@
           (println "!! nixos build failed (exit" exit "):\n" err)
           (System/exit exit))))))
 
+(defn build-qcow2
+  "Run the nixos build to generate a qcow2 disk image (e.g. for Proxmox)"
+  [host]
+  (let [cmd ["nix" "build" (str ".#nixosConfigurations." host ".config.system.build.qcow2") "--impure"]
+        result (try
+                 (println "Executing " cmd)
+                 (shell cmd)
+                 (catch Exception e
+                   (println "!! Exception during shell invocation:" (.getMessage e))
+                   {:exit 1 :out "" :err (.getMessage e)}))]
+    (let [{:keys [exit out err]} result]
+      (if (zero? exit)
+        (println "qcow2 build done for host: " host "\n" out)
+        (do
+          (println "!! nixos build failed (exit" exit "):\n" err)
+          (System/exit exit))))))
+
 (defn build-pi
   "Run the nixos build to generate an img ready to be used with my pi3b+"
   [host]
-  (let [cmd ["nix" "build" (str ".#nixosConfigurations." host ".config.system.build.sdImage")]
+  (let [cmd ["nix" "build" (str ".#nixosConfigurations." host ".config.system.build.sdImage") "--impure"]
         result (try
                  (println "Executing " cmd)
                  (shell cmd)
@@ -256,6 +287,32 @@
     ghostty-light
     ghostty-dark))
 
+(defn deploy
+  "Run nixos-rebuild switch targeting a remote host by name."
+  [host]
+  (let [ip (get remote-hosts host)]
+    (if (nil? ip)
+      (do (println "!! Unknown host:" host "- known hosts:" (keys remote-hosts))
+          (System/exit 1))
+      (let [cmd ["nixos-rebuild" "switch"
+                 "--flake" (str ".#" host)
+                 "--target-host" (str "wmb@" ip)
+                 "--sudo"
+                 "--impure"
+                 "--option" "require-sigs" "false"]
+            result (try
+                     (println "Executing" cmd)
+                     (shell cmd)
+                     (catch Exception e
+                       (println "!! Exception during shell invocation:" (.getMessage e))
+                       {:exit 1 :out "" :err (.getMessage e)}))]
+        (let [{:keys [exit out err]} result]
+          (if (zero? exit)
+            (println "Deployed" host "to" ip "\n" out)
+            (do
+              (println "!! deploy failed (exit" exit "):\n" err)
+              (System/exit exit))))))))
+
 (defn clear
   []
   (let [cmd ["doas" "nix-collect-garbage" "-d"]]
@@ -312,8 +369,10 @@
     (cond
       (:iso opts) (build-iso (second args))
       (:pi opts) (build-pi (second args))
+      (:qcow2 opts) (build-qcow2 (second args))
       (:tmpl opts) (apply-tmpls! [polybar bspwmrc sxhkdrc (emacs (second args)) dunstrc fvwm3])
       (:clear opts) (clear)
+      (:deploy opts) (deploy (second args))
       (:apply opts) (run args))))
 
 (apply main *command-line-args*)

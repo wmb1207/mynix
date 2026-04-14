@@ -122,7 +122,7 @@
   users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" ];
      packages = with pkgs; [
        tree
        git
@@ -136,7 +136,7 @@
   programs.dconf.enable = true;
   programs.nix-ld.enable = true;
 
-  # Install firefox.
+  # Install firfox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
@@ -165,14 +165,23 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  # Open ports in the firewall.
+  # Open ports in the firewall
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 5432 ];
+  };
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
   nix.settings.experimental-features = ["nix-command" "flakes"];
   services.openssh.enable = true;
-  virtualisation.docker.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    dockerSocket.enable = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
 
 
 
