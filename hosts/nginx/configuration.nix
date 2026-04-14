@@ -83,6 +83,10 @@ let
           <span class="name">excalidraw</span>
           <span class="url">https://excalidraw.wmb.arpa</span>
         </a>
+        <a href="https://excalidraw.com">
+          <span class="name">excalidraw +</span>
+          <span class="url">https://app.excalidraw.com</span>
+        </a>
         <a href="https://cloudbeaver.wmb.arpa">
           <span class="name">cloudbeaver</span>
           <span class="url">https://cloudbeaver.wmb.arpa</span>

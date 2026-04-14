@@ -21,18 +21,121 @@
     git
     curl
     wget
-    podman-compose
   ];
 
+  # ── Podman ────────────────────────────────────────────────────────────────
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true;  # `docker` command aliased to podman
+    dockerCompat = true;
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  # Proxmox integration
-  services.qemuGuest.enable = true;
+  virtualisation.oci-containers = {
+    backend = "podman";
+    containers = {
 
+      forgejo = {
+        image = "codeberg.org/forgejo/forgejo:14-rootless";
+        user = "1000:1000";
+        environment = {
+          USER_UID = "1000";
+          USER_GID = "1000";
+          FORGEJO__server__DOMAIN = "forgejo.wmb.arpa";
+          FORGEJO__server__ROOT_URL = "https://forgejo.wmb.arpa/";
+          FORGEJO__server__SSH_DOMAIN = "forgejo.wmb.arpa";
+          FORGEJO__server__SSH_PORT = "2222";
+          FORGEJO__server__START_SSH_SERVER = "true";
+          FORGEJO__database__DB_TYPE = "sqlite3";
+        };
+        ports = [ "3000:3000" "2222:2222" ];
+        volumes = [
+          "/data/forgejo:/var/lib/gitea"
+          "/etc/localtime:/etc/localtime:ro"
+        ];
+      };
+
+      excalidraw = {
+        image = "excalidraw/excalidraw:latest";
+        ports = [ "5000:80" ];
+      };
+
+      cloudbeaver = {
+        image = "dbeaver/cloudbeaver:latest";
+        ports = [ "8978:8978" ];
+        environment = {
+          CB_SERVER_NAME = "CloudBeaver Server";
+          CB_SERVER_URL = "http://192.168.88.38:8978";
+          CB_ADMIN_NAME = "admin";
+          CB_ADMIN_PASSWORD = "admin";
+        };
+        volumes = [
+          "/data/cloudbeaver/workspace:/opt/cloudbeaver/workspace"
+        ];
+      };
+
+    };
+  };
+
+  # ── Data disk ─────────────────────────────────────────────────────────────
+  # Format /dev/sdb as ext4 on first boot if it has no filesystem.
+  # After nixos-rebuild, reboot once — the disk gets labelled "data" and
+  # all subsequent boots mount it automatically.
+  # Adjust /dev/sdb if the iSCSI disk appears under a different name
+  # (check with: lsblk  or  ls /dev/disk/by-path/).
+  systemd.services.format-data-disk = {
+    description = "Format iSCSI data disk on first boot";
+    wantedBy = [ "data.mount" ];
+    before    = [ "data.mount" ];
+    unitConfig = {
+      ConditionPathExists  = "/dev/sdb";
+      DefaultDependencies  = false;
+    };
+    serviceConfig = {
+      Type            = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "format-data-disk" ''
+        if ! ${pkgs.util-linux}/bin/blkid /dev/sdb >/dev/null 2>&1; then
+          echo "No filesystem found on /dev/sdb — formatting as ext4..."
+          ${pkgs.e2fsprogs}/bin/mkfs.ext4 -L data /dev/sdb
+        fi
+      '';
+    };
+  };
+
+  fileSystems."/data" = {
+    device  = "/dev/disk/by-label/data";
+    fsType  = "ext4";
+    options = [ "defaults" "nofail" ];
+  };
+
+  # Containers that use /data must wait for the mount, and create their
+  # directories before starting (tmpfiles can't be relied on for this since
+  # it may run before the mount completes).
+  systemd.services.podman-forgejo = {
+    requires = [ "data.mount" ];
+    after    = [ "data.mount" ];
+    serviceConfig.ExecStartPre = [
+      "${pkgs.coreutils}/bin/mkdir -p /data/forgejo"
+      "+${pkgs.coreutils}/bin/chown 1000:1000 /data/forgejo"
+    ];
+  };
+
+  systemd.services.podman-cloudbeaver = {
+    requires = [ "data.mount" ];
+    after    = [ "data.mount" ];
+    serviceConfig.ExecStartPre =
+      "${pkgs.coreutils}/bin/mkdir -p /data/cloudbeaver/workspace";
+  };
+
+  # ── Network ───────────────────────────────────────────────────────────────
+  networking.networkmanager.enable = true;
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 3000 2222 5000 8978 ];
+  };
+
+  # ── SSH ───────────────────────────────────────────────────────────────────
   services.openssh = {
     enable = true;
     settings = {
@@ -41,20 +144,16 @@
     };
   };
 
-  networking.networkmanager.enable = true;
+  # ── Proxmox integration ───────────────────────────────────────────────────
+  services.qemuGuest.enable = true;
 
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 22 3000 2222 8080 5000 8978];
-  };
-
-  nix.settings.require-sigs = false;
-  nix.settings.trusted-users = [ "root" "wmb" ];
+  nix.settings.require-sigs   = false;
+  nix.settings.trusted-users  = [ "root" "wmb" ];
 
   security.sudo.wheelNeedsPassword = false;
 
   programs.gnupg.agent = {
-    enable = true;
+    enable         = true;
     enableSSHSupport = true;
   };
 
