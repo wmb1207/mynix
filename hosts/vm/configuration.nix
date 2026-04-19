@@ -131,7 +131,7 @@ in
   users.users.wmb = {
     isNormalUser = true;
     description = "wmb";
-    extraGroups = [ "networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "audio" ];
     packages = with pkgs; [
       tree
       git
