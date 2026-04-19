@@ -88,15 +88,16 @@ in
   # fvwm3 session comes from user-wmb.nix (services.xserver.windowManager.fvwm3)
 
   # Sunshine game streaming server
-  programs.sunshine = {
+  services.sunshine = {
     enable = true;
-    capabilityBindingEnable = true;
+    autoStart = true;  # optional: starts Sunshine automatically on login
+    capSysAdmin = true;
+    openFirewall = true;
     settings = {
       encoder = "vaapi";
       adapter_name = "/dev/dri/renderD128";
       origin_web_ui_allowed = "lan";
     };
-    openFirewall = true;
   };
 
   # Configure keymap in X11
