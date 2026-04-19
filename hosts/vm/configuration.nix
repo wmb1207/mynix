@@ -78,7 +78,7 @@ in
   services.xserver.displayManager.startx.enable = lib.mkForce false;
 
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.defaultSession = "fvwm3";
+  services.xserver.displayManager.defaultSession = "none+fvwm3";
   services.displayManager.autoLogin = {
     enable = true;
     user = "wmb";
