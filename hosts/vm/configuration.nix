@@ -6,12 +6,6 @@
 
 let
   unstable = import <nixos-unstable> { };
-
-  sunshineConf = pkgs.writeText "sunshine.conf" ''
-    encoder = vaapi
-    adapter_name = /dev/dri/renderD128
-    origin_web_ui_allowed = lan
-  '';
 in
 {
   imports =
@@ -94,24 +88,15 @@ in
   # fvwm3 session comes from user-wmb.nix (services.xserver.windowManager.fvwm3)
 
   # Sunshine game streaming server
-  security.wrappers.sunshine = {
-    owner = "root";
-    group = "root";
-    capabilities = "cap_sys_admin+p";
-    source = "${pkgs.sunshine}/bin/sunshine";
-  };
-
-  systemd.user.services.sunshine = {
-    description = "Sunshine game streaming server";
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      ExecStart = "/run/wrappers/bin/sunshine ${sunshineConf}";
-      Restart    = "on-failure";
-      RestartSec = "5s";
+  programs.sunshine = {
+    enable = true;
+    capabilityBindingEnable = true;
+    settings = {
+      encoder = "vaapi";
+      adapter_name = "/dev/dri/renderD128";
+      origin_web_ui_allowed = "lan";
     };
-    environment = {
-      DISPLAY = ":0";
-    };
+    openFirewall = true;
   };
 
   # Configure keymap in X11
@@ -244,25 +229,7 @@ in
   nix.settings.experimental-features = ["nix-command" "flakes"];
   services.openssh.enable = true;
 
-  networking.firewall = {
-    enable = true;
-
-    allowedTCPPorts = [
-      47984
-      47989
-      47990
-      48010
-    ];
-
-    allowedUDPPorts = [
-      47998
-      47999
-      48000
-      48002
-      48010
-      5353
-    ];
-  };
+  networking.firewall.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
