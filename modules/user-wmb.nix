@@ -332,7 +332,7 @@ in
 
   #### Home Manager ########################################################
 
-  home-manager.users.wmb = { pkgs, ... }: {
+  home-manager.users.wmb = { pkgs, config, ... }: {
     home.stateVersion = "25.05";
 
     nixpkgs.config.allowUnfree = true;
@@ -524,6 +524,7 @@ in
         name = "Gruvbox-Dark-B";
         package = pkgs.gruvbox-dark-gtk;
       };
+      gtk4.theme = config.gtk.theme;
     };
 
     # === Session Variables ===
