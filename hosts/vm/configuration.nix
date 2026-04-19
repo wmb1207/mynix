@@ -103,12 +103,14 @@ in
 
   systemd.user.services.sunshine = {
     description = "Sunshine game streaming server";
-    wantedBy = [ "graphical-session.target" ];
-    after    = [ "graphical-session.target" ];
+    wantedBy = [ "default.target" ];
     serviceConfig = {
       ExecStart = "/run/wrappers/bin/sunshine ${sunshineConf}";
       Restart    = "on-failure";
       RestartSec = "5s";
+    };
+    environment = {
+      DISPLAY = ":0";
     };
   };
 
