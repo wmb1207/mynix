@@ -5,7 +5,13 @@
 { config, pkgs, lib, ... }:
 
 let
-	unstable = import <nixos-unstable> { };
+  unstable = import <nixos-unstable> { };
+
+  sunshineConf = pkgs.writeText "sunshine.conf" ''
+    encoder = vaapi
+    adapter_name = /dev/dri/renderD128
+    origin_web_ui_allowed = lan
+  '';
 in
 {
   imports =
@@ -88,15 +94,21 @@ in
   # fvwm3 session comes from user-wmb.nix (services.xserver.windowManager.fvwm3)
 
   # Sunshine game streaming server
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true; # required for KMS/DRM screen capture with amdgpu
-    openFirewall = true;
-    settings = {
-      encoder = "vaapi";
-      adapter_name = "/dev/dri/renderD128";
-      origin_web_ui_allowed = "lan";
+  security.wrappers.sunshine = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_sys_admin+p";
+    source = "${pkgs.sunshine}/bin/sunshine";
+  };
+
+  systemd.user.services.sunshine = {
+    description = "Sunshine game streaming server";
+    wantedBy = [ "graphical-session.target" ];
+    after    = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "/run/wrappers/bin/sunshine ${sunshineConf}";
+      Restart    = "on-failure";
+      RestartSec = "5s";
     };
   };
 

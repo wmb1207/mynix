@@ -199,7 +199,6 @@
           modules = baseModules ++ [
             ./hosts/vm/configuration.nix
             ./modules/user-wmb.nix
-            ./modules/laptop-keyboard.nix
           ];
           specialArgs = {
             inherit inputs system teleport-installer;
