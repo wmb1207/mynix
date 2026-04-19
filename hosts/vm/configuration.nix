@@ -70,7 +70,10 @@ in
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  services.xserver.videoDrivers = ["amdgpu"];	
+  services.xserver.videoDrivers = ["amdgpu"];
+  services.xserver.deviceSection = ''
+    BusID "PCI:2:0:0"
+  '';
 
   # Override greetd from user-wmb.nix — it needs manual TUI login which
   # breaks Sunshine (no persistent X session). Use LightDM + autologin instead.
