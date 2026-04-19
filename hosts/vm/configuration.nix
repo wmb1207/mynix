@@ -93,6 +93,7 @@ in
     settings = {
       encoder = "vaapi";
       adapter_name = "/dev/dri/renderD128";
+      origin_web_ui_allowed = "lan";
     };
   };
 

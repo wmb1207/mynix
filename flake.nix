@@ -23,6 +23,7 @@
 
       baseModules = [
         home-manager.nixosModules.default
+        ./modules/wmb-arpa-ca.nix
       ];
 
       myOverlays = [

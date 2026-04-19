@@ -553,6 +553,89 @@ in
       ".config/themes/dark.edn".text     = themeToEdn themes.dark;
       ".config/themes/light.edn".text    = themeToEdn themes.light;
       ".local/bin/theme.clj"             = { source = ../assets/scripts/theme.clj; executable = true; };
+
+      # ── Edwood / acme-lsp ─────────────────────────────────────────────────
+      ".config/acme-lsp/config.toml".text = ''
+        FormatOnPut = true
+
+        [Servers]
+
+          [Servers.gopls]
+          Command = ["gopls"]
+
+          [Servers.pyright]
+          Command = ["pyright-langserver", "--stdio"]
+
+          [Servers.rust]
+          Command = ["rust-analyzer"]
+
+          [Servers.ts]
+          Command = ["typescript-language-server", "--stdio"]
+
+          [Servers.php]
+          Command = ["phpactor", "language-server"]
+
+        [[FilenameHandlers]]
+        Pattern = "\\.go$"
+        LanguageID = "go"
+        ServerKey = "gopls"
+
+        [[FilenameHandlers]]
+        Pattern = "\\.py$"
+        LanguageID = "python"
+        ServerKey = "pyright"
+
+        [[FilenameHandlers]]
+        Pattern = "\\.rs$"
+        LanguageID = "rust"
+        ServerKey = "rust"
+
+        [[FilenameHandlers]]
+        Pattern = "\\.(ts|js)$"
+        LanguageID = "typescript"
+        ServerKey = "ts"
+
+        [[FilenameHandlers]]
+        Pattern = "\\.php$"
+        LanguageID = "php"
+        ServerKey = "php"
+      '';
+
+      # Launch edwood with fontsrv (X11→Plan9 font bridge) + acme-lsp
+      ".local/bin/ew" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env sh
+
+          # Start fontsrv only if not already running
+          if ! pgrep -x fontsrv >/dev/null 2>&1; then
+            9 fontsrv &
+            FSRV=$!
+            trap 'kill "$FSRV" 2>/dev/null' EXIT INT TERM
+            sleep 0.3
+          fi
+
+          # Remove stale acme socket — edwood panics if it already exists
+          DISP="''${DISPLAY%%.*}"
+          rm -f "/tmp/ns.$USER.$DISP/acme" 2>/dev/null
+
+          # Launch edwood:
+          #   -f  variable-width font  (proportional, for tag bars / labels)
+          #   -F  fixed-width font     (monospace, for code bodies)
+          # Font path format: /mnt/font/<Name>/<size>a/font  (a = antialiased)
+          edwood \
+            -f /mnt/font/DejaVuSans/13a/font \
+            -F /mnt/font/DejaVuSansMono/13a/font \
+            "$@" &
+          EDWOOD_PID=$!
+
+          # Wait for edwood to post its 9P server, then start acme-lsp
+          sleep 0.5
+          acme-lsp &
+
+          wait "$EDWOOD_PID"
+        '';
+      };
       # ────────────────────────────────────────────────────────────────────
       ".kshrc".text = ''
   # Only interactive shells   

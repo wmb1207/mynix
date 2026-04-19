@@ -43,6 +43,7 @@
           192.168.88.26 forgejo.wmb.arpa
           192.168.88.26 excalidraw.wmb.arpa
           192.168.88.26 cloudbeaver.wmb.arpa
+          192.168.88.26 registry.wmb.arpa
           192.168.88.18 nas.wmb.arpa
           192.168.88.27 coredns.wmb.arpa
           192.168.88.37 desktop.wmb.arpa

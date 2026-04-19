@@ -1,7 +1,11 @@
 { config, pkgs, ... }:
 
+let
+  # Generate with: htpasswd -nbB wmb <password>
+  registryHtpasswd = "wmb:$2y$05$Wyczu.1kTe1OOUW4TGwyC.NMfS2vw0srPweCjpuJnbTtzgMW05T/G";
+in
 {
-  imports = [ ../../modules/ssh-keys.nix ];
+  imports = [ ../../modules/ssh-keys.nix ../../modules/wmb-arpa-ca.nix ];
   networking.hostName = "podman-server";
 
   time.timeZone = "America/Argentina/Cordoba";
@@ -33,6 +37,21 @@
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
+
+      registry = {
+        image = "docker.io/library/registry:2";
+        user = "1000:1000";
+        ports = [ "6000:5000" ];
+        volumes = [
+          "/data/registry/registry:/var/lib/registry"
+          "/data/registry/auth:/auth"
+        ];
+        environment = {
+          REGISTRY_AUTH = "htpasswd";
+          REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm";
+          REGISTRY_AUTH_HTPASSWD_PATH="/auth/htpasswd";
+        };
+      };
 
       forgejo = {
         image = "codeberg.org/forgejo/forgejo:14-rootless";
@@ -111,6 +130,20 @@
   # Containers that use /data must wait for the mount, and create their
   # directories before starting (tmpfiles can't be relied on for this since
   # it may run before the mount completes).
+  systemd.services.podman-registry = {
+    requires = [ "data.mount" ];
+    after    = [ "data.mount" ];
+    serviceConfig.ExecStartPre = [
+      "${pkgs.coreutils}/bin/mkdir -p /data/registry/registry"
+      "${pkgs.coreutils}/bin/mkdir -p /data/registry/auth"
+      (pkgs.writeShellScript "init-registry-htpasswd" ''
+        if [ ! -f /data/registry/auth/htpasswd ]; then
+          printf '%s\n' '${registryHtpasswd}' > /data/registry/auth/htpasswd
+        fi
+      '')
+    ];
+  };
+
   systemd.services.podman-forgejo = {
     requires = [ "data.mount" ];
     after    = [ "data.mount" ];
@@ -132,7 +165,7 @@
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 3000 2222 5000 8978 ];
+    allowedTCPPorts = [ 22 3000 2222 5000 6000 8978 ];
   };
 
   # ── SSH ───────────────────────────────────────────────────────────────────

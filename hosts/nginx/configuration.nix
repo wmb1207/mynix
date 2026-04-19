@@ -2,16 +2,7 @@
 
 let
   upstream = "192.168.88.38";
-
-  cert = pkgs.runCommand "wmb-arpa-cert" { buildInputs = [ pkgs.openssl ]; } ''
-    mkdir -p $out
-    openssl req -x509 -nodes -days 3650 \
-      -newkey rsa:2048 \
-      -keyout $out/key.pem \
-      -out $out/cert.pem \
-      -subj "/CN=*.wmb.arpa" \
-      -addext "subjectAltName=DNS:*.wmb.arpa,DNS:wmb.arpa"
-  '';
+  cert     = config.wmbArpa.cert;
 
   indexPage = pkgs.writeTextDir "index.html" ''
     <!DOCTYPE html>
@@ -91,6 +82,10 @@ let
           <span class="name">cloudbeaver</span>
           <span class="url">https://cloudbeaver.wmb.arpa</span>
         </a>
+        <a href="https://registry.wmb.arpa">
+          <span class="name">registry</span>
+          <span class="url">https://registry.wmb.arpa</span>
+        </a>
         <a href="https://192.168.88.2:8006">
           <span class="name">proxmox</span>
           <span class="url">https://192.168.88.2:8006</span>
@@ -112,7 +107,7 @@ let
   '';
 in
 {
-  imports = [ ../../modules/ssh-keys.nix ];
+  imports = [ ../../modules/ssh-keys.nix ../../modules/wmb-arpa-ca.nix ];
 
   networking.hostName = "nginx";
 
@@ -148,8 +143,8 @@ in
     virtualHosts."wmb.arpa" = {
       default = true;
       forceSSL = true;
-      sslCertificate = "${cert}/cert.pem";
-      sslCertificateKey = "${cert}/key.pem";
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
       locations."/" = {
         root = "${indexPage}";
         extraConfig = ''
@@ -161,8 +156,8 @@ in
 
     virtualHosts."forgejo.wmb.arpa" = {
       forceSSL = true;
-      sslCertificate = "${cert}/cert.pem";
-      sslCertificateKey = "${cert}/key.pem";
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
       locations."/" = {
         proxyPass = "http://${upstream}:3000";
         proxyWebsockets = true;
@@ -171,8 +166,8 @@ in
 
     virtualHosts."excalidraw.wmb.arpa" = {
       forceSSL = true;
-      sslCertificate = "${cert}/cert.pem";
-      sslCertificateKey = "${cert}/key.pem";
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
       locations."/" = {
         proxyPass = "http://${upstream}:5000";
         proxyWebsockets = true;
@@ -181,11 +176,24 @@ in
 
     virtualHosts."cloudbeaver.wmb.arpa" = {
       forceSSL = true;
-      sslCertificate = "${cert}/cert.pem";
-      sslCertificateKey = "${cert}/key.pem";
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
       locations."/" = {
         proxyPass = "http://${upstream}:8978";
         proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."registry.wmb.arpa" = {
+      forceSSL = true;
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
+      locations."/" = {
+        proxyPass = "http://${upstream}:6000";
+        extraConfig = ''
+          client_max_body_size 0;
+          proxy_read_timeout 900;
+        '';
       };
     };
 
