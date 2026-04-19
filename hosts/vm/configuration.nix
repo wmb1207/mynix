@@ -75,7 +75,6 @@ in
   # Override greetd from user-wmb.nix — it needs manual TUI login which
   # breaks Sunshine (no persistent X session). Use LightDM + autologin instead.
   services.greetd.enable = lib.mkForce false;
-  services.xserver.displayManager.startx.enable = lib.mkForce false;
 
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.displayManager.defaultSession = "none+fvwm3";
