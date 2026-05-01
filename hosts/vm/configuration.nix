@@ -196,6 +196,12 @@ in
   services.dbus.enable = true;
   programs.dconf.enable = true;
   programs.nix-ld.enable = true;
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    extraCompatPackages = [ pkgs.proton-ge-bin ];
+  };
   # Enable automatic login for the user.
   # services.displayManager.autoLogin.enable = true;
   # services.displayManager.autoLogin.user = "wmb";
