@@ -59,6 +59,26 @@
         "type": "github"
       }
     },
+    "crystal-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777257052,
+        "narHash": "sha256-EKgMCMqru/VnHv+YJnCiJo6V2VBsd/e82JGgKjCoQvo=",
+        "owner": "wmb1207",
+        "repo": "greeter",
+        "rev": "298b509d619057ef109f46a82e369db83e28325c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wmb1207",
+        "repo": "greeter",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -174,6 +194,7 @@
     },
     "root": {
       "inputs": {
+        "crystal-greeter": "crystal-greeter",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs",

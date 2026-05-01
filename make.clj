@@ -209,7 +209,8 @@
               [(->TemplateField "{{background}}" black)
                (->TemplateField "{{font}}" font)
                (->TemplateField "{{selected-foreground}}" black)
-               (->TemplateField "{{foreground}}" white)]))
+               (->TemplateField "{{foreground}}" white)
+               (->TemplateField "{{active}}" blue)]))
 
 (def ghostty-dark
   (->Template "ghostty"

@@ -1,0 +1,48 @@
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -38,6 +38,9 @@
+ static int bh, mw, mh;
+ static int dmx = 0, dmy = 0; /* put dmenu at these x,y positions */
+ static unsigned int dmw = 0; /* make dmenu this wide */
++static int borderw = 0;                /* border width */
++static const char *bordercolor = NULL; /* border color */
++static int lineheight = 0;             /* extra line height */
+ static int inputw = 0, promptw;
+ static int lrpad; /* sum of left and right padding */
+ static size_t cursor;
+@@ -54,4 +57,5 @@
+ static Drw *drw;
+ static Clr *scheme[SchemeLast];
++static Clr borderclr;
+
+ #include "config.h"
+@@ -631,4 +636,6 @@
+ 	for (j = 0; j < SchemeLast; j++)
+ 		scheme[j] = drw_scm_create(drw, colors[j], 2);
+
++	if (bordercolor)
++		drw_clr_create(drw, &borderclr, bordercolor);
+ 	clip = XInternAtom(dpy, "CLIPBOARD",   False);
+@@ -638,3 +645,3 @@
+ 	/* calculate menu geometry */
+-	bh = drw->fonts->h + 2;
++	bh = drw->fonts->h + 2 + lineheight;
+ 	lines = MAX(lines, 0);
+@@ -707,2 +714,6 @@
+ 	XMapRaised(dpy, win);
++	if (borderw) {
++		XSetWindowBorderWidth(dpy, win, borderw);
++		XSetWindowBorder(dpy, win, bordercolor ? borderclr.pixel : scheme[SchemeSel][ColBg].pixel);
++	}
+ 	if (embed) {
+@@ -772,4 +783,10 @@
+ 		else if (!strcmp(argv[i], "-W"))   /* window width */
+ 			dmw = atoi(argv[++i]);
++		else if (!strcmp(argv[i], "-bc"))  /* border color */
++			bordercolor = argv[++i];
++		else if (!strcmp(argv[i], "-bw"))  /* border width */
++			borderw = atoi(argv[++i]);
++		else if (!strcmp(argv[i], "-lh"))  /* extra line height */
++			lineheight = atoi(argv[++i]);
+ 		else
+ 			usage();

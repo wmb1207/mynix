@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    crystal-greeter = {
+      url = "github:wmb1207/greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     teleport-installer.url = "path:./flakes/teleport";
 
     home-manager = {
@@ -17,7 +22,7 @@
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, ... }:
     let
       system = "x86_64-linux";
 
@@ -153,24 +158,26 @@
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
             ./modules/user-wmb.nix
+            ./modules/greeter.nix
             teleport-installer.nixosModules.default
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer crystal-greeter;
           };
         };
 
         rog = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          
+
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
+            ./modules/greeter.nix
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer crystal-greeter;
           };
         };
 
@@ -181,6 +188,7 @@
             ./hosts/latitude/configuration.nix
             ./modules/user-wmb.nix
             ./modules/laptop-keyboard.nix
+            ./modules/greeter.nix
             teleport-installer.nixosModules.default
             {
               environment.systemPackages = [
@@ -189,7 +197,7 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer crystal-greeter;
           };
         };
 

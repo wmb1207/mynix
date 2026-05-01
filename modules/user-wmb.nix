@@ -287,11 +287,6 @@ in
                            ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
 '';
   
-  services.emacs = {
-    enable = true;
-    package = myEmacs;
-  };
-
   programs.dconf.enable = true;
   services.tailscale.enable = true;
   security.polkit.enable = true;
@@ -299,21 +294,6 @@ in
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
-  };
-
-  #### greetd + tuigreet ###################################################
-
-  services.greetd = {
-    enable = true;
-    settings.default_session = {
-      user = "greeter";
-      command = ''
-        ${pkgs.greetd.tuigreet}/bin/tuigreet \
-          --time \
-          --remember \
-          --cmd "dbus-run-session startx"
-      '';
-    };
   };
 
   #### X server ############################################################
@@ -488,12 +468,17 @@ in
       ++ [ myEmacs
         inputs.llm-agents.packages.${system}.coderabbit-cli
         
+        (pkgs.writeShellScriptBin "browser"  "exec librewolf \"$@\"")
+        (pkgs.writeShellScriptBin "editor"   "exec emacsclient -c -a emacs \"$@\"")
+        (pkgs.writeShellScriptBin "terminal" "exec urxvtc \"$@\"")
+
         (pkgs.writeShellScriptBin "Ldef" "exec L def \"$@\"")
         (pkgs.writeShellScriptBin "Lrefs" "exec L refs \"$@\"")
         (pkgs.writeShellScriptBin "Lrn" "exec L rn \"$@\"")
         (pkgs.writeShellScriptBin "Lassist" "exec L assist \"$@\"")
 
-        #pkgs.acme-lsp
+           #pkgs.acme-lsp
+           pkgs.pkg-config
         pkgs.acpi
         pkgs.networkmanager
         pkgs.xorg.xmodmap
@@ -656,8 +641,12 @@ in
   alias gc='git commit'
   alias ga='git add'
   alias gl='git log --oneline --graph --decorate'
+  alias browser='librewolf'
+  alias editor='emacsclient -c -a emacs'
+  alias terminal='urxvtc'
   alias em='emacsclient -nw'
   alias e='emacsclient -c -a emacs'
+  alias ec="emacsclient -c > /dev/null'"
   alias ns='nix-shell'
   alias nb='nix build'
   alias nr='nixos-rebuild switch --flake .#'

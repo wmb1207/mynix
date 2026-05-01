@@ -274,6 +274,10 @@
   # CPU frequency scaling
   powerManagement.cpuFreqGovernor = "performance";  # This might conflict with TLP
 
+  powerManagement.resumeCommands = ''
+    modprobe -r psmouse && modprobe psmouse
+  '';
+
   # Optional: Better suspend/hibernate behavior
   services.logind = {
     lidSwitch = "suspend";

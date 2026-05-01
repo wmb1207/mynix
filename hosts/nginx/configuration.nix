@@ -86,6 +86,18 @@ let
           <span class="name">registry</span>
           <span class="url">https://registry.wmb.arpa</span>
         </a>
+        <a href="http://hoppscotch.wmb.arpa">
+          <span class="name">hoppscotch</span>
+          <span class="url">http://hoppscotch.wmb.arpa</span>
+        </a>
+        <a href="http://hoppscotch-admin.wmb.arpa">
+          <span class="name">hopp-admin</span>
+          <span class="url">http://hoppscotch-admin.wmb.arpa</span>
+        </a>
+        <a href="http://mailpit.wmb.arpa">
+          <span class="name">mailpit</span>
+          <span class="url">http://mailpit.wmb.arpa</span>
+        </a>
         <a href="https://192.168.88.2:8006">
           <span class="name">proxmox</span>
           <span class="url">https://192.168.88.2:8006</span>
@@ -194,6 +206,46 @@ in
           client_max_body_size 0;
           proxy_read_timeout 900;
         '';
+      };
+    };
+
+    virtualHosts."mailpit.wmb.arpa" = {
+      addSSL = true;
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
+      locations."/" = {
+        proxyPass = "http://${upstream}:8025";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."hoppscotch.wmb.arpa" = {
+      addSSL = true;
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
+      locations."/" = {
+        proxyPass = "http://${upstream}:3002";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."hoppscotch-api.wmb.arpa" = {
+      addSSL = true;
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
+      locations."/" = {
+        proxyPass = "http://${upstream}:3170";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."hoppscotch-admin.wmb.arpa" = {
+      addSSL = true;
+      sslCertificate = cert.certFile;
+      sslCertificateKey = cert.keyFile;
+      locations."/" = {
+        proxyPass = "http://${upstream}:3100";
+        proxyWebsockets = true;
       };
     };
 

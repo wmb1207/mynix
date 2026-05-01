@@ -29,6 +29,11 @@
       fsType = "ext4";
     };
 
+  fileSystems."/mnt/gaming" =
+    { device = "/dev/sda";
+      fsType = "ext4";
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/b313f3c6-3f0e-4da3-b69c-2280d1849688"; }
     ];

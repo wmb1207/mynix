@@ -5,7 +5,7 @@ with pkgs; [
   picom
   feh
   (dmenu.overrideAttrs (old: {
-    patches = (old.patches or []) ++ [ ./dmenu-xyw.patch ];
+    patches = (old.patches or []) ++ [ ./dmenu-xyw.patch ./dmenu-border.patch ];
   }))
   polybar
   eww

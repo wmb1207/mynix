@@ -124,7 +124,7 @@
   "All the configs for theming and ui."
   (setq neo-window-fixed-size nil)
   (add-to-list 'default-frame-alist '(internal-border-width . 0)) ;;pading
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-11"))
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))
 
   (set-frame-parameter (selected-frame) 'alpha '(100 100))
   (setq-default left-margin-width 0 right-margin-width 0 internal-border-width 0) ; Define new widths.
@@ -137,11 +137,11 @@
   (load-theme 'creamsody-darker t)
 
   ;; Set font AFTER load-theme so the theme can't clobber it.
-  ;; :height is in half-points (110 = 11pt).
+  ;; :height is in half-points (100 = 10pt).
   (defun my-reset-font ()
     (set-face-attribute 'default nil
                         :font "DejaVu Sans Mono"
-                        :height 110
+                        :height 100
                         :weight 'regular))
   (my-reset-font)
   ;; Re-apply after any theme change at runtime
@@ -168,7 +168,7 @@
           ))
 
   (when (display-graphic-p)
-    (set-frame-font "DejaVu Sans Mono-11" nil t))
+    (set-frame-font "DejaVu Sans Mono-10" nil t))
   ;; (when (not (display-graphic-p))
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
@@ -439,7 +439,10 @@
   (defun my/setup-gui-frame (frame)
     (with-selected-frame frame
       (when (display-graphic-p)
-        (message "GUI initialized"))))
+        (set-frame-parameter frame 'fullscreen 'maximized)
+        (set-frame-parameter frame 'background-color "#1c1a18")
+        (set-frame-parameter frame 'foreground-color
+                             (face-attribute 'default :foreground nil t)))))
   (add-hook 'after-make-frame-functions #'my/setup-gui-frame))
 ;; (when (daemonp)
 ;;   (setenv "DISPLAY" ":0")

@@ -92,7 +92,37 @@ in
         ];
       };
 
+      mssql = {
+        image = "mcr.microsoft.com/mssql/server:2022-latest";
+        ports = [ "1433:1433" ];
+        environment = {
+          ACCEPT_EULA = "Y";
+          MSSQL_SA_PASSWORD = "Admin1234Secure";
+        };
+        volumes = [ "/data/mssql:/var/opt/mssql" ];
+      };
+
+      mailpit = {
+        image = "axllent/mailpit:latest";
+        ports = [ "1025:1025" "8025:8025" ];
+        environment = {
+          MP_SMTP_AUTH = "hoppscotch:Mailpit1234";
+          MP_SMTP_AUTH_ALLOW_INSECURE = "true";
+        };
+      };
+
+      hoppscotch = {
+        image = "hoppscotch/hoppscotch:latest";
+        ports = [ "3002:3000" "3100:3100" "3170:3170" ];
+        environmentFiles = [ "/etc/hoppscotch.env" ];
+      };
+
     };
+  };
+
+  environment.etc."hoppscotch.env" = {
+    source = ./hoppscotch.env;
+    mode = "0400";
   };
 
   # ── Data disk ─────────────────────────────────────────────────────────────
@@ -153,6 +183,15 @@ in
     ];
   };
 
+  systemd.services.podman-mssql = {
+    requires = [ "data.mount" ];
+    after    = [ "data.mount" ];
+    serviceConfig.ExecStartPre = [
+      "${pkgs.coreutils}/bin/mkdir -p /data/mssql"
+      "+${pkgs.coreutils}/bin/chown 10001:0 /data/mssql"
+    ];
+  };
+
   systemd.services.podman-cloudbeaver = {
     requires = [ "data.mount" ];
     after    = [ "data.mount" ];
@@ -160,12 +199,13 @@ in
       "${pkgs.coreutils}/bin/mkdir -p /data/cloudbeaver/workspace";
   };
 
+
   # ── Network ───────────────────────────────────────────────────────────────
   networking.networkmanager.enable = true;
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 3000 2222 5000 6000 8978 ];
+    allowedTCPPorts = [ 22 3000 2222 5000 6000 8978 3002 3100 3170 1025 8025 1433 ];
   };
 
   # ── SSH ───────────────────────────────────────────────────────────────────
