@@ -143,6 +143,10 @@ in
     ];
   };
   
+  systemd.tmpfiles.rules = [
+    "d /mnt/gaming 0755 wmb users -"
+  ];
+
   fileSystems."/mnt/NAS/games" = {
     device = "192.168.88.18:/mnt/NAS/games";
     fsType = "nfs";
