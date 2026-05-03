@@ -58,7 +58,8 @@
       }
 
       . {
-        forward . 192.168.88.1
+        forward . 181.30.140.135 181.30.140.196
+        cache
         log
         errors
       }
