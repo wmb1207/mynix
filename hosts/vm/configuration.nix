@@ -20,16 +20,16 @@ in
     enable = true;
     enable32Bit = true;
 
-    extraPackages = with pkgs; [
-      mesa
-      mesa.drivers
-      libva
-    ];
+    # extraPackages = with pkgs; [
+    #   mesa
+    #   mesa.drivers
+    #   libva
+    # ];
 
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      mesa
-      mesa.drivers
-    ];
+    # extraPackages32 = with pkgs.pkgsi686Linux; [
+    #   mesa
+    #   mesa.drivers
+    # ];
   };
 
 
@@ -221,6 +221,11 @@ fileSystems."/mnt/NAS/games" = {
     emacs
     linux-firmware
   ];
+  environment.sessionVariables = {
+    VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
+    LIBVA_DRIVER_NAME = "radeonsi";
+    VDPAU_DRIVER = "radeonsi";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
