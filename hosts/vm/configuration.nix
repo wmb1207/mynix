@@ -197,7 +197,7 @@ fileSystems."/mnt/NAS/games" = {
   ];
 
   fileSystems."/mnt/gaming" = {
-    device = "/dev/sda";
+    device = "/dev/disk/by-uuid/125857ed-e752-4dea-8f8c-40644f2233f5";
     fsType = "ext4";
   };
 
