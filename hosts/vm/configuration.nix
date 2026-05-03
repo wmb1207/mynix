@@ -192,6 +192,10 @@ fileSystems."/mnt/NAS/games" = {
   };
   services.dbus.enable = true;
   programs.dconf.enable = true;
+  systemd.tmpfiles.rules = [
+    "d /mnt/gaming 0755 wmb users -"
+  ];
+
   programs.nix-ld.enable = true;
 
   programs.steam = {
