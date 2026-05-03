@@ -196,6 +196,11 @@ fileSystems."/mnt/NAS/games" = {
     "d /mnt/gaming 0755 wmb users -"
   ];
 
+  fileSystems."/mnt/gaming" = {
+    device = "/dev/sda";
+    fsType = "ext4";
+  };
+
   programs.nix-ld.enable = true;
 
   programs.steam = {
