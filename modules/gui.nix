@@ -19,6 +19,7 @@ let
     xclip
     xclock
     xload
+    moonlight-qt
   ];
 
   x86_64Packages = with pkgs; [

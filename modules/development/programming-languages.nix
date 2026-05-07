@@ -36,7 +36,6 @@ with pkgs; [
   gopls
   go-outline
   gopkgs
-  gotools
   delve
 
   pyright

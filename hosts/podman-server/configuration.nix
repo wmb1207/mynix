@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, hoppscotchEnv, ... }:
 
 let
   # Generate with: htpasswd -nbB wmb <password>
@@ -59,9 +59,9 @@ in
         environment = {
           USER_UID = "1000";
           USER_GID = "1000";
-          FORGEJO__server__DOMAIN = "forgejo.wmb.arpa";
-          FORGEJO__server__ROOT_URL = "https://forgejo.wmb.arpa/";
-          FORGEJO__server__SSH_DOMAIN = "forgejo.wmb.arpa";
+          FORGEJO__server__DOMAIN = "git.studiowmb.com";
+          FORGEJO__server__ROOT_URL = "https://git.studiowmb.com/";
+          FORGEJO__server__SSH_DOMAIN = "git.studiowmb.com";
           FORGEJO__server__SSH_PORT = "2222";
           FORGEJO__server__START_SSH_SERVER = "true";
           FORGEJO__database__DB_TYPE = "sqlite3";
@@ -121,7 +121,7 @@ in
   };
 
   environment.etc."hoppscotch.env" = {
-    source = ./hoppscotch.env;
+    text = hoppscotchEnv;
     mode = "0400";
   };
 

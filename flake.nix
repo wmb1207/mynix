@@ -62,6 +62,16 @@
         then [ (builtins.readFile /home/wmb/.ssh/id_rsa.pub) ]
         else [];
 
+      hoppscotchEnv =
+        if builtins.pathExists /home/wmb/dev/nix/setup/hosts/podman-server/hoppscotch.env
+        then builtins.readFile /home/wmb/dev/nix/setup/hosts/podman-server/hoppscotch.env
+        else "";
+
+      cloudflaredToken =
+        if builtins.pathExists /home/wmb/dev/nix/setup/hosts/nginx/cloudflared-token.env
+        then builtins.readFile /home/wmb/dev/nix/setup/hosts/nginx/cloudflared-token.env
+        else "";
+
     in {
       nixosConfigurations = {
         default = nixpkgs.lib.nixosSystem {
@@ -295,7 +305,7 @@
         nginx = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          specialArgs = { inherit sshKeys; };
+          specialArgs = { inherit sshKeys cloudflaredToken; };
           modules = [
             ./hosts/nginx/configuration.nix
 
@@ -387,7 +397,7 @@
         podman-server = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          specialArgs = { inherit sshKeys; };
+          specialArgs = { inherit sshKeys hoppscotchEnv; };
           modules = [
             ./hosts/podman-server/configuration.nix
 

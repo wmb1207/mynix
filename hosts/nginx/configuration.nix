@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, cloudflaredToken ? "", ... }:
 
 let
   upstream = "192.168.88.38";
@@ -66,13 +66,13 @@ let
         <span class="user">wmb</span><span>@</span><span class="host">arpa</span><span> ~ $ </span><span class="cmd">open services</span>
       </div>
       <div class="list">
-        <a href="https://forgejo.wmb.arpa">
+        <a href="https://git.studiowmb.com">
           <span class="name">forgejo</span>
-          <span class="url">https://forgejo.wmb.arpa</span>
+          <span class="url">https://git.studiowmb.com</span>
         </a>
-        <a href="https://excalidraw.wmb.arpa">
+        <a href="https://draw.studiowmb.com">
           <span class="name">excalidraw</span>
-          <span class="url">https://excalidraw.wmb.arpa</span>
+          <span class="url">https://draw.studiowmb.com</span>
         </a>
         <a href="https://excalidraw.com">
           <span class="name">excalidraw +</span>
@@ -86,9 +86,9 @@ let
           <span class="name">registry</span>
           <span class="url">https://registry.wmb.arpa</span>
         </a>
-        <a href="http://hoppscotch.wmb.arpa">
+        <a href="https://app.studiowmb.com">
           <span class="name">hoppscotch</span>
-          <span class="url">http://hoppscotch.wmb.arpa</span>
+          <span class="url">https://app.studiowmb.com</span>
         </a>
         <a href="http://hoppscotch-admin.wmb.arpa">
           <span class="name">hopp-admin</span>
@@ -113,6 +113,114 @@ let
       </div>
       <div class="prompt" style="margin-top:1rem;">
         <span class="user">wmb</span><span>@</span><span class="host">arpa</span><span> ~ $ </span><span class="cursor"></span>
+      </div>
+    </body>
+    </html>
+  '';
+  studioPage = pkgs.writeTextDir "index.html" ''
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>studiowmb</title>
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: "DejaVu Sans Mono", monospace;
+          background: #1c1a18;
+          color: #b5b2a0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 2rem;
+        }
+        .prompt {
+          color: #6a6858;
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+        }
+        .prompt .user { color: #4a6a78; }
+        .prompt .host { color: #657050; }
+        .prompt .cmd  { color: #b5b2a0; }
+        .list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          padding-left: 0;
+        }
+        a {
+          display: flex;
+          gap: 1.5rem;
+          text-decoration: none;
+          font-size: 0.9rem;
+          color: #b5b2a0;
+          padding: 0.1rem 0;
+          white-space: nowrap;
+        }
+        a:hover .name { color: #4a6a78; text-decoration: underline; }
+        .name  { min-width: 12ch; }
+        .url   { color: #6a6858; overflow: hidden; text-overflow: ellipsis; }
+        .cursor {
+          display: inline-block;
+          width: 0.55em;
+          height: 1em;
+          background: #b5b2a0;
+          margin-left: 0.1em;
+          vertical-align: text-bottom;
+          animation: blink 1.1s step-end infinite;
+        }
+        .output {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+          margin-bottom: 1rem;
+          padding-left: 1rem;
+        }
+        .output-line {
+          display: flex;
+          gap: 1.5rem;
+          font-size: 0.9rem;
+        }
+        .key  { color: #657050; min-width: 12ch; }
+        .val  { color: #b5b2a0; }
+        @keyframes blink { 50% { opacity: 0; } }
+        @media (min-width: 2560px) {
+          body { font-size: 1.5rem; padding: 4rem; }
+          .prompt, .output-line, a { font-size: 1.4rem; }
+          .cursor { width: 0.6em; height: 1.4rem; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="prompt">
+        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cmd">help</span>
+      </div>
+      <div class="output">
+        <div class="output-line"><span class="key">name</span><span class="val">studiowmb</span></div>
+        <div class="output-line"><span class="key">about</span><span class="val">A software studio crafting tools and open source projects.</span></div>
+        <div class="output-line"><span class="key">commands</span><span class="val">open services</span></div>
+      </div>
+      <div class="prompt">
+        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cmd">open services</span>
+      </div>
+      <div class="list">
+        <a href="https://git.studiowmb.com">
+          <span class="name">forgejo</span>
+          <span class="url">https://git.studiowmb.com</span>
+        </a>
+        <a href="https://draw.studiowmb.com">
+          <span class="name">excalidraw</span>
+          <span class="url">https://draw.studiowmb.com</span>
+        </a>
+        <a href="https://app.studiowmb.com">
+          <span class="name">hoppscotch</span>
+          <span class="url">https://app.studiowmb.com</span>
+        </a>
+      </div>
+      <div class="prompt" style="margin-top:1rem;">
+        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cursor"></span>
       </div>
     </body>
     </html>
@@ -151,6 +259,17 @@ in
 
   services.nginx = {
     enable = true;
+
+    virtualHosts."studiowmb.com" = {
+      serverAliases = [ "www.studiowmb.com" ];
+      locations."/" = {
+        root = "${studioPage}";
+        extraConfig = ''
+          default_type text/html;
+          try_files /index.html =404;
+        '';
+      };
+    };
 
     virtualHosts."wmb.arpa" = {
       default = true;
@@ -249,6 +368,48 @@ in
       };
     };
 
+  };
+
+  # ── Cloudflare Tunnel ─────────────────────────────────────────────────────
+  # Token comes from hosts/nginx/cloudflared-token.env (gitignored).
+  # Copy hosts/nginx/cloudflared-token.env.example → cloudflared-token.env
+  # and fill in your token before rebuilding.
+  # Ingress rules are configured in the Cloudflare dashboard.
+  environment.etc."cloudflared/token.env" = {
+    text = cloudflaredToken;
+    mode = "0400";
+  };
+
+  environment.etc."cloudflared/config.yml" = {
+    text = ''
+      ingress:
+        - hostname: studiowmb.com
+          service: http://localhost:80
+        - hostname: www.studiowmb.com
+          service: http://localhost:80
+        - hostname: git.studiowmb.com
+          service: http://${upstream}:3000
+        - hostname: draw.studiowmb.com
+          service: http://${upstream}:5000
+        - hostname: app.studiowmb.com
+          service: http://${upstream}:3002
+        - hostname: app-api.studiowmb.com
+          service: http://${upstream}:3170
+        - service: http_status:404
+    '';
+    mode = "0444";
+  };
+
+  systemd.services.cloudflared = {
+    description = "Cloudflare Tunnel";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate --config /etc/cloudflared/config.yml run";
+      EnvironmentFile = "/etc/cloudflared/token.env";
+      Restart = "always";
+      RestartSec = "5s";
+    };
   };
 
   networking.networkmanager.enable = true;
