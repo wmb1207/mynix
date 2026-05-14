@@ -1,8 +1,65 @@
-{ config, pkgs, hoppscotchEnv, ... }:
+{ config, lib, pkgs, hoppscotchEnv, ... }:
 
 let
   # Generate with: htpasswd -nbB wmb <password>
   registryHtpasswd = "wmb:$2y$05$Wyczu.1kTe1OOUW4TGwyC.NMfS2vw0srPweCjpuJnbTtzgMW05T/G";
+
+  # ── Forgejo custom theme ───────────────────────────────────────────────────
+  # Palette: matches the wmb.arpa index page / terminal aesthetic
+  #   bg         #1c1a18  card       #242220  hover      #2c2a28
+  #   border     #3a3830  text       #b5b2a0  muted      #6a6858
+  #   teal/link  #4a6a78  olive      #657050
+  forgejoHeaderTmpl = pkgs.writeText "forgejo-header.tmpl" ''
+    <style>
+    html, :root {
+      --color-body:              #1c1a18;
+      --color-box-body:          #242220;
+      --color-box-header:        #1e1c1a;
+      --color-primary:           #4a6a78;
+      --color-primary-dark-1:    #3d5d6a;
+      --color-primary-dark-2:    #2f4f5c;
+      --color-primary-light-1:   #5a7a88;
+      --color-primary-light-2:   #6a8a98;
+      --color-primary-alpha-50:  rgba(74,106,120,0.5);
+      --color-secondary:         #657050;
+      --color-secondary-dark-1:  #566040;
+      --color-secondary-light-1: #758060;
+      --color-text:              #b5b2a0;
+      --color-text-dark:         #d0cdb8;
+      --color-text-light-1:      #8a877a;
+      --color-text-light-2:      #6a6858;
+      --color-text-light-3:      #4a4840;
+      --color-border:            #3a3830;
+      --color-border-dark:       #4a4840;
+      --color-secondary-border:  #3a3830;
+      --color-input-background:  #242220;
+      --color-input-border:      #3a3830;
+      --color-input-border-focus:#4a6a78;
+      --color-nav-bg:            #1c1a18;
+      --color-header-wrapper:    #1c1a18;
+      --color-menu-bg:           #242220;
+      --color-item-hover:        #2c2a28;
+      --color-item-active:       #2c2a28;
+      --color-sidebar-bg:        #1e1c1a;
+      --color-code-bg:           #242220;
+      --color-code-border:       #3a3830;
+      --color-diff-removed-bg:   rgba(100,40,40,0.3);
+      --color-diff-added-bg:     rgba(40,80,40,0.3);
+      --color-shadow:            rgba(0,0,0,0.5);
+      --color-placeholder:       #4a4840;
+      --color-highlight:         rgba(74,106,120,0.25);
+    }
+    body, .ui { font-family: "DejaVu Sans Mono", monospace; }
+    a { color: #4a6a78; }
+    a:hover { color: #6a8a98; }
+    </style>
+  '';
+
+  setupForgejoCustom = pkgs.writeShellScript "setup-forgejo-custom" ''
+    mkdir -p /data/forgejo/custom/templates/custom
+    cp ${forgejoHeaderTmpl} /data/forgejo/custom/templates/custom/header.tmpl
+    chown -R 1000:1000 /data/forgejo/custom
+  '';
 in
 {
   imports = [ ../../modules/ssh-keys.nix ../../modules/wmb-arpa-ca.nix ];
@@ -59,12 +116,15 @@ in
         environment = {
           USER_UID = "1000";
           USER_GID = "1000";
+          FORGEJO__DEFAULT__APP_NAME = "studiowmb";
+          FORGEJO__DEFAULT__APP_SLOGAN = "open source. self-hosted. yours.";
           FORGEJO__server__DOMAIN = "git.studiowmb.com";
           FORGEJO__server__ROOT_URL = "https://git.studiowmb.com/";
-          FORGEJO__server__SSH_DOMAIN = "git.studiowmb.com";
-          FORGEJO__server__SSH_PORT = "2222";
+          FORGEJO__server__SSH_DOMAIN = "ssh.studiowmb.com";
+          FORGEJO__server__SSH_PORT = "22";
           FORGEJO__server__START_SSH_SERVER = "true";
           FORGEJO__database__DB_TYPE = "sqlite3";
+          FORGEJO__ui__DEFAULT_THEME = "forgejo-dark";
         };
         ports = [ "3000:3000" "2222:2222" ];
         volumes = [
@@ -180,6 +240,7 @@ in
     serviceConfig.ExecStartPre = [
       "${pkgs.coreutils}/bin/mkdir -p /data/forgejo"
       "+${pkgs.coreutils}/bin/chown 1000:1000 /data/forgejo"
+      "+${setupForgejoCustom}"
     ];
   };
 
@@ -229,6 +290,8 @@ in
     enable         = true;
     enableSSHSupport = true;
   };
+
+  boot.loader.grub.device = lib.mkForce "/dev/sda";
 
   system.stateVersion = "25.11";
 }

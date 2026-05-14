@@ -10,7 +10,7 @@ with pkgs; [
   xdo
   podman-compose
   direnv
-  babashka
+  ruby
   git
   curl
   wget

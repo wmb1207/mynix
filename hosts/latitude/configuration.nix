@@ -16,7 +16,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-  networking.hostName = "latitude"; # Define your hostname.
+  networking.hostName = "workstation"; # Define your hostname.
   networking.extraHosts =
   ''
     #RB OCI
@@ -303,5 +303,17 @@
 
   # Optional: Enable thermald for Intel CPUs
   services.thermald.enable = true;
+
+  # ── greeter ─────────────────────────────────────────────────────────────────
+  services.crystal-greeter = {
+    title = "workstation";
+    menu = [
+      { action = "exit";      label = null; host = null; }
+      { action = "reboot";    label = null; host = null; }
+      { action = "shutdown";  label = null; host = null; }
+      { action = "ssh";       label = null; host = null; }
+      { action = "moonlight"; label = null; host = "desktop.wmb.arpa"; }
+    ];
+  };
 
 }

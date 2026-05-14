@@ -80,7 +80,7 @@ let
         timeout = 5
   '';
 
-  # Serialize a theme attrset to EDN for theme.clj to consume at runtime
+  # Serialize a theme attrset to EDN for theme.rb to consume at runtime
   themeToEdn = t: ''
     {:name           "${t.name}"
      :font           "${t.font}"
@@ -538,7 +538,7 @@ in
       ".config/dunst/dunstrc".text       = dunstrcFor theme;
       ".config/themes/dark.edn".text     = themeToEdn themes.dark;
       ".config/themes/light.edn".text    = themeToEdn themes.light;
-      ".local/bin/theme.clj"             = { source = ../assets/scripts/theme.clj; executable = true; };
+      ".local/bin/theme.rb"              = { source = ../assets/scripts/theme.rb; executable = true; };
 
       # ── Edwood / acme-lsp ─────────────────────────────────────────────────
       ".config/acme-lsp/config.toml".text = ''

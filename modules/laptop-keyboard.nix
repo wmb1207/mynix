@@ -14,10 +14,4 @@
     EndSection
   '';
 
-  # Optional: custom script (currently just xev — probably not needed for remapping)
-  systemd.user.services.keyboard-remap = {
-    description = "Remap keys for laptop";
-    serviceConfig.ExecStart = "${pkgs.xorg.xev}/bin/xev";
-    wantedBy = [ "default.target" ];
-  };
 }

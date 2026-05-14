@@ -1,4 +1,4 @@
-{ config, pkgs, cloudflaredToken ? "", ... }:
+{ config, pkgs, cloudflaredToken ? "", studiowmbPkg, ... }:
 
 let
   upstream = "192.168.88.38";
@@ -117,114 +117,6 @@ let
     </body>
     </html>
   '';
-  studioPage = pkgs.writeTextDir "index.html" ''
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>studiowmb</title>
-      <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-          font-family: "DejaVu Sans Mono", monospace;
-          background: #1c1a18;
-          color: #b5b2a0;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          min-height: 100vh;
-          padding: 2rem;
-        }
-        .prompt {
-          color: #6a6858;
-          margin-bottom: 1rem;
-          font-size: 0.9rem;
-        }
-        .prompt .user { color: #4a6a78; }
-        .prompt .host { color: #657050; }
-        .prompt .cmd  { color: #b5b2a0; }
-        .list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.2rem;
-          padding-left: 0;
-        }
-        a {
-          display: flex;
-          gap: 1.5rem;
-          text-decoration: none;
-          font-size: 0.9rem;
-          color: #b5b2a0;
-          padding: 0.1rem 0;
-          white-space: nowrap;
-        }
-        a:hover .name { color: #4a6a78; text-decoration: underline; }
-        .name  { min-width: 12ch; }
-        .url   { color: #6a6858; overflow: hidden; text-overflow: ellipsis; }
-        .cursor {
-          display: inline-block;
-          width: 0.55em;
-          height: 1em;
-          background: #b5b2a0;
-          margin-left: 0.1em;
-          vertical-align: text-bottom;
-          animation: blink 1.1s step-end infinite;
-        }
-        .output {
-          display: flex;
-          flex-direction: column;
-          gap: 0.15rem;
-          margin-bottom: 1rem;
-          padding-left: 1rem;
-        }
-        .output-line {
-          display: flex;
-          gap: 1.5rem;
-          font-size: 0.9rem;
-        }
-        .key  { color: #657050; min-width: 12ch; }
-        .val  { color: #b5b2a0; }
-        @keyframes blink { 50% { opacity: 0; } }
-        @media (min-width: 2560px) {
-          body { font-size: 1.5rem; padding: 4rem; }
-          .prompt, .output-line, a { font-size: 1.4rem; }
-          .cursor { width: 0.6em; height: 1.4rem; }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="prompt">
-        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cmd">help</span>
-      </div>
-      <div class="output">
-        <div class="output-line"><span class="key">name</span><span class="val">studiowmb</span></div>
-        <div class="output-line"><span class="key">about</span><span class="val">A software studio crafting tools and open source projects.</span></div>
-        <div class="output-line"><span class="key">commands</span><span class="val">open services</span></div>
-      </div>
-      <div class="prompt">
-        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cmd">open services</span>
-      </div>
-      <div class="list">
-        <a href="https://git.studiowmb.com">
-          <span class="name">forgejo</span>
-          <span class="url">https://git.studiowmb.com</span>
-        </a>
-        <a href="https://draw.studiowmb.com">
-          <span class="name">excalidraw</span>
-          <span class="url">https://draw.studiowmb.com</span>
-        </a>
-        <a href="https://app.studiowmb.com">
-          <span class="name">hoppscotch</span>
-          <span class="url">https://app.studiowmb.com</span>
-        </a>
-      </div>
-      <div class="prompt" style="margin-top:1rem;">
-        <span class="user">wmb</span><span>@</span><span class="host">studiowmb</span><span> ~ $ </span><span class="cursor"></span>
-      </div>
-    </body>
-    </html>
-  '';
 in
 {
   imports = [ ../../modules/ssh-keys.nix ../../modules/wmb-arpa-ca.nix ];
@@ -263,10 +155,9 @@ in
     virtualHosts."studiowmb.com" = {
       serverAliases = [ "www.studiowmb.com" ];
       locations."/" = {
-        root = "${studioPage}";
+        root = "${studiowmbPkg}";
         extraConfig = ''
-          default_type text/html;
-          try_files /index.html =404;
+          try_files $uri $uri/ /index.html;
         '';
       };
     };

@@ -16,7 +16,8 @@ with pkgs; [
   php84
   nodejs
   python313
-  #ruby
+  ruby
+  ruby-lsp
   go
   elixir
   erlang

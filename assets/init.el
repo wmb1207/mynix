@@ -403,6 +403,15 @@
   (add-hook 'elixir-mode-hook #'lsp-deferred)
   (add-hook 'elixir-mode-hook (lambda () (display-line-numbers-mode 1)))
 
+  (with-eval-after-load 'lsp-mode
+    (setq lsp-ruby-lsp-use-bundler nil)
+    (setq lsp-disabled-clients '(solargraph ruby-ls standardrb)))
+
+  (add-hook 'ruby-mode-hook #'lsp-deferred)
+  (add-hook 'ruby-ts-mode-hook #'lsp-deferred)
+  (add-hook 'ruby-mode-hook (lambda () (prettier-mode -1)))
+  (add-hook 'ruby-ts-mode-hook (lambda () (prettier-mode -1)))
+
   (add-hook 'typescript-mode-hook 'prettier-mode)
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook (lambda () (display-line-numbers-mode 1)))

@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    studiowmb = {
+      url = "git+https://git.studiowmb.com/studiowmb/studiowmb";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     teleport-installer.url = "path:./flakes/teleport";
 
     home-manager = {
@@ -22,7 +27,7 @@
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, ... }:
     let
       system = "x86_64-linux";
 
@@ -305,7 +310,10 @@
         nginx = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-          specialArgs = { inherit sshKeys cloudflaredToken; };
+          specialArgs = {
+            inherit sshKeys cloudflaredToken;
+            studiowmbPkg = studiowmb.packages.${system}.default;
+          };
           modules = [
             ./hosts/nginx/configuration.nix
 

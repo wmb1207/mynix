@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -44,6 +44,12 @@
   services.openssh.enable = true;
 
   services.xserver.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = lib.mkDefault "gtk";
+  };
 
   nix.settings.require-sigs = false;
 }

@@ -1,30 +1,26 @@
 { pkgs, crystal-greeter, ... }:
 
-let
-  pkg = crystal-greeter.packages.${pkgs.system}.default;
-in {
-  # Ensure fvwm3 and X session tools are present system-wide so the greeter
-  # can find them when building its PATH from the nix store.
+{
+  imports = [ crystal-greeter.nixosModules.default ];
+
+  services.crystal-greeter = {
+    enable  = true;
+    package = crystal-greeter.packages.${pkgs.system}.default;
+    # title and menu are left for each host to override
+  };
+
+  # Suppress kernel console messages so they don't corrupt the greeter UI.
+  # Messages still accumulate in the ring buffer (readable via dmesg / journalctl -k).
+  boot.consoleLogLevel = 3;
+
+  # WM packages needed for X session discovery and launch.
   environment.systemPackages = with pkgs; [ fvwm3 xorg.xinit xorg.xauth ];
 
-  # The greeter owns tty1; disable the stock getty there.
-  systemd.services."getty@tty1".enable  = false;
-  systemd.services."autovt@tty1".enable = false;
-
-  systemd.services.crystal-greeter = {
-    description = "Crystal TTY Login Greeter";
-    after    = [ "systemd-user-sessions.service" ];
-    wantedBy = [ "multi-user.target" ];
-
-    serviceConfig = {
-      ExecStart      = "${pkg}/bin/crystal-greeter";
-      StandardInput  = "tty";
-      StandardOutput = "tty";
-      TTYPath        = "/dev/tty1";
-      TTYReset       = true;
-      TTYVHangup     = true;
-      Restart        = "always";
-      RestartSec     = "1s";
-    };
-  };
+  # XDG desktop portal + GTK backend.
+  # Without this, apps that use the portal API (flameshot, file pickers, etc.)
+  # will time out waiting for a portal response — GNOME/KDE set this up
+  # automatically but a bare WM session does not.
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.config.common.default = "*";
 }

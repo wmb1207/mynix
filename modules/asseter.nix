@@ -30,12 +30,15 @@ in {
     ".emacs.d/lisp/packages.el" = mkSource ../assets/packages.el;
 
     #scripts
-    ".local/bin/battery.clj" = mkExecutable ../assets/scripts/battery.clj;
-    ".local/bin/lock.sh" = mkExecutable ../assets/scripts/lock.sh;
-    ".local/bin/dock.clj" = mkExecutable ../assets/scripts/dock.clj;
-    ".local/bin/backlight.clj" = mkExecutable ../assets/scripts/backlight.clj;
-    ".local/bin/polybar.sh" = mkExecutable ../assets/scripts/polybar.sh;
-    ".local/bin/keys.clj" = mkExecutable ../assets/scripts/keys.clj;
+    ".local/bin/battery.rb"   = mkExecutable ../assets/scripts/battery.rb;
+    ".local/bin/lock.sh"      = mkExecutable ../assets/scripts/lock.sh;
+    ".local/bin/dock.rb"      = mkExecutable ../assets/scripts/dock.rb;
+    ".local/bin/backlight.rb" = mkExecutable ../assets/scripts/backlight.rb;
+    ".local/bin/polybar.sh"   = mkExecutable ../assets/scripts/polybar.sh;
+    ".local/bin/keys.rb"      = mkExecutable ../assets/scripts/keys.rb;
+    ".local/bin/tunnel.rb"    = mkExecutable ../assets/scripts/tunnel.rb;
+    ".local/bin/projecter.rb" = mkExecutable ../assets/scripts/projecter.rb;
+    ".local/bin/theme.rb"     = mkExecutable ../assets/scripts/theme.rb;
 
     # templates - dev-shells
     # ".local/templates/php.nix" = mkSource ../templates/devshells/php.nix;
