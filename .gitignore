@@ -8,11 +8,6 @@ result-*
 \#*\#
 .\#*
 
-# Clojure/LSP
-.clj-kondo/
-.lsp/
-.cpcache/
-
 # Editor
 .vscode/
 .idea/
@@ -23,3 +18,6 @@ result-*
 # Local secrets (never commit)
 secrets/
 *.env
+
+# Local config (per-user, never commit)
+config.yml

@@ -30,6 +30,7 @@
   outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, ... }:
     let
       system = "x86_64-linux";
+      homeDir = builtins.getEnv "HOME";
 
       baseModules = [
         home-manager.nixosModules.default
@@ -63,18 +64,18 @@
       };
 
       sshKeys =
-        if builtins.pathExists /home/wmb/.ssh/id_rsa.pub
-        then [ (builtins.readFile /home/wmb/.ssh/id_rsa.pub) ]
+        if builtins.pathExists "${homeDir}/.ssh/id_rsa.pub"
+        then [ (builtins.readFile "${homeDir}/.ssh/id_rsa.pub") ]
         else [];
 
       hoppscotchEnv =
-        if builtins.pathExists /home/wmb/dev/nix/setup/hosts/podman-server/hoppscotch.env
-        then builtins.readFile /home/wmb/dev/nix/setup/hosts/podman-server/hoppscotch.env
+        if builtins.pathExists ./hosts/podman-server/hoppscotch.env
+        then builtins.readFile ./hosts/podman-server/hoppscotch.env
         else "";
 
       cloudflaredToken =
-        if builtins.pathExists /home/wmb/dev/nix/setup/hosts/nginx/cloudflared-token.env
-        then builtins.readFile /home/wmb/dev/nix/setup/hosts/nginx/cloudflared-token.env
+        if builtins.pathExists ./hosts/nginx/cloudflared-token.env
+        then builtins.readFile ./hosts/nginx/cloudflared-token.env
         else "";
 
     in {
@@ -441,8 +442,8 @@
           modules = [
             ./modules/user-wmb.nix
             {
-              home.username = "wmb";
-              home.homeDirectory = "/home/wmb";
+              home.username = builtins.getEnv "USER";
+              home.homeDirectory = builtins.getEnv "HOME";
               home.stateVersion = "23.05";
             }
             {

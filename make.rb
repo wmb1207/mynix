@@ -4,6 +4,14 @@
 require 'open3'
 require 'optparse'
 require 'pathname'
+require 'yaml'
+
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
+_cfg     = File.exist?("config.yml") ? (YAML.safe_load(File.read("config.yml")) || {}) : {}
+USER     = _cfg.fetch("user",    ENV.fetch("USER", "wmb")).freeze
+SSH_KEY  = _cfg["ssh_key"]&.then { |k| File.expand_path(k) }.freeze
 
 # ---------------------------------------------------------------------------
 # Color palette — gloomy creamsody
@@ -39,8 +47,8 @@ REMOTE_HOSTS = {
 }.freeze
 
 EMACS_PATHS = [
-  Pathname("/home/wmb/.emacs.d/init.el"),
-  Pathname("/home/wmb/.emacs.d/lisp/packages.el"),
+  Pathname("#{Dir.home}/.emacs.d/init.el"),
+  Pathname("#{Dir.home}/.emacs.d/lisp/packages.el"),
 ].freeze
 
 STAGED_ASSETS = %w[
@@ -61,14 +69,14 @@ Template      = Struct.new(:name, :output, :content, :fields, keyword_init: true
 # ---------------------------------------------------------------------------
 # Shell helpers
 # ---------------------------------------------------------------------------
-def run_cmd(cmd)
+def run_cmd(cmd, env: {})
   puts "Executing: #{cmd.join(' ')}"
-  out, status = Open3.capture2e(*cmd)
+  out, status = Open3.capture2e(env, *cmd)
   { exit: status.exitstatus, out: out }
 end
 
-def run_cmd!(cmd)
-  run_cmd(cmd).then do |r|
+def run_cmd!(cmd, env: {})
+  run_cmd(cmd, env: env).then do |r|
     r[:exit].zero? ? r : abort("!! Command failed (exit #{r[:exit]}):\n#{r[:out]}")
   end
 end
@@ -132,6 +140,7 @@ def ghostty_tmpl(light: false)
     "{{transparency}}" => TRANSPARENCY,
     "{{theme}}"        => light ? GHOSTTY_THEME_LIGHT : GHOSTTY_THEME,
     "{{font}}"         => FONT,
+    "{{user}}"         => USER,
   })
 end
 
@@ -148,6 +157,7 @@ def fvwm3_tmpl
     "{{olive}}"       => OLIVE,
     "{{theme}}"       => THEME,
     "{{font}}"        => FONT,
+    "{{user}}"        => USER,
   })
 end
 
@@ -218,14 +228,15 @@ def deploy(host)
   ip = REMOTE_HOSTS.fetch(host) do
     abort("!! Unknown host: #{host} — known: #{REMOTE_HOSTS.keys.join(', ')}")
   end
+  env = SSH_KEY ? { "NIX_SSHOPTS" => "-i #{SSH_KEY}" } : {}
   result = run_cmd!(%W[
     nixos-rebuild switch
     --flake .##{host}
-    --target-host wmb@#{ip}
+    --target-host #{USER}@#{ip}
     --sudo
     --impure
     --option require-sigs false
-  ].flatten)
+  ].flatten, env: env)
   puts "Deployed #{host} to #{ip}\n#{result[:out]}"
 end
 

@@ -4,8 +4,8 @@
 require 'optparse'
 require 'fileutils'
 
-TEMPLATE_PATH = "/home/wmb/.local/templates/"
-SCRIPTS_PATH  = "/home/wmb/.local/bin/"
+TEMPLATE_PATH = "#{Dir.home}/.local/templates/"
+SCRIPTS_PATH  = "#{Dir.home}/.local/bin/"
 SCRIPTS       = %w[tunnel].freeze
 
 Template = Struct.new(:name, :template, :tags, keyword_init: true)

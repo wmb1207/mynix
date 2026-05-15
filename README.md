@@ -47,6 +47,17 @@ Public services are exposed via Cloudflare Tunnel at `studiowmb.com`:
 
 Internal services are available on `wmb.arpa` within the local network.
 
+## Configuration
+
+Create a `config.yml` at the repo root before using any scripts (it is gitignored):
+
+```yaml
+user: your-username
+ssh_key: ~/.ssh/id_rsa  # optional, used for remote deploys
+```
+
+`make.rb` reads this file to set the deploy user, SSH key, home-manager paths, and template substitutions. Falls back to `$USER` if the file is absent.
+
 ## Secrets
 
 Secrets are kept as gitignored files in their respective host directories:
@@ -61,6 +72,6 @@ Copy the `.example` files and fill in the values before building.
 ## Deploying
 
 ```bash
-nixos-rebuild boot --flake .#<host> --target-host wmb@<ip> --sudo --impure
-ssh wmb@<ip> sudo reboot
+nixos-rebuild boot --flake .#<host> --target-host <user>@<ip> --sudo --impure
+ssh <user>@<ip> sudo reboot
 ```
