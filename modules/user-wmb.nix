@@ -539,6 +539,8 @@ in
       ".config/themes/dark.edn".text     = themeToEdn themes.dark;
       ".config/themes/light.edn".text    = themeToEdn themes.light;
       ".local/bin/theme.rb"              = { source = ../assets/scripts/theme.rb; executable = true; };
+      ".local/bin/screenshot"            = { source = ../assets/scripts/screenshot.sh; executable = true; };
+      ".local/bin/screenshot-save"       = { source = ../assets/scripts/screenshot-save.sh; executable = true; };
 
       # ── Edwood / acme-lsp ─────────────────────────────────────────────────
       ".config/acme-lsp/config.toml".text = ''

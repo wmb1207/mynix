@@ -85,3 +85,11 @@ XF86AudioMute
 
 super + shift + l
     $HOME/.local/bin/lock.sh
+
+# screenshot - full screen to clipboard
+Print
+    maim | xclip -selection clipboard -t image/png
+
+# screenshot - region select to clipboard
+super + Print
+    maim -s | xclip -selection clipboard -t image/png

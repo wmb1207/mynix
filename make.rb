@@ -9,9 +9,11 @@ require 'yaml'
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-_cfg     = File.exist?("config.yml") ? (YAML.safe_load(File.read("config.yml")) || {}) : {}
-USER     = _cfg.fetch("user",    ENV.fetch("USER", "wmb")).freeze
-SSH_KEY  = _cfg["ssh_key"]&.then { |k| File.expand_path(k) }.freeze
+_cfg           = File.exist?("config.yml") ? (YAML.safe_load(File.read("config.yml")) || {}) : {}
+USER           = _cfg.fetch("user",    ENV.fetch("USER", "wmb")).freeze
+SSH_KEY        = _cfg["ssh_key"]&.then { |k| File.expand_path(k) }.freeze
+FORGEJO_TOKEN  = _cfg["forgejo_token"]&.then { |t| t.empty? ? nil : t }.freeze
+FORGEJO_HOST   = "git.studiowmb.com".freeze
 
 # ---------------------------------------------------------------------------
 # Color palette — gloomy creamsody
@@ -69,6 +71,11 @@ Template      = Struct.new(:name, :output, :content, :fields, keyword_init: true
 # ---------------------------------------------------------------------------
 # Shell helpers
 # ---------------------------------------------------------------------------
+def nix_env
+  return {} unless FORGEJO_TOKEN
+  { "NIX_CONFIG" => "access-tokens = #{FORGEJO_HOST}=#{FORGEJO_TOKEN}" }
+end
+
 def run_cmd(cmd, env: {})
   puts "Executing: #{cmd.join(' ')}"
   out, status = Open3.capture2e(env, *cmd)
@@ -200,27 +207,27 @@ end
 
 def apply_flake(host)
   run_cmd!(%W[doas git config --global --add safe.directory #{Dir.pwd}])
-  result = run_cmd!(%W[doas nixos-rebuild switch --flake .##{host} --upgrade --impure])
+  result = run_cmd!(%W[doas nixos-rebuild switch --flake .##{host} --upgrade --impure], env: nix_env)
   puts "Flake applied on #{host}\n#{result[:out]}"
 end
 
-def apply_boot_flake(host)d
-  run_cmd!(%W[doas nixos-rebuild boot --flake .##{host} --upgrade --impure])
+def apply_boot_flake(host)
+  run_cmd!(%W[doas nixos-rebuild boot --flake .##{host} --upgrade --impure], env: nix_env)
   puts "Flake applied on boot on #{host}\n#{result[:out]}"
 end
 
 def build_iso(host)
-  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.isoImage --impure])
+  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.isoImage --impure], env: nix_env)
   puts "ISO build done for #{host}\n#{result[:out]}"
 end
 
 def build_qcow2(host)
-  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.qcow2 --impure])
+  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.qcow2 --impure], env: nix_env)
   puts "qcow2 build done for #{host}\n#{result[:out]}"
 end
 
 def build_pi(host)
-  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.sdImage --impure])
+  result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.sdImage --impure], env: nix_env)
   puts "Pi image build done for #{host}\n#{result[:out]}"
 end
 
@@ -228,7 +235,7 @@ def deploy(host)
   ip = REMOTE_HOSTS.fetch(host) do
     abort("!! Unknown host: #{host} — known: #{REMOTE_HOSTS.keys.join(', ')}")
   end
-  env = SSH_KEY ? { "NIX_SSHOPTS" => "-i #{SSH_KEY}" } : {}
+  env = nix_env.merge(SSH_KEY ? { "NIX_SSHOPTS" => "-i #{SSH_KEY}" } : {})
   result = run_cmd!(%W[
     nixos-rebuild switch
     --flake .##{host}

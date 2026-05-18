@@ -4,7 +4,8 @@ let
   # Define groups of packages for each arch
   commonPackages = with pkgs; [
     brave
-    flameshot
+    maim
+    slop
     xterm
     rxvt-unicode
     pavucontrol
