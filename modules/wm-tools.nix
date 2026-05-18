@@ -11,4 +11,5 @@ with pkgs; [
   eww
   dunst
   pulsemixer
+  libinput-gestures
 ]

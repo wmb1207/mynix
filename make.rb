@@ -204,7 +204,7 @@ def apply_flake(host)
   puts "Flake applied on #{host}\n#{result[:out]}"
 end
 
-def apply_boot_flake(host)
+def apply_boot_flake(host)d
   run_cmd!(%W[doas nixos-rebuild boot --flake .##{host} --upgrade --impure])
   puts "Flake applied on boot on #{host}\n#{result[:out]}"
 end

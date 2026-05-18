@@ -1,11 +1,24 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'open3'
+require 'socket'
 
 THEME_DIR = "#{Dir.home}/.config/themes"
-FVWM_CMD  = ["/run/current-system/sw/bin/FvwmCommand", "/usr/bin/FvwmCommand"]
-              .find { |f| File.exist?(f) }
+
+def fvwm_socket_path
+  ENV['FVWMMFL_SOCKET'] ||
+    (ENV['TMPDIR'] && "#{ENV['TMPDIR']}/fvwm_mfl.sock") ||
+    '/tmp/fvwm_mfl.sock'
+end
+
+def fvwm_cmd(command)
+  UNIXSocket.open(fvwm_socket_path) do |sock|
+    sock.write(command)
+    sock.recv(4096)
+  end
+rescue Errno::ENOENT, Errno::ECONNREFUSED
+  nil
+end
 
 # ---------------------------------------------------------------------------
 # EDN parser — flat keyword->string/vector maps only
@@ -49,14 +62,10 @@ def fvwm_colorsets(t)
 end
 
 def apply_fvwm(t)
-  unless FVWM_CMD
-    puts "⚠ FvwmCommand not found, skipping fvwm update"
-    return
-  end
-  fvwm_colorsets(t).each { |cs| system(FVWM_CMD, cs) }
-  system(FVWM_CMD, "Refresh")
-rescue => e
-  puts "⚠ fvwm: #{e.message}"
+  colorsets = fvwm_colorsets(t)
+  File.write(File.expand_path("~/.fvwm/local.config"), colorsets.join("\n") + "\n")
+  colorsets.each { |cs| fvwm_cmd(cs) }
+  fvwm_cmd("Refresh")
 end
 
 # ---------------------------------------------------------------------------
@@ -66,6 +75,7 @@ def xresources_str(t)
   lines = [
     "URxvt.background:         #{t[:background]}",
     "URxvt.foreground:         #{t[:foreground]}",
+    "URxvt.borderColor:        #{t[:background]}",
     "URxvt.cursorColor:        #{t[:cursor]}",
     "URxvt.highlightColor:     #{t[:highlight]}",
     "URxvt.highlightTextColor: #{t[:"highlight-text"]}",
@@ -90,21 +100,14 @@ def urxvt_osc(t)
     "\033]12;#{t[:cursor]}\007",
     "\033]17;#{t[:highlight]}\007",
     "\033]19;#{t[:"highlight-text"]}\007",
+    "\033]708;#{t[:background]}\007",
   ]
   seqs += t[:colors].each_with_index.map { |c, i| "\033]4;#{i};#{c}\007" }
   seqs.join
 end
 
 def urxvt_ptys
-  pids, = Open3.capture2("pgrep urxvt")
-  pids.lines.map(&:strip).reject(&:empty?).flat_map do |pid|
-    Dir["/proc/#{pid}/fd/*"].filter_map do |fd|
-      target = File.realpath(fd) rescue next
-      target if target.start_with?("/dev/pts/") && target != "/dev/pts/ptmx"
-    end
-  end.uniq
-rescue
-  []
+  Dir["/dev/pts/[0-9]*"].select { |p| File.stat(p).uid == Process.uid rescue false }
 end
 
 def apply_urxvt(t)
@@ -149,6 +152,32 @@ rescue
 end
 
 # ---------------------------------------------------------------------------
+# wallpaper + dmenu
+# ---------------------------------------------------------------------------
+def apply_wallpaper(t)
+  system("xsetroot", "-solid", t[:background])
+end
+
+def apply_dmenu(t)
+  opts = "-i -x 151 -lh 3 -fn '#{t[:font]}' -nb '#{t[:background]}' -nf '#{t[:foreground]}' -sb '#{t[:active]}' -sf '#{t[:background]}' -bc '#{t[:foreground]}' -bw 1"
+  File.write(File.expand_path("~/.config/dmenu.opts"), opts)
+end
+
+# ---------------------------------------------------------------------------
+# xclock / xload — kill and respawn so FvwmButtons re-swallows with new colors
+# ---------------------------------------------------------------------------
+XCLOCK_BG = "#e0d8c7"
+XCLOCK_FG = "#3a2018"
+
+def apply_xclock_xload(_t)
+  system("pkill", "xclock")
+  system("pkill", "xload")
+  sleep 0.3
+  Process.detach(spawn("xclock", "-geometry", "150x150", "-bg", XCLOCK_BG, "-fg", XCLOCK_FG))
+  Process.detach(spawn("xload",  "-bg", XCLOCK_BG, "-fg", XCLOCK_FG))
+end
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 def main(argv)
@@ -162,8 +191,12 @@ def main(argv)
   apply_xresources(t)
   apply_urxvt(t)
   apply_fvwm(t)
+  apply_dmenu(t)
+  apply_wallpaper(t)
   apply_tmux(t)
   apply_emacs(t)
+  #apply_xclock_xload(t)
+  #fvwm_cmd("Restart")
   puts "→ #{name}"
 end
 

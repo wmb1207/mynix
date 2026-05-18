@@ -25,6 +25,7 @@ in {
     ".config/wallpapers/gradient.png" = mkSource ../assets/gradient.png;
     ".config/wallpapers/galaxy-plant.jpeg" = mkSource ../assets/galaxy-plant.jpeg;
     ".config/dunst/dunstrc" = mkSource ../assets/dunstrc;
+    ".config/libinput-gestures.conf" = mkSource ../assets/libinput-gestures.conf;
     ".fvwm/config" = mkSource ../assets/fvwm3.conf;
     ".emacs.d/init.el" = mkSource ../assets/init.el;
     ".emacs.d/lisp/packages.el" = mkSource ../assets/packages.el;
@@ -38,7 +39,10 @@ in {
     ".local/bin/keys.rb"      = mkExecutable ../assets/scripts/keys.rb;
     ".local/bin/tunnel.rb"    = mkExecutable ../assets/scripts/tunnel.rb;
     ".local/bin/projecter.rb" = mkExecutable ../assets/scripts/projecter.rb;
-    ".local/bin/theme.rb"     = mkExecutable ../assets/scripts/theme.rb;
+    ".local/bin/theme.rb"        = mkExecutable ../assets/scripts/theme.rb;
+    ".local/bin/kbd.rb"          = mkExecutable ../assets/scripts/kbd.rb;
+    ".local/bin/screen_setup.rb" = mkExecutable ../assets/scripts/screen_setup.rb;
+    ".local/bin/dmenu.sh"        = mkExecutable ../assets/scripts/dmenu.sh;
 
     # templates - dev-shells
     # ".local/templates/php.nix" = mkSource ../templates/devshells/php.nix;

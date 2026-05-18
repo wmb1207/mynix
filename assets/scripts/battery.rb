@@ -2,8 +2,10 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'socket'
 
 BATTERY_PATH = "/sys/class/power_supply/BAT0/capacity"
+BATTERY_STATUS_PATH = "/sys/class/power_supply/BAT0/status"
 POWER_SUPPLY_PATH = "/sys/class/power_supply"
 
 def read_percentage(path)
@@ -33,6 +35,29 @@ def read_percentages(path)
   list_batteries(path).map { |b| read_percentage(b) }
 end
 
+def charging?
+  File.exist?(BATTERY_STATUS_PATH) && File.read(BATTERY_STATUS_PATH).strip == "Charging"
+end
+
+def panel_label(percentage)
+  "bat:#{percentage}%#{charging? ? '+' : ''}"
+end
+
+def fvwm_socket_path
+  ENV['FVWMMFL_SOCKET'] ||
+    (ENV['TMPDIR'] && "#{ENV['TMPDIR']}/fvwm_mfl.sock") ||
+    '/tmp/fvwm_mfl.sock'
+end
+
+def update_panel(percentage)
+  UNIXSocket.open(fvwm_socket_path) do |sock|
+    sock.write("SendToModule FvwmButtons ChangeButton battbtn Title #{panel_label(percentage)}")
+    sock.recv(4096)
+  end
+rescue Errno::ENOENT, Errno::ECONNREFUSED
+  nil
+end
+
 def daemon
   puts "Starting the battery daemon"
   state = nil
@@ -40,6 +65,7 @@ def daemon
     percentages = read_percentages(POWER_SUPPLY_PATH)
     percentages.each { |p| notify_battery(p, state) }
     state = percentages.min
+    update_panel(state)
     sleep 10
   end
 end
