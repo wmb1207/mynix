@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'fileutils'
 require 'open3'
 require 'optparse'
 require 'pathname'
@@ -74,6 +75,66 @@ Template      = Struct.new(:name, :output, :content, :fields, keyword_init: true
 def nix_env
   return {} unless FORGEJO_TOKEN
   { "NIX_CONFIG" => "access-tokens = #{FORGEJO_HOST}=#{FORGEJO_TOKEN}" }
+end
+
+def prompt(question)
+  print "#{question}: "
+  $stdout.flush
+  gets.chomp
+end
+
+def init(host)
+  # ── Token / .netrc ──────────────────────────────────────────────────────────
+  token = FORGEJO_TOKEN || prompt("Forgejo token")
+  abort("!! token required") if token.empty?
+
+  netrc_path = File.expand_path("~/.netrc")
+  entry      = "machine #{FORGEJO_HOST}\nlogin #{USER}\npassword #{token}\n"
+  existing   = File.exist?(netrc_path) ? File.read(netrc_path) : ""
+  cleaned    = existing.lines
+    .slice_when { |_, b| b.start_with?("machine ") }
+    .reject { |chunk| chunk.first.start_with?("machine #{FORGEJO_HOST}") }
+    .flatten.join
+  File.write(netrc_path, cleaned + entry)
+  File.chmod(0o600, netrc_path)
+  puts "~/.netrc configured for #{FORGEJO_HOST}"
+
+  # ── local.nix ───────────────────────────────────────────────────────────────
+  local_nix   = File.expand_path("modules/local.nix")
+  example_nix = File.expand_path("modules/local.nix.example")
+
+  if File.exist?(local_nix)
+    puts "modules/local.nix already exists, skipping"
+  else
+    FileUtils.cp(example_nix, local_nix)
+    puts "modules/local.nix created from example"
+    editor = ENV.fetch("EDITOR", nil)
+    if editor
+      system(editor, local_nix)
+    else
+      puts "  -> edit modules/local.nix before applying"
+    end
+  end
+
+  # ── Next steps ──────────────────────────────────────────────────────────────
+  puts ""
+  puts "Ready. Run:  ruby make.rb --apply #{host || '<host>'}"
+end
+
+def setup_netrc
+  abort("!! forgejo_token not set in config.yml") unless FORGEJO_TOKEN
+  netrc_path = File.expand_path("~/.netrc")
+  entry = "machine #{FORGEJO_HOST}\nlogin #{USER}\npassword #{FORGEJO_TOKEN}\n"
+
+  existing = File.exist?(netrc_path) ? File.read(netrc_path) : ""
+  cleaned  = existing.lines
+    .chunk_while { |a, b| !b.start_with?("machine ") || a.start_with?("machine #{FORGEJO_HOST}") }
+    .reject { |chunk| chunk.first.start_with?("machine #{FORGEJO_HOST}") }
+    .flatten.join
+
+  File.write(netrc_path, cleaned + entry)
+  File.chmod(0o600, netrc_path)
+  puts "~/.netrc updated for #{FORGEJO_HOST}"
 end
 
 def run_cmd(cmd, env: {})
@@ -298,7 +359,9 @@ def parse_opts(argv)
     o.on("-q", "--qcow2",  "Build a qcow2 disk image")                  { opts[:qcow2]  = true }
     o.on("-d", "--deploy", "Deploy to remote host via nixos-rebuild")   { opts[:deploy] = true }
     o.on("-l", "--light",  "Use light theme variant")                   { opts[:light]  = true }
-    o.on("-b", "--boot",   "Apply flake and templates whith Boot flag") { opts[:boot]  = true }
+    o.on("-b", "--boot",   "Apply flake and templates whith Boot flag") { opts[:boot]   = true }
+    o.on("-n", "--netrc",  "Write Forgejo token to ~/.netrc")           { opts[:netrc]  = true }
+    o.on("-I", "--init",   "First-boot setup: .netrc + local.nix")      { opts[:init]   = true }
   end
   rest = parser.parse(argv)
   [opts, rest]
@@ -310,6 +373,8 @@ def main(argv)
   light = opts[:light] || false
 
   case
+  when opts[:init]   then init(host)
+  when opts[:netrc]  then setup_netrc
   when opts[:iso]    then build_iso(host)
   when opts[:pi]     then build_pi(host)
   when opts[:qcow2]  then build_qcow2(host)

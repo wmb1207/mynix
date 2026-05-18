@@ -21,3 +21,6 @@ secrets/
 
 # Local config (per-user, never commit)
 config.yml
+
+# Machine-local extra packages (never commit)
+modules/local.nix

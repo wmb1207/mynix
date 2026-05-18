@@ -1,0 +1,27 @@
+# Copy to local.nix (gitignored) for machine-specific packages.
+# These are never included in ISO/qcow2 builds.
+{ pkgs }: with pkgs; [
+  # Browsers
+  brave
+
+  # Communication & collaboration
+  slack
+
+  # Gaming
+  steam
+  moonlight-qt
+
+  # Dev tools
+  postman
+  claude-code
+  postgresql
+  pgcli
+  awscli2
+  opentofu
+  ssm-session-manager-plugin
+  jetbrains.datagrip
+
+  # Music
+  abcde
+  cmus
+]

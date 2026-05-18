@@ -3,13 +3,11 @@
 let
   # Define groups of packages for each arch
   commonPackages = with pkgs; [
-    brave
     maim
     slop
     xterm
     rxvt-unicode
     pavucontrol
-    postman
     vlc
     mupdf
     librewolf
@@ -20,13 +18,9 @@ let
     xclip
     xclock
     xload
-    moonlight-qt
   ];
 
   x86_64Packages = with pkgs; [
-    slack
-    steam
-    jetbrains.datagrip
   ];
 
   aarch64Packages = with pkgs; [

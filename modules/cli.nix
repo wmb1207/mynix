@@ -1,7 +1,6 @@
 { pkgs }:
 
 with pkgs; [
-  abcde
   flac
   loksh
   dtach
@@ -33,19 +32,12 @@ with pkgs; [
   gtop
   networkmanager
 
-  postgresql
-  pgcli
   libfido2
-
-  cmus
   pamixer
   mpv
 
   libtool
-  php84Packages.phpmd
-  ameba # Crystal linter
 
   clipmenu
   nix-search-cli
-  claude-code
 ]

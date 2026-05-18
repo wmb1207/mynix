@@ -213,11 +213,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778189334,
-        "narHash": "sha256-23BRQ5guxKYo2JhA79uIt+ZZSST3+Fghcy4qHKh3xzc=",
+        "lastModified": 1779115096,
+        "narHash": "sha256-vkduvvfUvg+WGoHpzsL6IfSuqJ5YFyI1Xa7szZ5Dlzg=",
         "ref": "refs/heads/main",
-        "rev": "7e3fe05ac1b9ece837e6304bbf9f037b413d6586",
-        "revCount": 4,
+        "rev": "d840740f69378226d5b643e03d2490ec6f9b2c65",
+        "revCount": 6,
         "type": "git",
         "url": "https://git.studiowmb.com/studiowmb/studiowmb"
       },

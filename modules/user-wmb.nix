@@ -3,11 +3,12 @@
 let
   dag = inputs.home-manager.lib.hm.dag;
 
-  cli  = import ./cli.nix { inherit pkgs; };
-  iac  = import ./development/infrastructure.nix { inherit pkgs; };
-  gui  = import ./gui.nix { inherit pkgs system; };
+  cli    = import ./cli.nix { inherit pkgs; };
+  iac    = import ./development/infrastructure.nix { inherit pkgs; };
+  gui    = import ./gui.nix { inherit pkgs system; };
   my-fonts = import ./fonts.nix { inherit pkgs; };
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
+  local  = if builtins.pathExists ./local.nix then import ./local.nix { inherit pkgs; } else [];
   programming-languages =
     import ./development/programming-languages.nix { inherit pkgs; };
   assets = import ./asseter.nix { inherit lib; };
@@ -465,6 +466,7 @@ in
       ++ gui
       ++ iac
       ++ wm-tools
+      ++ local
       ++ [ myEmacs
         inputs.llm-agents.packages.${system}.coderabbit-cli
         
