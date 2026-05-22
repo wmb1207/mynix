@@ -15,8 +15,8 @@ else
 fi
 
 bspc config border_width 1
-bspc config focused_border_color \#4a6a78
-bspc config normal_border_color \#302d29
+bspc config focused_border_color \#CFB980
+bspc config normal_border_color \#44443C
 bspc config window_gap 8
 bspc config split_ratio 0.55
 bspc config borderless_monocle true
@@ -34,7 +34,7 @@ pgrep -x dunst > /dev/null && killall dunst
 pgrep -x feh > /dev/null && killall feh
 
 # Kill battery daemon if it's already running
-pkill -f "battery.rb" > /dev/null; true
+pkill -f "battery" > /dev/null; true
 
 pgrep -x polybar > /dev/null && killall polybar
 
@@ -48,7 +48,7 @@ dunst --config ~/.config/dunst/dunstrc &
 feh --bg-scale ~/.config/wallpapers/wallpaper-10.jpg &
 
 # Start battery daemon
-ruby ~/.local/bin/battery.rb --daemon &
+battery --daemon &
 
 # Start polybar
 bash ~/.local/bin/polybar.sh any

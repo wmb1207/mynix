@@ -1,0 +1,12 @@
+user: wmb
+ssh_key: ~/.ssh/id_rsa
+forgejo_token: ""
+theme: wilson   # options: wilson, doric-valley, creamsody
+
+hosts:
+  nginx:         192.168.x.x
+  podman-server: 192.168.x.x
+  coredns:       192.168.x.x
+  postgres:      192.168.x.x
+  vm:            192.168.x.x
+  redis:         192.168.x.x

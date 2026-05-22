@@ -121,6 +121,13 @@ in
 {
   imports = [ ../../modules/ssh-keys.nix ../../modules/wmb-arpa-ca.nix ];
 
+  assertions = [
+    {
+      assertion = cloudflaredToken != "";
+      message = "hosts/nginx/cloudflared-token.env is required and must define TUNNEL_TOKEN before enabling cloudflared.";
+    }
+  ];
+
   networking.hostName = "nginx";
 
   time.timeZone = "America/Argentina/Cordoba";
@@ -265,7 +272,6 @@ in
   # Token comes from hosts/nginx/cloudflared-token.env (gitignored).
   # Copy hosts/nginx/cloudflared-token.env.example → cloudflared-token.env
   # and fill in your token before rebuilding.
-  # Ingress rules are configured in the Cloudflare dashboard.
   environment.etc."cloudflared/token.env" = {
     text = cloudflaredToken;
     mode = "0400";
@@ -273,6 +279,12 @@ in
 
   environment.etc."cloudflared/config.yml" = {
     text = ''
+      originRequest:
+        connectTimeout: 30s
+        tlsTimeout: 10s
+        tcpKeepAlive: 30s
+        keepAliveConnections: 100
+        keepAliveTimeout: 90s
       ingress:
         - hostname: studiowmb.com
           service: http://localhost:80

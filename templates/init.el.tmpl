@@ -147,12 +147,13 @@
   ;; Re-apply after any theme change at runtime
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
-  ;; Make whitespace faces transparent so they inherit the theme background.
+  ;; Set whitespace indicator color to match comments so they're visible but unobtrusive.
   (defun my-reset-whitespace-faces ()
-    (dolist (face '(whitespace-space whitespace-tab whitespace-newline
-                    whitespace-trailing whitespace-empty whitespace-indentation
-                    whitespace-space-before-tab whitespace-space-after-tab))
-      (set-face-attribute face nil :background 'unspecified)))
+    (let ((fg (face-foreground 'font-lock-comment-face nil 'default)))
+      (dolist (face '(whitespace-space whitespace-tab whitespace-newline
+                      whitespace-trailing whitespace-empty whitespace-indentation
+                      whitespace-space-before-tab whitespace-space-after-tab))
+        (set-face-attribute face nil :foreground fg :background 'unspecified))))
   (add-hook 'after-load-theme-hook #'my-reset-whitespace-faces)
   (my-reset-whitespace-faces)
 

@@ -15,39 +15,83 @@ USER           = _cfg.fetch("user",    ENV.fetch("USER", "wmb")).freeze
 SSH_KEY        = _cfg["ssh_key"]&.then { |k| File.expand_path(k) }.freeze
 FORGEJO_TOKEN  = _cfg["forgejo_token"]&.then { |t| t.empty? ? nil : t }.freeze
 FORGEJO_HOST   = "git.studiowmb.com".freeze
+REMOTE_HOSTS   = (_cfg["hosts"] || {}).freeze
 
 # ---------------------------------------------------------------------------
-# Color palette — gloomy creamsody
+# Color palettes
 # ---------------------------------------------------------------------------
-BLACK     = "#1c1a18"
-BG_ALT    = "#252320"
-SELECTION = "#302d29"
-DARK_GRAY = "#6a6858"
-WHITE     = "#b5b2a0"
-RED       = "#884545"
-OLIVE     = "#8a7040"
-GREEN     = "#657050"
-BLUE      = "#4a6a78"
-MAUVE     = "#785a5a"
-CREAM     = "#9a9888"
+PALETTES = {
+  "doric-valley" => {
+    black:         "#383035",
+    bg_alt:        "#484040",
+    selection:     "#554f52",
+    dark_gray:     "#afa497",
+    white:         "#e0d5b7",
+    red:           "#eca28f",
+    olive:         "#c0b060",
+    green:         "#b9d0aa",
+    blue:          "#a0c0d0",
+    mauve:         "#e9acbf",
+    cream:         "#f6c097",
+    emacs_theme:   "doric-valley",
+    ghostty_theme: "Wez",
+  },
+  "creamsody" => {
+    black:         "#1c1a18",
+    bg_alt:        "#252320",
+    selection:     "#302d29",
+    dark_gray:     "#6a6858",
+    white:         "#b5b2a0",
+    red:           "#884545",
+    olive:         "#8a7040",
+    green:         "#657050",
+    blue:          "#4a6a78",
+    mauve:         "#785a5a",
+    cream:         "#9a9888",
+    emacs_theme:   "creamsody-darker",
+    ghostty_theme: "Wez",
+  },
+  "wilson" => {
+    black:         "#222222",
+    bg_alt:        "#44443C",
+    selection:     "#44443C",
+    dark_gray:     "#6C6B59",
+    white:         "#BEBFB7",
+    red:           "#A56F4B",
+    olive:         "#9BA657",
+    green:         "#9BA657",
+    blue:          "#CFB980",
+    mauve:         "#B97E56",
+    cream:         "#B9A572",
+    emacs_theme:   "wilson",
+    ghostty_theme: "Wez",
+  },
+}.freeze
+
+_palette = PALETTES.fetch(_cfg.fetch("theme", "wilson"), PALETTES["wilson"])
+
+BLACK     = _palette[:black]
+BG_ALT    = _palette[:bg_alt]
+SELECTION = _palette[:selection]
+DARK_GRAY = _palette[:dark_gray]
+WHITE     = _palette[:white]
+RED       = _palette[:red]
+OLIVE     = _palette[:olive]
+GREEN     = _palette[:green]
+BLUE      = _palette[:blue]
+MAUVE     = _palette[:mauve]
+CREAM     = _palette[:cream]
+THEME_KEY = _cfg.fetch("theme", "wilson").freeze
 
 FONT                = "DejaVu Sans Mono"
 TEMPLATES_DIR       = "templates"
 ASSETS_DIR          = "assets"
 TRANSPARENCY        = "100"
-THEME               = "creamsody-darker"
+THEME               = _palette[:emacs_theme]
 LIGHT_THEME         = "ef-day"
-GHOSTTY_THEME       = "Wez"
+GHOSTTY_THEME       = _palette[:ghostty_theme]
 GHOSTTY_THEME_LIGHT = "GruvboxLight"
 
-REMOTE_HOSTS = {
-  "nginx"         => "192.168.88.26",
-  "podman-server" => "192.168.88.38",
-  "coredns"       => "192.168.88.27",
-  "postgres"      => "192.168.88.10",
-  "vm"            => "192.168.88.37",
-  "redis"         => "192.168.88.11",
-}.freeze
 
 EMACS_PATHS = [
   Pathname("#{Dir.home}/.emacs.d/init.el"),
@@ -73,8 +117,9 @@ Template      = Struct.new(:name, :output, :content, :fields, keyword_init: true
 # Shell helpers
 # ---------------------------------------------------------------------------
 def nix_env
-  return {} unless FORGEJO_TOKEN
-  { "NIX_CONFIG" => "access-tokens = #{FORGEJO_HOST}=#{FORGEJO_TOKEN}" }
+  env = { "NIXOS_USER" => USER, "NIXOS_THEME" => THEME_KEY }
+  env["NIX_CONFIG"] = "access-tokens = #{FORGEJO_HOST}=#{FORGEJO_TOKEN}" if FORGEJO_TOKEN
+  env
 end
 
 def prompt(question)
@@ -99,6 +144,13 @@ def init(host)
   File.chmod(0o600, netrc_path)
   puts "~/.netrc configured for #{FORGEJO_HOST}"
 
+  # ── config.yml ──────────────────────────────────────────────────────────────
+  config_yml = File.expand_path("config.yml")
+  unless File.exist?(config_yml)
+    FileUtils.cp(File.expand_path("config.yml.example"), config_yml)
+    puts "config.yml created from example — fill in your IPs and token"
+  end
+
   # ── local.nix ───────────────────────────────────────────────────────────────
   local_nix   = File.expand_path("modules/local.nix")
   example_nix = File.expand_path("modules/local.nix.example")
@@ -118,7 +170,10 @@ def init(host)
 
   # ── Next steps ──────────────────────────────────────────────────────────────
   puts ""
-  puts "Ready. Run:  ruby make.rb --apply #{host || '<host>'}"
+  puts "Next steps:"
+  puts "  1. Edit config.yml       — set host IPs and verify forgejo_token"
+  puts "  2. Edit modules/local.nix — add machine-specific packages"
+  puts "  3. ruby make.rb --apply #{host || '<host>'}"
 end
 
 def setup_netrc
@@ -268,16 +323,17 @@ end
 
 def apply_flake(host)
   run_cmd!(%W[doas git config --global --add safe.directory #{Dir.pwd}])
-  result = run_cmd!(%W[doas nixos-rebuild switch --flake .##{host} --upgrade --impure], env: nix_env)
+  result = run_cmd!(%W[doas nixos-rebuild switch --flake .##{host} --impure], env: nix_env)
   puts "Flake applied on #{host}\n#{result[:out]}"
 end
 
 def apply_boot_flake(host)
-  run_cmd!(%W[doas nixos-rebuild boot --flake .##{host} --upgrade --impure], env: nix_env)
+  result = run_cmd!(%W[doas nixos-rebuild boot --flake .##{host} --impure], env: nix_env)
   puts "Flake applied on boot on #{host}\n#{result[:out]}"
 end
 
 def build_iso(host)
+  host ||= "workstationiso"
   result = run_cmd!(%W[nix build .#nixosConfigurations.#{host}.config.system.build.isoImage --impure], env: nix_env)
   puts "ISO build done for #{host}\n#{result[:out]}"
 end
@@ -351,17 +407,17 @@ end
 def parse_opts(argv)
   opts = {}
   parser = OptionParser.new do |o|
-    o.on("-c", "--clear",  "Clear all previous nix store instances")    { opts[:clear]  = true }
-    o.on("-a", "--apply",  "Apply flake and templates")                 { opts[:apply]  = true }
-    o.on("-t", "--tmpl",   "Build templates only")                      { opts[:tmpl]   = true }
-    o.on("-p", "--pi",     "Build the Pi image")                        { opts[:pi]     = true }
-    o.on("-i", "--iso",    "Build the ISO")                             { opts[:iso]    = true }
-    o.on("-q", "--qcow2",  "Build a qcow2 disk image")                  { opts[:qcow2]  = true }
-    o.on("-d", "--deploy", "Deploy to remote host via nixos-rebuild")   { opts[:deploy] = true }
-    o.on("-l", "--light",  "Use light theme variant")                   { opts[:light]  = true }
-    o.on("-b", "--boot",   "Apply flake and templates whith Boot flag") { opts[:boot]   = true }
-    o.on("-n", "--netrc",  "Write Forgejo token to ~/.netrc")           { opts[:netrc]  = true }
-    o.on("-I", "--init",   "First-boot setup: .netrc + local.nix")      { opts[:init]   = true }
+    o.on("-c", "--clear",  "Clear all previous nix store instances")         { opts[:clear]  = true }
+    o.on("-a", "--apply",  "Apply flake and templates to HOST")             { opts[:apply]  = true }
+    o.on("-t", "--tmpl",   "Build templates only")                          { opts[:tmpl]   = true }
+    o.on("-p", "--pi",     "Build SD card image for HOST")                  { opts[:pi]     = true }
+    o.on("-i", "--iso",    "Build ISO image for HOST")                      { opts[:iso]    = true }
+    o.on("-q", "--qcow2",  "Build qcow2 disk image for HOST")               { opts[:qcow2]  = true }
+    o.on("-d", "--deploy", "Deploy HOST via nixos-rebuild --target-host")   { opts[:deploy] = true }
+    o.on("-l", "--light",  "Use light theme variant")                       { opts[:light]  = true }
+    o.on("-b", "--boot",   "Apply flake with boot flag to HOST")            { opts[:boot]   = true }
+    o.on("-n", "--netrc",  "Write Forgejo token to ~/.netrc")               { opts[:netrc]  = true }
+    o.on("-I", "--init",   "First-boot setup: .netrc + local.nix")          { opts[:init]   = true }
   end
   rest = parser.parse(argv)
   [opts, rest]

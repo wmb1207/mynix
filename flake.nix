@@ -25,12 +25,28 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, disko, ... }:
     let
       system = "x86_64-linux";
       homeDir = builtins.getEnv "HOME";
+      user      = let
+                    nixosUser = builtins.getEnv "NIXOS_USER";
+                    envUser   = builtins.getEnv "USER";
+                  in if nixosUser != "" then nixosUser
+                     else if envUser != "" && envUser != "root" then envUser
+                     else "wmb";
+      darkTheme = let t = builtins.getEnv "NIXOS_THEME"; in if t == "" then "wilson" else t;
+
+      repoDir   = builtins.getEnv "PWD";
+      localNix  = let p = "${repoDir}/modules/local.nix";
+                  in if repoDir != "" && builtins.pathExists p then p else null;
 
       baseModules = [
         home-manager.nixosModules.default
@@ -74,9 +90,19 @@
         else "";
 
       cloudflaredToken =
-        if builtins.pathExists ./hosts/nginx/cloudflared-token.env
-        then builtins.readFile ./hosts/nginx/cloudflared-token.env
-        else "";
+        let
+          candidates =
+            if repoDir == "" then []
+            else [
+              "${repoDir}/hosts/nginx/cloudflared-token.env"
+              "${repoDir}/cloudflared-token.env"
+            ];
+          existing = builtins.filter builtins.pathExists candidates;
+        in if existing != []
+           then builtins.readFile (builtins.head existing)
+           else if builtins.pathExists ./hosts/nginx/cloudflared-token.env
+           then builtins.readFile ./hosts/nginx/cloudflared-token.env
+           else "";
 
     in {
       nixosConfigurations = {
@@ -105,25 +131,23 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ./modules/iso-base.nix
             ./modules/iso-gui.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
+            ./modules/greeter.nix
             ./modules/laptop-keyboard.nix
             teleport-installer.nixosModules.default
 
             {
               environment.systemPackages = [
                 teleport-installer.packages.${system}.teleport
+                disko.packages.${system}.disko
               ];
 
-              # usually good for install/live media
               services.openssh.enable = true;
-
-              # often needed to avoid bootloader/disk config conflicts
               boot.loader.grub.enable = false;
-              virtualisation.docker.enable = true; 
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
           };
         };
 
@@ -131,20 +155,20 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
+            disko.nixosModules.disko
+            ./hosts/disk-layouts/gpt-efi.nix
             ./hosts/genericlaptop/hardware-configuration.nix
             ./hosts/genericlaptop/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             ./modules/laptop-keyboard.nix
             {
-              # Bootloader configuration
               boot.loader.systemd-boot.enable = true;
               boot.loader.efi.canTouchEfiVariables = true;
-
               virtualisation.docker.enable = true;
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer user darkTheme localNix;
           };
         };
 
@@ -152,48 +176,47 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
+            disko.nixosModules.disko
+            ./hosts/disk-layouts/gpt-efi.nix
             ./hosts/genericdesktop/hardware-configuration.nix
             ./hosts/genericdesktop/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             {
-              # Bootloader configuration
               boot.loader.systemd-boot.enable = true;
               boot.loader.efi.canTouchEfiVariables = true;
-
               virtualisation.docker.enable = true;
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer user darkTheme localNix;
           };
-        };                      # 
+        };
 
         nixos = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/desktop/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             ./modules/greeter.nix
             teleport-installer.nixosModules.default
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
           };
         };
 
         rog = nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = pkgsFor system;
-
           modules = baseModules ++ [
             ./hosts/asus/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             ./modules/laptop-keyboard.nix
             ./modules/greeter.nix
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
           };
         };
 
@@ -202,7 +225,7 @@
           pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/latitude/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             ./modules/laptop-keyboard.nix
             ./modules/greeter.nix
             teleport-installer.nixosModules.default
@@ -213,7 +236,7 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
           };
         };
 
@@ -222,10 +245,10 @@
           pkgs = pkgsFor system;
           modules = baseModules ++ [
             ./hosts/vm/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
           ];
           specialArgs = {
-            inherit inputs system teleport-installer;
+            inherit inputs system teleport-installer user darkTheme localNix;
           };
         };
 
@@ -234,11 +257,11 @@
           pkgs = pkgsFor "aarch64-linux";
           modules = baseModules ++ [
             ./hosts/asahi-book/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             ./modules/laptop-keyboard.nix
           ];
           specialArgs = {
-            inherit inputs teleport-installer;
+            inherit inputs teleport-installer user darkTheme localNix;
             system = "aarch64-linux";
           };
         };
@@ -248,10 +271,10 @@
           pkgs = pkgsFor "aarch64-linux";
           modules = baseModules ++ [
             ./hosts/asahi-mini/configuration.nix
-            ./modules/user-wmb.nix
+            ./modules/user.nix
           ];
           specialArgs = {
-            inherit inputs teleport-installer;
+            inherit inputs teleport-installer user localNix;
             system = "aarch64-linux";
           };
         };
@@ -437,13 +460,14 @@
       };
 
       homeConfigurations = {
-        wmb = home-manager.lib.homeManagerConfiguration {
+        "${user}" = home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor system;
+          extraSpecialArgs = { inherit inputs system user darkTheme localNix; };
           modules = [
-            ./modules/user-wmb.nix
+            ./modules/user.nix
             {
-              home.username = builtins.getEnv "USER";
-              home.homeDirectory = builtins.getEnv "HOME";
+              home.username = user;
+              home.homeDirectory = homeDir;
               home.stateVersion = "23.05";
             }
             {

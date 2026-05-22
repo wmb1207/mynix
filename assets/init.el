@@ -134,7 +134,7 @@
 	    'display-line-numbers-mode 1)
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
   (mapc #'disable-theme custom-enabled-themes)
-  (load-theme 'creamsody-darker t)
+  (load-theme 'wilson t)
 
   ;; Set font AFTER load-theme so the theme can't clobber it.
   ;; :height is in half-points (100 = 10pt).
@@ -147,12 +147,13 @@
   ;; Re-apply after any theme change at runtime
   (add-hook 'after-load-theme-hook #'my-reset-font)
 
-  ;; Make whitespace faces transparent so they inherit the theme background.
+  ;; Set whitespace indicator color to match comments so they're visible but unobtrusive.
   (defun my-reset-whitespace-faces ()
-    (dolist (face '(whitespace-space whitespace-tab whitespace-newline
-                    whitespace-trailing whitespace-empty whitespace-indentation
-                    whitespace-space-before-tab whitespace-space-after-tab))
-      (set-face-attribute face nil :background 'unspecified)))
+    (let ((fg (face-foreground 'font-lock-comment-face nil 'default)))
+      (dolist (face '(whitespace-space whitespace-tab whitespace-newline
+                      whitespace-trailing whitespace-empty whitespace-indentation
+                      whitespace-space-before-tab whitespace-space-after-tab))
+        (set-face-attribute face nil :foreground fg :background 'unspecified))))
   (add-hook 'after-load-theme-hook #'my-reset-whitespace-faces)
   (my-reset-whitespace-faces)
 
@@ -173,17 +174,17 @@
   ;;   (set-face-background 'default "unspecified-bg"))
   ;;  (set-cursor-color "#a6e3a1")y
   ;; (set-face-attribute 'line-number nil
-  ;;                     :background "#1c1a18") ;; optional
+  ;;                     :background "#222222") ;; optional
   
   ;; (set-face-attribute 'header-line nil
-  ;;                     :background "#1c1a18"
+  ;;                     :background "#222222"
   ;;                     :box nil)
 
   ;; (set-face-attribute 'mode-line-inactive nil
-  ;;                   :background "#1c1a18")
+  ;;                   :background "#222222")
 
   ;; (set-face-attribute 'mode-line nil
-  ;;                     :background "#1c1a18"
+  ;;                     :background "#222222"
   ;; 		      :box nil)
 
   ;;(when (display-graphic-p)
@@ -449,7 +450,7 @@
     (with-selected-frame frame
       (when (display-graphic-p)
         (set-frame-parameter frame 'fullscreen 'maximized)
-        (set-frame-parameter frame 'background-color "#1c1a18")
+        (set-frame-parameter frame 'background-color "#222222")
         (set-frame-parameter frame 'foreground-color
                              (face-attribute 'default :foreground nil t)))))
   (add-hook 'after-make-frame-functions #'my/setup-gui-frame))

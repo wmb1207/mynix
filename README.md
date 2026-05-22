@@ -75,3 +75,29 @@ Copy the `.example` files and fill in the values before building.
 nixos-rebuild boot --flake .#<host> --target-host <user>@<ip> --sudo --impure
 ssh <user>@<ip> sudo reboot
 ```
+
+## Workstation ISO
+
+`workstationiso` is the supported installer image for new x86_64 workstations.
+Build it from the repo root:
+
+```bash
+ruby make.rb --iso
+```
+
+Boot the ISO and run:
+
+```bash
+install
+```
+
+For scripted installs:
+
+```bash
+install --host genericlaptop --disk /dev/nvme0n1 --user wmb --no-forgejo-token
+```
+
+The ISO installer intentionally installs only the generic workstation profiles
+(`genericlaptop` and `genericdesktop`). Apply a final machine profile such as
+`latitude` after first boot, once the generated hardware configuration is in
+place.

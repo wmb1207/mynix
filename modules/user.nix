@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, system, ... }:
+{ config, pkgs, lib, inputs, system, user, darkTheme, localNix ? null, ... }:
 
 let
   dag = inputs.home-manager.lib.hm.dag;
@@ -8,14 +8,14 @@ let
   gui    = import ./gui.nix { inherit pkgs system; };
   my-fonts = import ./fonts.nix { inherit pkgs; };
   wm-tools = import ./wm-tools.nix { inherit pkgs; };
-  local  = if builtins.pathExists ./local.nix then import ./local.nix { inherit pkgs; } else [];
+  local  = if localNix != null then import localNix { inherit pkgs; } else [];
   programming-languages =
     import ./development/programming-languages.nix { inherit pkgs; };
   assets = import ./asseter.nix { inherit lib; };
 
   # ── Themes ──────────────────────────────────────────────────────────────────
 
-  themes = import ./themes.nix {};
+  themes = import ./themes.nix { inherit darkTheme; };
   theme  = themes.dark;
 
   # Render an fvwm-style {{var}} template using an attrset of substitutions
@@ -81,7 +81,7 @@ let
         timeout = 5
   '';
 
-  # Serialize a theme attrset to EDN for theme.rb to consume at runtime
+  # Serialize a theme attrset to EDN for the theme switcher to consume at runtime
   themeToEdn = t: ''
     {:name           "${t.name}"
      :font           "${t.font}"
@@ -101,6 +101,22 @@ let
      :cursor         "${t.cursor}"
      :highlight      "${t.highlight}"
      :highlight-text "${t.highlightText}"}
+  '';
+
+  crystalDesktopScripts = pkgs.runCommand "crystal-desktop-scripts" {
+    nativeBuildInputs = [ pkgs.crystal ];
+  } ''
+    export CRYSTAL_CACHE_DIR="$TMPDIR/crystal-cache"
+    mkdir -p "$out/bin"
+    crystal build --release --no-debug ${../assets/scripts/backlight.cr} -o "$out/bin/backlight"
+    crystal build --release --no-debug ${../assets/scripts/battery.cr} -o "$out/bin/battery"
+    crystal build --release --no-debug ${../assets/scripts/dock.cr} -o "$out/bin/dock"
+    crystal build --release --no-debug ${../assets/scripts/kbd.cr} -o "$out/bin/kbd"
+    crystal build --release --no-debug ${../assets/scripts/keys.cr} -o "$out/bin/keys"
+    crystal build --release --no-debug ${../assets/scripts/projecter.cr} -o "$out/bin/projecter"
+    crystal build --release --no-debug ${../assets/scripts/screen_setup.cr} -o "$out/bin/screen_setup"
+    crystal build --release --no-debug ${../assets/scripts/theme.cr} -o "$out/bin/theme"
+    crystal build --release --no-debug ${../assets/scripts/tunnel.cr} -o "$out/bin/tunnel"
   '';
 
   myEmacs =
@@ -271,13 +287,13 @@ let
     ];
 in
 {
-  users.users.wmb = {
+  users.users.${user} = {
     isNormalUser = true;
-    description = "wmb";
+    description = user;
     shell = pkgs.loksh;
     extraGroups = [ "networkmanager" "wheel" "audio" "input" "video" ];
     openssh.authorizedKeys.keyFiles =
-      lib.optional (builtins.pathExists ../secrets/wmb.pub) ../secrets/wmb.pub;
+      lib.optional (builtins.pathExists ../secrets/${user}.pub) ../secrets/${user}.pub;
   };
 
   services.udev.packages = [pkgs.game-devices-udev-rules];
@@ -313,7 +329,7 @@ in
 
   #### Home Manager ########################################################
 
-  home-manager.users.wmb = { pkgs, config, ... }: {
+  home-manager.users.${user} = { pkgs, config, ... }: {
     home.stateVersion = "25.05";
 
     nixpkgs.config.allowUnfree = true;
@@ -468,6 +484,7 @@ in
       ++ wm-tools
       ++ local
       ++ [ myEmacs
+        crystalDesktopScripts
         inputs.llm-agents.packages.${system}.coderabbit-cli
         
         (pkgs.writeShellScriptBin "browser"  "exec librewolf \"$@\"")
@@ -540,7 +557,9 @@ in
       ".config/dunst/dunstrc".text       = dunstrcFor theme;
       ".config/themes/dark.edn".text     = themeToEdn themes.dark;
       ".config/themes/light.edn".text    = themeToEdn themes.light;
-      ".local/bin/theme.rb"              = { source = ../assets/scripts/theme.rb; executable = true; };
+    } // (lib.mapAttrs'
+      (name: t: lib.nameValuePair ".config/themes/${name}.edn" { text = themeToEdn t; })
+      themes.allDark) // {
       ".local/bin/screenshot"            = { source = ../assets/scripts/screenshot.sh; executable = true; };
       ".local/bin/screenshot-save"       = { source = ../assets/scripts/screenshot-save.sh; executable = true; };
 

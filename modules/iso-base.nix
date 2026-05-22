@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, user, ... }:
 
 {
   # Core system
@@ -19,22 +19,27 @@
   # SSH (safe for ISO + servers)
   services.openssh.enable = true;
 
-  # User (generic)
-  users.users.wmb = {
+  # Live user — empty password so the greeter just needs username + enter
+  users.users.${user} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
-    hashedPassword = "$y$j9T$jp/HFYKwvCEghPwTx5VTL/$1BDWi3DMJjgPub.Xl6LlouxDhhFleiikrI.bYl./uq1";
+    password = "";
   };
+  security.pam.services.login.allowNullPassword = true;
 
-  # Common tools
+  # Common tools — ruby runs install.rb, disko and git are used during install
   environment.systemPackages = with pkgs; [
+    ruby
     git
     tree
     gptfdisk
-    (pkgs.writeScriptBin "install-wmb" (builtins.readFile ../install.sh))
+    (pkgs.writeScriptBin "install" ''
+      #!/usr/bin/env sh
+      exec ruby /etc/nixos/setup/install.rb "$@"
+    '')
   ];
 
-  # Copy flake to /etc/nixos/setup on ISO
+  # Bundle the setup repo into the ISO
   environment.etc."nixos/setup".source = lib.cleanSource ../.;
 
   # Audio (modern default)
@@ -45,6 +50,15 @@
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
+  };
+
+  # ISO-specific greeter overrides
+  services.crystal-greeter = {
+    title = "NixOS Installer  |  login: ${user}  |  password: (empty)";
+    menu = [
+      { action = "reboot";   }
+      { action = "shutdown"; }
+    ];
   };
 
   # DBus + desktop compatibility
