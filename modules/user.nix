@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, system, user, darkTheme, localNix ? null, ... }:
+{ config, pkgs, lib, inputs, system, user, darkTheme, lightTheme, localNix ? null, userModuleMode ? "nixos", ... }:
 
 let
   dag = inputs.home-manager.lib.hm.dag;
@@ -15,7 +15,7 @@ let
 
   # ── Themes ──────────────────────────────────────────────────────────────────
 
-  themes = import ./themes.nix { inherit darkTheme; };
+  themes = import ./themes.nix { inherit darkTheme lightTheme; };
   theme  = themes.dark;
 
   # Render an fvwm-style {{var}} template using an attrset of substitutions
@@ -110,6 +110,7 @@ let
     mkdir -p "$out/bin"
     crystal build --release --no-debug ${../assets/scripts/backlight.cr} -o "$out/bin/backlight"
     crystal build --release --no-debug ${../assets/scripts/battery.cr} -o "$out/bin/battery"
+    crystal build --release --no-debug ${../assets/scripts/datetime.cr} -o "$out/bin/datetime"
     crystal build --release --no-debug ${../assets/scripts/dock.cr} -o "$out/bin/dock"
     crystal build --release --no-debug ${../assets/scripts/kbd.cr} -o "$out/bin/kbd"
     crystal build --release --no-debug ${../assets/scripts/keys.cr} -o "$out/bin/keys"
@@ -219,6 +220,9 @@ let
         ## Ruby
         inf-ruby
 
+        ## Crystal
+        crystal-mode
+
         ## Rust
         rust-mode
 
@@ -253,6 +257,7 @@ let
         creamsody-theme
         acme-theme
         ef-themes
+        modus-themes
         ample-theme
         autothemer
         punpun-themes
@@ -285,51 +290,7 @@ let
         path = "${pkgs.tree-sitter-grammars.tree-sitter-scala}/parser";
       }
     ];
-in
-{
-  users.users.${user} = {
-    isNormalUser = true;
-    description = user;
-    shell = pkgs.loksh;
-    extraGroups = [ "networkmanager" "wheel" "audio" "input" "video" ];
-    openssh.authorizedKeys.keyFiles =
-      lib.optional (builtins.pathExists ../secrets/${user}.pub) ../secrets/${user}.pub;
-  };
-
-  services.udev.packages = [pkgs.game-devices-udev-rules];
-
-  services.udev.extraRules = ''
-                           KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
-                           KERNEL=="hidraw*", KERNELS=="*054C:0CE6*", MODE="0660", TAG+="uaccess"
-                           ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
-'';
-  
-  programs.dconf.enable = true;
-  services.tailscale.enable = true;
-  security.polkit.enable = true;
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
-  #### X server ############################################################
-
-  services.xserver.enable = true;
-
-  services.xserver.displayManager.startx.enable = true;
-
-  services.xserver.windowManager = {
-    fvwm3.enable = true;
-  };
-
-  #### Fonts ###############################################################
-
-  fonts.packages = my-fonts;
-
-  #### Home Manager ########################################################
-
-  home-manager.users.${user} = { pkgs, config, ... }: {
+  homeConfig = { pkgs, config, ... }: {
     home.stateVersion = "25.05";
 
     nixpkgs.config.allowUnfree = true;
@@ -500,7 +461,7 @@ in
            pkgs.pkg-config
         pkgs.acpi
         pkgs.networkmanager
-        pkgs.xorg.xmodmap
+        pkgs.xmodmap
         pkgs.xsecurelock
         pkgs.picom
         pkgs.typescript
@@ -559,7 +520,7 @@ in
       ".config/themes/light.edn".text    = themeToEdn themes.light;
     } // (lib.mapAttrs'
       (name: t: lib.nameValuePair ".config/themes/${name}.edn" { text = themeToEdn t; })
-      themes.allDark) // {
+      themes.all) // {
       ".local/bin/screenshot"            = { source = ../assets/scripts/screenshot.sh; executable = true; };
       ".local/bin/screenshot-save"       = { source = ../assets/scripts/screenshot-save.sh; executable = true; };
 
@@ -695,4 +656,51 @@ in
 '';
     };
   };
+in
+if userModuleMode == "nixos" then
+{
+  users.users.${user} = {
+    isNormalUser = true;
+    description = user;
+    shell = pkgs.loksh;
+    extraGroups = [ "networkmanager" "wheel" "audio" "input" "video" ];
+    openssh.authorizedKeys.keyFiles =
+      lib.optional (builtins.pathExists ../secrets/${user}.pub) ../secrets/${user}.pub;
+  };
+
+  services.udev.packages = [pkgs.game-devices-udev-rules];
+
+  services.udev.extraRules = ''
+                           KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
+                           KERNEL=="hidraw*", KERNELS=="*054C:0CE6*", MODE="0660", TAG+="uaccess"
+                           ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+'';
+
+  programs.dconf.enable = true;
+  services.tailscale.enable = true;
+  security.polkit.enable = true;
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  #### X server ############################################################
+
+  services.xserver.enable = true;
+
+  services.xserver.displayManager.startx.enable = true;
+
+  services.xserver.windowManager = {
+    fvwm3.enable = true;
+  };
+
+  #### Fonts ###############################################################
+
+  fonts.packages = my-fonts;
+
+  #### Home Manager ########################################################
+
+  home-manager.users.${user} = homeConfig;
 }
+else homeConfig { inherit pkgs config; }

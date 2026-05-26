@@ -6,10 +6,21 @@ set -e
 
 d="$1"
 h="${2:-genericlaptop}"
+default_user="${NIXOS_USER:-${USER:-wmb}}"
+[ "$default_user" = root ] && default_user=wmb
 
 echo "$d -> $h"
 echo "WARNING: destroys all data on $d"
 read -p "continue? " -r
+read -r -p "username [$default_user]: " user
+user="${user:-$default_user}"
+
+case "$user" in
+  root|"")
+    echo "invalid username: $user" >&2
+    exit 1
+    ;;
+esac
 
 [ -d /etc/nixos/setup ] && src=/etc/nixos/setup || src="$(cd "$(dirname "$0")" && pwd)"
 
@@ -17,9 +28,9 @@ tmpdir=$(mktemp -d)
 cp -r "$src/." "$tmpdir/"
 
 # Partition, format and mount using disko
-disko --mode disko --disk main "$d" --flake "$tmpdir#${h}"
+NIXOS_USER="$user" disko --mode destroy,format,mount --yes-wipe-all-disks --argstr diskDevice "$d" --flake "$tmpdir#${h}"
 
 # Generate hardware config into the tmpdir so nixos-install can find it
 nixos-generate-config --root /mnt --show-hardware-config > "$tmpdir/hosts/${h}/hardware-configuration.nix"
 
-nixos-install --flake "$tmpdir#${h}" --impure --no-root-password
+NIXOS_USER="$user" nixos-install --flake "$tmpdir#${h}" --impure --no-root-password

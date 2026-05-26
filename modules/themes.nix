@@ -1,7 +1,7 @@
-{ darkTheme ? "wilson" }:
+{ darkTheme ? "wilson", lightTheme ? "doric-oak" }:
 
 let
-  allDark = {
+  all = {
     doric-valley = rec {
       name        = "doric-valley";
       font        = "DejaVu Sans Mono";
@@ -68,6 +68,39 @@ let
       highlightText = foreground;
     };
 
+    modus-vivendi = rec {
+      name        = "modus-vivendi";
+      font        = "DejaVu Sans Mono";
+      background  = "#000000";
+      foreground  = "#ffffff";
+      active      = "#00bcff";
+      bgAlt       = "#303030";
+      activeAlt   = "#6ae4b9";
+      olive       = "#d0bc00";
+      comments    = "#989898";
+      selection   = "#5a5a5a";
+      emacsTheme  = "modus-vivendi";
+      color0      = background;
+      color1      = "#ff5f59";
+      color2      = "#44bc44";
+      color3      = "#d0bc00";
+      color4      = "#2fafff";
+      color5      = "#feacd0";
+      color6      = "#00d3d0";
+      color7      = "#ffffff";
+      color8      = "#595959";
+      color9      = "#ff7f86";
+      color10     = "#70b900";
+      color11     = "#fec43f";
+      color12     = "#79a8ff";
+      color13     = "#b6a0ff";
+      color14     = "#6ae4b9";
+      color15     = foreground;
+      cursor        = "#ffffff";
+      highlight     = selection;
+      highlightText = foreground;
+    };
+
     creamsody = rec {
       name        = "creamsody-darker";
       font        = "DejaVu Sans Mono";
@@ -100,42 +133,111 @@ let
       highlight     = selection;
       highlightText = foreground;
     };
+
+    doric-earth = rec {
+      name        = "doric-earth";
+      font        = "DejaVu Sans Mono";
+      background  = "#f0eddf";
+      foreground  = "#30232e";
+      active      = "#74321f";
+      bgAlt       = "#dfdfce";
+      activeAlt   = "#a29986";
+      olive       = "#705200";
+      comments    = "#635650";
+      selection   = "#d1ceb6";
+      emacsTheme  = "doric-earth";
+      color0      = background;
+      color1      = "#a03000";
+      color2      = "#206700";
+      color3      = olive;
+      color4      = "#103060";
+      color5      = "#690f44";
+      color6      = "#105f66";
+      color7      = activeAlt;
+      color8      = bgAlt;
+      color9      = "#f0c8b5";
+      color10     = "#c2e3b0";
+      color11     = "#efe4b0";
+      color12     = "#bac9e5";
+      color13     = "#e7bfd7";
+      color14     = "#c9e6e0";
+      color15     = foreground;
+      cursor        = "#770000";
+      highlight     = selection;
+      highlightText = foreground;
+    };
+
+    doric-oak = rec {
+      name        = "doric-oak";
+      font        = "DejaVu Sans Mono";
+      background  = "#e0d8c7";
+      foreground  = "#3a2018";
+      active      = "#497020";
+      bgAlt       = "#d5c9b5";
+      activeAlt   = "#8f9373";
+      olive       = "#595000";
+      comments    = "#6b5225";
+      selection   = "#c2b19e";
+      emacsTheme  = "doric-oak";
+      color0      = background;
+      color1      = "#982500";
+      color2      = "#226700";
+      color3      = "#595000";
+      color4      = "#103077";
+      color5      = "#700054";
+      color6      = "#005460";
+      color7      = "#8f9373";
+      color8      = "#d5c9b5";
+      color9      = "#b83000";
+      color10     = "#2d8000";
+      color11     = "#6e6200";
+      color12     = "#1a3d8f";
+      color13     = "#8a0066";
+      color14     = "#006878";
+      color15     = foreground;
+      cursor        = "#497020";
+      highlight     = selection;
+      highlightText = foreground;
+    };
+
+    modus-operandi = rec {
+      name        = "modus-operandi";
+      font        = "DejaVu Sans Mono";
+      background  = "#ffffff";
+      foreground  = "#000000";
+      active      = "#005a5f";
+      bgAlt       = "#f0f0f0";
+      activeAlt   = "#315b00";
+      olive       = "#6f5500";
+      comments    = "#595959";
+      selection   = "#bcbcbc";
+      emacsTheme  = "modus-operandi";
+      color0      = background;
+      color1      = "#a60000";
+      color2      = "#006800";
+      color3      = "#6f5500";
+      color4      = "#0031a9";
+      color5      = "#721045";
+      color6      = "#005e8b";
+      color7      = "#000000";
+      color8      = "#a8a8a8";
+      color9      = "#972500";
+      color10     = "#00663f";
+      color11     = "#884900";
+      color12     = "#354fcf";
+      color13     = "#531ab6";
+      color14     = "#005a5f";
+      color15     = foreground;
+      cursor        = "#000000";
+      highlight     = selection;
+      highlightText = foreground;
+    };
   };
 in
 {
-  inherit allDark;
-  dark = allDark.${darkTheme} or allDark.wilson;
+  inherit all;
+  allDark = all;
 
-  light = rec {
-    name        = "doric-oak";
-    font        = "DejaVu Sans Mono";
-    background  = "#e0d8c7";
-    foreground  = "#3a2018";
-    active      = "#497020";
-    bgAlt       = "#d5c9b5";
-    activeAlt   = "#8f9373";
-    olive       = "#595000";
-    comments    = "#6b5225";
-    selection   = "#c2b19e";
-    emacsTheme  = "doric-oak";
-    color0      = background;
-    color1      = "#982500";
-    color2      = "#226700";
-    color3      = "#595000";
-    color4      = "#103077";
-    color5      = "#700054";
-    color6      = "#005460";
-    color7      = "#8f9373";
-    color8      = "#d5c9b5";
-    color9      = "#b83000";
-    color10     = "#2d8000";
-    color11     = "#6e6200";
-    color12     = "#1a3d8f";
-    color13     = "#8a0066";
-    color14     = "#006878";
-    color15     = foreground;
-    cursor        = "#497020";
-    highlight     = selection;
-    highlightText = foreground;
-  };
+  dark = all.${darkTheme} or all.wilson;
+  light = all.${lightTheme} or all.doric-oak;
 }

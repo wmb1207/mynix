@@ -68,3 +68,4 @@ else
     setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl &    
 fi;
 xrdb -merge ~/.Xresources &
+test -f ~/.config/theme.Xresources && xrdb -merge ~/.config/theme.Xresources &

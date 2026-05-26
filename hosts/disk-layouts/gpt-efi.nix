@@ -1,11 +1,11 @@
-{ lib, ... }:
+{ lib, diskDevice ? "/dev/sda", ... }:
 {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        # device is set via --disk main /dev/XXX at install time
-        device = lib.mkDefault "/dev/sda";
+        # diskDevice is overridden by the ISO installer with --argstr diskDevice /dev/XXX.
+        device = lib.mkDefault diskDevice;
         content = {
           type = "gpt";
           partitions = {

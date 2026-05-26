@@ -91,6 +91,13 @@ Boot the ISO and run:
 install
 ```
 
+The installer prompts for the target username, root password, user password,
+optional Forgejo token, disk, and generic workstation profile. It installs the
+setup repo into `~/dev/nix/setup`, writes `config.yml`, prepares
+`modules/local.nix`, renders the desktop templates, and installs the selected
+flake profile during installation. After it completes, reboot and log in as the
+user selected during install.
+
 For scripted installs:
 
 ```bash

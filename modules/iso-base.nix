@@ -33,14 +33,27 @@
     git
     tree
     gptfdisk
+    whois
     (pkgs.writeScriptBin "install" ''
       #!/usr/bin/env sh
-      exec ruby /etc/nixos/setup/install.rb "$@"
+      case "''${1-}" in
+        ""|--host|--disk|--user|--forgejo-token|--no-forgejo-token)
+          exec ruby /etc/nixos/setup/install.rb "$@"
+          ;;
+        *)
+          exec ${pkgs.coreutils}/bin/install "$@"
+          ;;
+      esac
     '')
   ];
 
-  # Bundle the setup repo into the ISO
-  environment.etc."nixos/setup".source = lib.cleanSource ../.;
+  # Bundle the setup repo into the ISO without recursively embedding prior build outputs.
+  environment.etc."nixos/setup".source = lib.cleanSourceWith {
+    src = lib.cleanSource ../.;
+    filter = path: type:
+      let name = builtins.baseNameOf path;
+      in !(name == "result" || lib.hasPrefix "result-" name);
+  };
 
   # Audio (modern default)
   services.pulseaudio.enable = false;

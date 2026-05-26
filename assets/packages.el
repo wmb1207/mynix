@@ -118,6 +118,7 @@
         (:package treemacs)
         (:package go-mode)
         (:package vterm)
+        (:package modus-themes)
         (:package ein)
         (:package ob-restclient)
         (:package verb)
@@ -164,6 +165,9 @@
         (:package terraform-mode)
         (:package org)
         (:package yaml-mode)
+        (:package crystal-mode
+         :mode ("\\.cr\\'" . crystal-mode)
+         :hook (crystal-mode . lsp-deferred))
         (:package magit)
         (:package vertico)
         (:package vertico-posframe)

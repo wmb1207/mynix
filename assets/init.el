@@ -157,6 +157,10 @@
   (add-hook 'after-load-theme-hook #'my-reset-whitespace-faces)
   (my-reset-whitespace-faces)
 
+  (let ((theme-file (expand-file-name "theme.el" user-emacs-directory)))
+    (when (file-readable-p theme-file)
+      (load theme-file nil t)))
+
   (global-whitespace-mode 1)
 
   (setq whitespace-style
@@ -413,6 +417,16 @@
   (add-hook 'ruby-mode-hook (lambda () (prettier-mode -1)))
   (add-hook 'ruby-ts-mode-hook (lambda () (prettier-mode -1)))
 
+  (with-eval-after-load 'lsp-mode
+    (require 'lsp-crystal))
+
+  (add-hook 'crystal-mode-hook #'lsp-deferred)
+  (add-hook 'crystal-mode-hook
+            (lambda ()
+              (setq-local crystal-indent-level 2)
+              (prettier-mode -1)
+              (add-hook 'before-save-hook #'crystal-tool-format nil t)))
+
   (add-hook 'typescript-mode-hook 'prettier-mode)
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook (lambda () (display-line-numbers-mode 1)))
@@ -450,7 +464,8 @@
     (with-selected-frame frame
       (when (display-graphic-p)
         (set-frame-parameter frame 'fullscreen 'maximized)
-        (set-frame-parameter frame 'background-color "#222222")
+        (set-frame-parameter frame 'background-color
+                             (face-attribute 'default :background nil t))
         (set-frame-parameter frame 'foreground-color
                              (face-attribute 'default :foreground nil t)))))
   (add-hook 'after-make-frame-functions #'my/setup-gui-frame))

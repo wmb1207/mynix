@@ -1,7 +1,10 @@
 user: wmb
 ssh_key: ~/.ssh/id_rsa
 forgejo_token: ""
-theme: wilson   # options: wilson, doric-valley, creamsody
+theme: wilson   # legacy/default dark theme
+themes:
+  dark: wilson
+  light: doric-earth
 
 hosts:
   nginx:         192.168.x.x

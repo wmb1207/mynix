@@ -413,6 +413,16 @@
   (add-hook 'ruby-mode-hook (lambda () (prettier-mode -1)))
   (add-hook 'ruby-ts-mode-hook (lambda () (prettier-mode -1)))
 
+  (with-eval-after-load 'lsp-mode
+    (require 'lsp-crystal))
+
+  (add-hook 'crystal-mode-hook #'lsp-deferred)
+  (add-hook 'crystal-mode-hook
+            (lambda ()
+              (setq-local crystal-indent-level 2)
+              (prettier-mode -1)
+              (add-hook 'before-save-hook #'crystal-tool-format nil t)))
+
   (add-hook 'typescript-mode-hook 'prettier-mode)
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   (add-hook 'typescript-mode-hook (lambda () (display-line-numbers-mode 1)))

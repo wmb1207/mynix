@@ -15,6 +15,28 @@ POSITION_FLAGS = {
   "below"    => "--below",
 }
 
+struct CLIOption
+  getter @name, @long_flag, @short_flag, @description
+
+  def initialize(@name : String, @long_flag : String, @short_flag : String, @description : String)
+  end
+
+  def to_tuple
+    {{@long_flag, @short_flag} => @name}
+  end
+  
+end
+
+def cli_options : Tuple(Options)
+  {
+    CLIOption.new("right_of", "--right-of", "-r", "Set the display to the right of the main display"),
+    CLIOption.new("left_of", "--left-of", "-l", "Set the display to the left of the main display")
+    CLIOption.new("above", "--above", "-a", "Set the display above the main display")
+    CLIOption.new("below", "--below", "-b", "Set the display below the main display") 
+    CLIOption.new("only", "--only", "-o", "Set the display as the only one")
+  }
+end
+
 struct Display
   getter name, max_res
 
@@ -22,7 +44,7 @@ struct Display
   end
 end
 
-class ScreenConfig
+struct ScreenConfig
   property primary, outputs
 
   def initialize(@primary : String = "eDP-1", @outputs : Hash(String, Hash(String, String)) = {} of String => Hash(String, String))
@@ -32,16 +54,9 @@ class ScreenConfig
     return nil unless File.exists?(path)
 
     data = YAML.parse(File.read(path))
-    primary = data["primary"]?.try(&.as_s?) || "eDP-1"
-    outputs = {} of String => Hash(String, String)
-
-    data["outputs"]?.try(&.as_h?).try do |raw_outputs|
-      raw_outputs.each do |name_node, value_node|
-        name = name_node.as_s
-        layout = value_node["layout"]?.try(&.as_s?)
-        outputs[name] = {"layout" => layout} if layout
-      end
-    end
+    primary = self.parse_primary(data["primary"])
+    outputs = self.parse_raw_outputs(data["outputs"])
+    
 
     if aux = data["aux"]?.try(&.as_s?)
       if layout = data["layout"]?.try(&.as_s?)
@@ -57,6 +72,20 @@ class ScreenConfig
       "primary" => @primary,
       "outputs" => @outputs,
     }.to_yaml
+  end
+
+  private def self.parse_primary(data : YAML.any) : String
+    data["primary"]?.try(&.as_s?) || "eDP-1"
+  end
+
+  private def self.parse_raw_outputs(data : YAML.any) : Hash(String, String)
+    data["outputs"]?.try(&.as_h?).try do |raw|
+      raw.compact_map do |name, value|
+        layout = value["layout"]?.try(&.as_s?)
+        next unless layout
+        {name.as_s, {"layout" => layout }}
+      end
+    end || {} of String
   end
 end
 
@@ -114,16 +143,18 @@ def apply(config : ScreenConfig, displays : Array(Display))
 
   args = ["--output", primary.name, "--primary", "--auto"]
 
-  displays.reject { |display| display.name == primary.name }.each do |display|
+  displays.reject { |display| display.name == primary.name }.reduce(args) do |acc, display|
     layout = config.outputs[display.name]?.try { |entry| entry["layout"]? }
 
-    if layout == "only"
-      args += ["--output", display.name, "--off"]
-    elsif flag = POSITION_FLAGS[layout]?
-      args += ["--output", display.name, "--auto", flag, primary.name]
-    else
-      args += ["--output", display.name, "--auto"]
-    end
+    acc += case
+           when layout == "only"
+             ["--output", display.name, "--off"]
+           when flag = POSITION_FLAGS[layout]?
+             ["--output", display.name, "--auto", flag, primary.name]
+           else
+             ["--output", display.name, "--auto"]
+           end
+    acc
   end
 
   system("xrandr", args)
@@ -152,6 +183,10 @@ def usage
   puts "Usage: screen_setup [--daemon] [--right-of|--left-of|--above|--below|--only NAME] [--primary NAME]"
 end
 
+def parse_options
+  cli_options.select
+end
+
 def main(argv : Array(String))
   config = load_config
   config.primary = opt_value(argv, "--primary", "-p") || config.primary
@@ -159,13 +194,7 @@ def main(argv : Array(String))
   output = nil
   layout = nil
 
-  {
-    {"--right-of", "-r"} => "right_of",
-    {"--left-of", "-l"}  => "left_of",
-    {"--above", "-a"}    => "above",
-    {"--below", "-b"}    => "below",
-    {"--only", "-o"}     => "only",
-  }.each do |flags, flag_layout|
+  cli_options.map(&.to_tuple).each do |flags, flag_layout|
     if value = opt_value(argv, flags[0], flags[1])
       output = value
       layout = flag_layout

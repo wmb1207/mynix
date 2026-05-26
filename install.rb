@@ -7,15 +7,23 @@ require 'fileutils'
 require 'tmpdir'
 require 'optparse'
 require 'io/console'
+require 'yaml'
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 def run!(cmd, env: {}, chdir: nil)
   puts "  -> #{cmd.join(' ')}"
-  system(env, *cmd, chdir: chdir).tap do |ok|
+  opts = chdir ? { chdir: chdir } : {}
+  system(env, *cmd, **opts).tap do |ok|
     abort("!! Command failed: #{cmd.join(' ')}") unless ok
   end
+end
+
+def capture!(cmd)
+  out, err, status = Open3.capture3(*cmd)
+  abort("!! Command failed: #{cmd.join(' ')}\n#{err}") unless status.success?
+  out
 end
 
 def prompt(question, default: nil)
@@ -32,6 +40,45 @@ def prompt_secret(question)
   input = STDIN.noecho(&:gets).to_s.chomp
   puts
   input
+end
+
+def prompt_password(label)
+  loop do
+    password = prompt_secret(label)
+    confirm = prompt_secret("Confirm #{label}")
+    return password if !password.empty? && password == confirm
+
+    puts "  passwords must be non-empty and match"
+  end
+end
+
+def password_hash(password)
+  out, err, status = Open3.capture3("mkpasswd", "--method=sha-512", "--stdin", stdin_data: password)
+  abort("!! Failed to hash password:\n#{err}") unless status.success?
+  out.strip
+end
+
+def default_install_user
+  user = ENV.fetch("NIXOS_USER", "")
+  user = ENV.fetch("USER", "") if user.empty? || user == "root"
+  user.empty? || user == "root" ? "wmb" : user
+end
+
+def valid_install_user?(user)
+  user.match?(/\A[a-z_][a-z0-9_-]*[$]?\z/) && user != "root"
+end
+
+def nix_string(value)
+  value.to_s.inspect
+end
+
+def prompt_user(default:)
+  loop do
+    user = prompt("Username", default: default).to_s.strip
+    return user if valid_install_user?(user)
+
+    puts "  invalid username — use a normal Linux user name, not root"
+  end
 end
 
 def pick(label, options)
@@ -58,20 +105,71 @@ def command_available?(name)
   end
 end
 
+def lsblk_tree(device)
+  raw = capture!(["lsblk", "--json", "--paths", "--output", "NAME,TYPE,MOUNTPOINTS", device])
+  JSON.parse(raw).fetch("blockdevices", [])
+end
+
+def flatten_blockdevices(devices)
+  Array(devices).compact.flat_map do |dev|
+    [dev] + flatten_blockdevices(dev.fetch("children", []))
+  end
+end
+
+def target_devices(disk)
+  flatten_blockdevices(lsblk_tree(disk))
+end
+
+def target_device_names(disk)
+  target_devices(disk).filter_map do |dev|
+    name = dev["name"]
+    name if name.is_a?(String) && !name.empty?
+  end
+end
+
+def mounted_target_paths(disk)
+  target_devices(disk).flat_map do |dev|
+    name = dev["name"]
+    next [] unless name.is_a?(String) && !name.empty?
+
+    Array(dev["mountpoints"]).compact.map { |mountpoint| [name, mountpoint] }
+  end
+end
+
+def active_swap_devices
+  return [] unless File.readable?("/proc/swaps")
+
+  File.readlines("/proc/swaps").drop(1).map { |line| line.split.first }.compact
+end
+
 def preflight!(disk:, host:)
   abort("!! #{disk} is not a block device") unless File.blockdev?(disk)
 
-  missing = %w[disko nixos-generate-config nixos-install].reject { |cmd| command_available?(cmd) }
+  missing = %w[disko nixos-generate-config nixos-install lsblk wipefs sgdisk partprobe udevadm swapoff mkpasswd].reject { |cmd| command_available?(cmd) }
   abort("!! Missing required installer tools: #{missing.join(', ')}") unless missing.empty?
 
-  mounted, = Open3.capture2("findmnt", "--raw", "--noheadings", "--output", "SOURCE")
-  if mounted.lines.any? { |line| line.start_with?(disk) }
-    abort("!! #{disk} or one of its partitions is mounted")
+  mounts = mounted_target_paths(disk)
+  unless mounts.empty?
+    details = mounts.map { |dev, mountpoint| "#{dev} mounted at #{mountpoint}" }.join(", ")
+    abort("!! Refusing to install to #{disk}: #{details}")
   end
 
   unless Dir.exist?("/sys/firmware/efi")
     abort("!! UEFI firmware not detected; #{host} uses the GPT/EFI disk layout")
   end
+end
+
+def prepare_disk!(disk)
+  devices = target_device_names(disk)
+  children = devices.reject { |dev| dev == disk }.sort_by(&:length).reverse
+  swaps = active_swap_devices & children
+
+  puts "  target devices: #{([disk] + children).uniq.join(', ')}"
+  swaps.each { |dev| run!(["swapoff", dev]) }
+  (children + [disk]).each { |dev| run!(["wipefs", "--all", "--force", dev]) if File.blockdev?(dev) }
+  run!(["sgdisk", "--zap-all", disk])
+  run!(["partprobe", disk])
+  run!(["udevadm", "settle"])
 end
 
 # ---------------------------------------------------------------------------
@@ -87,6 +185,61 @@ end
 def format_disk(d)
   label = d[:model].empty? ? d[:dev] : "#{d[:dev]}  #{d[:model]}"
   "#{label}  (#{d[:size]})"
+end
+
+def write_config_yml(path, user:, token:)
+  config = if File.exist?(path)
+             YAML.safe_load(File.read(path)) || {}
+           else
+             {}
+           end
+  config["user"] = user
+  config["forgejo_token"] = token.to_s
+  File.write(path, config.to_yaml)
+end
+
+def write_install_secrets(tmpdir, user:, user_hash:, root_hash:)
+  path = "#{tmpdir}/modules/install-secrets.nix"
+  File.write(path, <<~NIX)
+    { ... }:
+    {
+      users.users.root.hashedPassword = #{nix_string(root_hash)};
+      users.users.${nix_string(user)}.hashedPassword = #{nix_string(user_hash)};
+    }
+  NIX
+end
+
+def prepare_repo_templates!(repo, user:, token:)
+  config_path = "#{repo}/config.yml"
+  FileUtils.cp("#{repo}/config.yml.example", config_path) unless File.exist?(config_path)
+  write_config_yml(config_path, user: user, token: token)
+
+  local_nix = "#{repo}/modules/local.nix"
+  example_nix = "#{repo}/modules/local.nix.example"
+  FileUtils.cp(example_nix, local_nix) if !File.exist?(local_nix) && File.exist?(example_nix)
+
+  run!(["ruby", "make.rb", "--tmpl"], env: {
+    "NIXOS_USER" => user,
+    "USER" => user,
+    "HOME" => "/home/#{user}",
+  }, chdir: repo)
+end
+
+def install_target_repo!(tmpdir, host:, user:)
+  user_home = "#{MNT}/home/#{user}"
+  owner = if File.exist?(user_home)
+            stat = File.stat(user_home)
+            [stat.uid, stat.gid]
+          else
+            [1000, 100]
+          end
+  target_repo = "#{MNT}/home/#{user}/dev/nix/setup"
+  FileUtils.rm_rf(target_repo)
+  FileUtils.mkdir_p(File.dirname(target_repo))
+  FileUtils.cp_r("#{tmpdir}/.", target_repo)
+  FileUtils.rm_f("#{target_repo}/modules/install-secrets.nix")
+  FileUtils.chown_R(*owner, user_home)
+  puts "  setup repo installed at /home/#{user}/dev/nix/setup"
 end
 
 # ---------------------------------------------------------------------------
@@ -115,7 +268,7 @@ MNT          = "/mnt"
 options = {
   host: nil,
   disk: nil,
-  user: ENV.fetch("USER", "wmb"),
+  user: nil,
   forgejo_token: nil,
   ask_token: true,
 }
@@ -141,29 +294,55 @@ disk        = options[:disk] || disks[disk_labels.index(pick("Select installatio
 host = options[:host] || pick("Select install profile", INSTALLABLE_HOSTS)
 
 # ── User ────────────────────────────────────────────────────────────────────
-user = options[:user]
-user = prompt("Username", default: user) if user.nil? || user.empty?
-
-# ── Forgejo token ───────────────────────────────────────────────────────────
-token = options[:forgejo_token]
-token = prompt_secret("Forgejo token (leave blank to skip)") if token.nil? && options[:ask_token]
+user = if options[:user]
+         options[:user].strip
+       else
+         prompt_user(default: default_install_user)
+       end
+abort("!! Invalid install user: #{user.inspect}; use a normal Linux user name, not root") unless valid_install_user?(user)
 
 preflight!(disk: disk, host: host)
 
 confirm!("This will ERASE #{disk} and install NixOS (#{host}). Continue?")
 
+# ── Passwords ────────────────────────────────────────────────────────────────
+root_password = prompt_password("Root password")
+user_password = prompt_password("#{user} password")
+
+# ── Forgejo token ───────────────────────────────────────────────────────────
+token = options[:forgejo_token]
+token = prompt_secret("Forgejo token (leave blank to skip)") if token.nil? && options[:ask_token]
+
 # ── Prepare tmpdir ──────────────────────────────────────────────────────────
 puts "\n[1/4] Preparing build directory..."
 tmpdir = Dir.mktmpdir
 FileUtils.cp_r("#{SRC}/.", tmpdir)
+prepare_repo_templates!(tmpdir, user: user, token: token)
+write_install_secrets(
+  tmpdir,
+  user: user,
+  user_hash: password_hash(user_password),
+  root_hash: password_hash(root_password),
+)
 install_env = {
   "NIXOS_USER" => user,
   "PWD" => tmpdir,
 }
 
 # ── Disko ───────────────────────────────────────────────────────────────────
-puts "\n[2/4] Partitioning and mounting #{disk} with disko..."
-run!(["disko", "--mode", "disko", "--disk", "main", disk, "--flake", "#{tmpdir}##{host}"], env: install_env, chdir: tmpdir)
+puts "\n[2/4] Preparing, partitioning and mounting #{disk}..."
+prepare_disk!(disk)
+run!(
+  [
+    "disko",
+    "--mode", "destroy,format,mount",
+    "--yes-wipe-all-disks",
+    "--argstr", "diskDevice", disk,
+    "--flake", "#{tmpdir}##{host}",
+  ],
+  env: install_env,
+  chdir: tmpdir,
+)
 
 # ── Hardware config ─────────────────────────────────────────────────────────
 puts "\n[3/4] Generating hardware configuration..."
@@ -180,6 +359,7 @@ run!(["nixos-install", "--flake", "#{tmpdir}##{host}", "--impure", "--no-root-pa
 puts "\nPost-install setup..."
 user_home = "#{MNT}/home/#{user}"
 FileUtils.mkdir_p(user_home)
+install_target_repo!(tmpdir, host: host, user: user)
 
 if token && !token.empty?
   netrc = "#{user_home}/.netrc"
@@ -187,27 +367,13 @@ if token && !token.empty?
   FileUtils.chmod(0o600, netrc)
   puts "  .netrc written"
 end
-
-local_nix = "#{SRC}/modules/local.nix"
-if File.exist?(local_nix)
-  FileUtils.cp(local_nix, "#{user_home}/local.nix")
-  puts "  local.nix copied"
-end
+stat = File.stat(user_home)
+FileUtils.chown_R(stat.uid, stat.gid, user_home)
 
 # ── Done ─────────────────────────────────────────────────────────────────────
 puts <<~DONE
 
   Done! Reboot and then:
 
-    git clone https://#{FORGEJO_HOST}/studiowmb/setup ~/dev/nix/setup
-    cd ~/dev/nix/setup
-
-    # First-boot setup (token, local.nix, config.yml):
-    ruby make.rb --init #{host}
-
-    # Edit config.yml — fill in host IPs and verify token:
-    $EDITOR config.yml
-
-    # Apply:
-    ruby make.rb --apply #{host}
+    log in as #{user}
 DONE

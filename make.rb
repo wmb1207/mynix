@@ -11,11 +11,14 @@ require 'yaml'
 # Config
 # ---------------------------------------------------------------------------
 _cfg           = File.exist?("config.yml") ? (YAML.safe_load(File.read("config.yml")) || {}) : {}
+_theme_cfg     = _cfg["themes"].is_a?(Hash) ? _cfg["themes"] : {}
 USER           = _cfg.fetch("user",    ENV.fetch("USER", "wmb")).freeze
 SSH_KEY        = _cfg["ssh_key"]&.then { |k| File.expand_path(k) }.freeze
 FORGEJO_TOKEN  = _cfg["forgejo_token"]&.then { |t| t.empty? ? nil : t }.freeze
 FORGEJO_HOST   = "git.studiowmb.com".freeze
 REMOTE_HOSTS   = (_cfg["hosts"] || {}).freeze
+DARK_THEME_KEY  = _theme_cfg.fetch("dark", _cfg.fetch("theme", "wilson")).freeze
+LIGHT_THEME_KEY = _theme_cfg.fetch("light", "doric-oak").freeze
 
 # ---------------------------------------------------------------------------
 # Color palettes
@@ -51,6 +54,36 @@ PALETTES = {
     emacs_theme:   "creamsody-darker",
     ghostty_theme: "Wez",
   },
+  "doric-earth" => {
+    black:         "#f0eddf",
+    bg_alt:        "#dfdfce",
+    selection:     "#d1ceb6",
+    dark_gray:     "#635650",
+    white:         "#30232e",
+    red:           "#a03000",
+    olive:         "#705200",
+    green:         "#206700",
+    blue:          "#74321f",
+    mauve:         "#690f44",
+    cream:         "#a29986",
+    emacs_theme:   "doric-earth",
+    ghostty_theme: "Wez",
+  },
+  "doric-oak" => {
+    black:         "#e0d8c7",
+    bg_alt:        "#d5c9b5",
+    selection:     "#c2b19e",
+    dark_gray:     "#6b5225",
+    white:         "#3a2018",
+    red:           "#982500",
+    olive:         "#595000",
+    green:         "#226700",
+    blue:          "#497020",
+    mauve:         "#700054",
+    cream:         "#8f9373",
+    emacs_theme:   "doric-oak",
+    ghostty_theme: "Wez",
+  },
   "wilson" => {
     black:         "#222222",
     bg_alt:        "#44443C",
@@ -68,7 +101,7 @@ PALETTES = {
   },
 }.freeze
 
-_palette = PALETTES.fetch(_cfg.fetch("theme", "wilson"), PALETTES["wilson"])
+_palette = PALETTES.fetch(DARK_THEME_KEY, PALETTES["wilson"])
 
 BLACK     = _palette[:black]
 BG_ALT    = _palette[:bg_alt]
@@ -81,7 +114,7 @@ GREEN     = _palette[:green]
 BLUE      = _palette[:blue]
 MAUVE     = _palette[:mauve]
 CREAM     = _palette[:cream]
-THEME_KEY = _cfg.fetch("theme", "wilson").freeze
+THEME_KEY = DARK_THEME_KEY
 
 FONT                = "DejaVu Sans Mono"
 TEMPLATES_DIR       = "templates"
@@ -117,7 +150,11 @@ Template      = Struct.new(:name, :output, :content, :fields, keyword_init: true
 # Shell helpers
 # ---------------------------------------------------------------------------
 def nix_env
-  env = { "NIXOS_USER" => USER, "NIXOS_THEME" => THEME_KEY }
+  env = {
+    "NIXOS_USER" => USER,
+    "NIXOS_THEME" => THEME_KEY,
+    "NIXOS_LIGHT_THEME" => LIGHT_THEME_KEY,
+  }
   env["NIX_CONFIG"] = "access-tokens = #{FORGEJO_HOST}=#{FORGEJO_TOKEN}" if FORGEJO_TOKEN
   env
 end

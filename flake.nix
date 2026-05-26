@@ -35,23 +35,29 @@
   outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, disko, ... }:
     let
       system = "x86_64-linux";
-      homeDir = builtins.getEnv "HOME";
       user      = let
                     nixosUser = builtins.getEnv "NIXOS_USER";
                     envUser   = builtins.getEnv "USER";
                   in if nixosUser != "" then nixosUser
                      else if envUser != "" && envUser != "root" then envUser
                      else "wmb";
+      homeDir = let
+                  h = builtins.getEnv "HOME";
+                  nixosUser = builtins.getEnv "NIXOS_USER";
+                in if nixosUser != "" || h == "" || h == "/root" then "/home/${user}" else h;
       darkTheme = let t = builtins.getEnv "NIXOS_THEME"; in if t == "" then "wilson" else t;
+      lightTheme = let t = builtins.getEnv "NIXOS_LIGHT_THEME"; in if t == "" then "doric-oak" else t;
 
       repoDir   = builtins.getEnv "PWD";
       localNix  = let p = "${repoDir}/modules/local.nix";
                   in if repoDir != "" && builtins.pathExists p then p else null;
+      installSecrets = let p = "${repoDir}/modules/install-secrets.nix";
+                       in if repoDir != "" && builtins.pathExists p then p else null;
 
       baseModules = [
         home-manager.nixosModules.default
         ./modules/wmb-arpa-ca.nix
-      ];
+      ] ++ (if installSecrets != null then [ installSecrets ] else []);
 
       myOverlays = [
         (self: super: {
@@ -147,7 +153,8 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -155,8 +162,6 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
-            disko.nixosModules.disko
-            ./hosts/disk-layouts/gpt-efi.nix
             ./hosts/genericlaptop/hardware-configuration.nix
             ./hosts/genericlaptop/configuration.nix
             ./modules/user.nix
@@ -168,7 +173,8 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer user darkTheme localNix;
+            inherit inputs system teleport-installer user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -176,8 +182,6 @@
           inherit system;
           pkgs = pkgsFor system;
           modules = baseModules ++ [
-            disko.nixosModules.disko
-            ./hosts/disk-layouts/gpt-efi.nix
             ./hosts/genericdesktop/hardware-configuration.nix
             ./hosts/genericdesktop/configuration.nix
             ./modules/user.nix
@@ -188,7 +192,8 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer user darkTheme localNix;
+            inherit inputs system teleport-installer user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -202,7 +207,8 @@
             teleport-installer.nixosModules.default
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -216,7 +222,8 @@
             ./modules/greeter.nix
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -236,7 +243,8 @@
             }
           ];
           specialArgs = {
-            inherit inputs system teleport-installer crystal-greeter user darkTheme localNix;
+            inherit inputs system teleport-installer crystal-greeter user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -248,7 +256,8 @@
             ./modules/user.nix
           ];
           specialArgs = {
-            inherit inputs system teleport-installer user darkTheme localNix;
+            inherit inputs system teleport-installer user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
           };
         };
 
@@ -261,7 +270,8 @@
             ./modules/laptop-keyboard.nix
           ];
           specialArgs = {
-            inherit inputs teleport-installer user darkTheme localNix;
+            inherit inputs teleport-installer user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
             system = "aarch64-linux";
           };
         };
@@ -274,7 +284,8 @@
             ./modules/user.nix
           ];
           specialArgs = {
-            inherit inputs teleport-installer user localNix;
+            inherit inputs teleport-installer user darkTheme lightTheme localNix;
+            userModuleMode = "nixos";
             system = "aarch64-linux";
           };
         };
@@ -459,16 +470,29 @@
         };
       };
 
+      diskoConfigurations =
+        let
+          genericWorkstationDisk = { lib, diskDevice ? "/dev/sda", ... }:
+            import ./hosts/disk-layouts/gpt-efi.nix {
+              inherit lib diskDevice;
+            };
+        in {
+          genericlaptop = genericWorkstationDisk;
+          genericdesktop = genericWorkstationDisk;
+        };
+
       homeConfigurations = {
         "${user}" = home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor system;
-          extraSpecialArgs = { inherit inputs system user darkTheme localNix; };
+          extraSpecialArgs = {
+            inherit inputs system user darkTheme lightTheme localNix;
+            userModuleMode = "home";
+          };
           modules = [
             ./modules/user.nix
             {
               home.username = user;
               home.homeDirectory = homeDir;
-              home.stateVersion = "23.05";
             }
             {
               home.packages = [
