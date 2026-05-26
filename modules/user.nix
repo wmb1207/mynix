@@ -103,22 +103,7 @@ let
      :highlight-text "${t.highlightText}"}
   '';
 
-  crystalDesktopScripts = pkgs.runCommand "crystal-desktop-scripts" {
-    nativeBuildInputs = [ pkgs.crystal ];
-  } ''
-    export CRYSTAL_CACHE_DIR="$TMPDIR/crystal-cache"
-    mkdir -p "$out/bin"
-    crystal build --release --no-debug ${../assets/scripts/backlight.cr} -o "$out/bin/backlight"
-    crystal build --release --no-debug ${../assets/scripts/battery.cr} -o "$out/bin/battery"
-    crystal build --release --no-debug ${../assets/scripts/datetime.cr} -o "$out/bin/datetime"
-    crystal build --release --no-debug ${../assets/scripts/dock.cr} -o "$out/bin/dock"
-    crystal build --release --no-debug ${../assets/scripts/kbd.cr} -o "$out/bin/kbd"
-    crystal build --release --no-debug ${../assets/scripts/keys.cr} -o "$out/bin/keys"
-    crystal build --release --no-debug ${../assets/scripts/projecter.cr} -o "$out/bin/projecter"
-    crystal build --release --no-debug ${../assets/scripts/screen_setup.cr} -o "$out/bin/screen_setup"
-    crystal build --release --no-debug ${../assets/scripts/theme.cr} -o "$out/bin/theme"
-    crystal build --release --no-debug ${../assets/scripts/tunnel.cr} -o "$out/bin/tunnel"
-  '';
+  wmbtooling = inputs.wmbtooling.packages.${system}.default;
 
   myEmacs =
     let
@@ -445,8 +430,10 @@ let
       ++ wm-tools
       ++ local
       ++ [ myEmacs
-        crystalDesktopScripts
+        wmbtooling
         inputs.llm-agents.packages.${system}.coderabbit-cli
+
+        (pkgs.writeShellScriptBin "keys" "exec ${wmbtooling}/bin/help \"$@\"")
         
         (pkgs.writeShellScriptBin "browser"  "exec librewolf \"$@\"")
         (pkgs.writeShellScriptBin "editor"   "exec emacsclient -c -a emacs \"$@\"")

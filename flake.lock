@@ -223,7 +223,8 @@
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs",
         "studiowmb": "studiowmb",
-        "teleport-installer": "teleport-installer"
+        "teleport-installer": "teleport-installer",
+        "wmbtooling": "wmbtooling"
       }
     },
     "studiowmb": {
@@ -234,11 +235,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779115096,
-        "narHash": "sha256-vkduvvfUvg+WGoHpzsL6IfSuqJ5YFyI1Xa7szZ5Dlzg=",
+        "lastModified": 1779799179,
+        "narHash": "sha256-hyz1sOJ7no8A53+YnVLyWY2b5l1Z0Jsd5WtRlaTVjHc=",
         "ref": "refs/heads/main",
-        "rev": "d840740f69378226d5b643e03d2490ec6f9b2c65",
-        "revCount": 6,
+        "rev": "7472b875901f1519eb3f27e3acde68471958e131",
+        "revCount": 8,
         "type": "git",
         "url": "https://git.studiowmb.com/studiowmb/studiowmb"
       },
@@ -310,6 +311,23 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "wmbtooling": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779830273,
+        "narHash": "sha256-OYZPHN/NByO4WdqdQOvRBrtuRtxLDQUEvBNhvugSMKs=",
+        "path": "/home/wmb/dev/crystal/wmbtooling",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/wmb/dev/crystal/wmbtooling",
+        "type": "path"
       }
     }
   },

@@ -26,6 +26,12 @@ NixOS configurations for the studiowmb infrastructure — workstations, servers,
 | `asahibook` | Apple Silicon MacBook (Asahi Linux) |
 | `asahimini` | Apple Silicon Mac Mini (Asahi Linux) |
 
+## Related Projects
+
+| Project | Description |
+|---|---|
+| [wmbtooling](https://github.com/wmb/wmbtooling) | CLI tools for the wmbnix desktop — themes, displays, backlight, keyboard layout, and more (Crystal) |
+
 ## Structure
 
 ```

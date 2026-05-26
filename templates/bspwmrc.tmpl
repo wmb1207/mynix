@@ -42,7 +42,9 @@ pgrep -x polybar > /dev/null && killall polybar
 picom --config ~/.config/picom/picom.conf &
 
 # Start dunst
-dunst --config ~/.config/dunst/dunstrc &
+dunst_config="$HOME/.config/dunst/theme-dunstrc"
+test -f "$dunst_config" || dunst_config="$HOME/.config/dunst/dunstrc"
+dunst --config "$dunst_config" &
 
 # Start feh
 feh --bg-scale ~/.config/wallpapers/wallpaper-10.jpg &
@@ -68,3 +70,4 @@ else
     setxkbmap -layout us -variant dvorak -option ctrl:nocaps -option altwin:meta -option ctrl:swap_lalt_lctl &    
 fi;
 xrdb -merge ~/.Xresources &
+test -f ~/.config/theme.Xresources && xrdb -merge ~/.config/theme.Xresources &

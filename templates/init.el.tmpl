@@ -157,6 +157,10 @@
   (add-hook 'after-load-theme-hook #'my-reset-whitespace-faces)
   (my-reset-whitespace-faces)
 
+  (let ((theme-file (expand-file-name "theme.el" user-emacs-directory)))
+    (when (file-readable-p theme-file)
+      (load theme-file nil t)))
+
   (global-whitespace-mode 1)
 
   (setq whitespace-style
@@ -460,7 +464,8 @@
     (with-selected-frame frame
       (when (display-graphic-p)
         (set-frame-parameter frame 'fullscreen 'maximized)
-        (set-frame-parameter frame 'background-color "{{background}}")
+        (set-frame-parameter frame 'background-color
+                             (face-attribute 'default :background nil t))
         (set-frame-parameter frame 'foreground-color
                              (face-attribute 'default :foreground nil t)))))
   (add-hook 'after-make-frame-functions #'my/setup-gui-frame))

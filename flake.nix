@@ -26,13 +26,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    wmbtooling = {
+      url = "path:/home/wmb/dev/crystal/wmbtooling";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, crystal-greeter, studiowmb, disko, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, teleport-installer, llm-agents, wmbtooling, crystal-greeter, studiowmb, disko, ... }:
     let
       system = "x86_64-linux";
       user      = let
